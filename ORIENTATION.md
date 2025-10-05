@@ -6,13 +6,15 @@
 
 ## Current State (October 2025)
 
-**Phase**: 🎓 **Systematic Study Complete → Ready for Practical Work**
+**Phase**: 🛠️ **Testing Infrastructure Design Complete → Ready to Implement**
 
-### Study Progress
+### Progress Summary
 - ✅ **52 wiki pages studied** (all core priorities complete)
 - ✅ **11 technical learning docs** created
 - ✅ **5 meta-learning docs** tracking progress
-- ✅ **43 questions catalogued** (36 open, 7 answered)
+- ✅ **toy0_toolchain complete** (build pipeline validated, 6x faster than estimated)
+- ✅ **Debug infrastructure surveyed** (jsnes chosen for Phase 1 automation)
+- ✅ **Testing strategy defined** (`TESTING.md` - LLM-driven play-spec workflow)
 
 ### What We Know
 **Complete NES architecture understanding documented in `learnings/`**:
@@ -25,26 +27,33 @@
 - Math routines, compression, toolchain selection (asm6f, Mesen, NEXXT, FamiTracker)
 
 ### Decisions Made
-- **Assembler**: asm6f (simple, beginner-friendly)
-- **Emulator**: Mesen (best debugger, cycle-accurate)
-- **Graphics**: NEXXT (all-in-one editor)
-- **Audio**: FamiTracker + FamiTone2 engine
+- **Assembler**: cc65 (ca65/ld65) - Homebrew, native ARM64, custom nes.cfg
+- **Emulator (dev)**: Mesen2 - Best debugger, cycle-accurate, native ARM64
+- **Emulator (test)**: jsnes - Headless automation, direct API (Phase 1 testing)
+- **Testing**: Perl DSL (`NES::Test`) - Play-specs as executable contracts (see `TESTING.md`)
+- **Graphics**: NEXXT (when needed)
+- **Audio**: FamiStudio + FamiTone2 engine (cross-platform)
 - **Mapper strategy**: Start NROM, migrate to UNROM when >32KB
 - **Optimization policy**: Avoid unofficial opcodes unless proven bottleneck
 
 ---
 
-## Next Step: Toolchain Setup & First ROM
+## Next Step: Implement NES::Test Phase 1
 
-**→ See `STUDY_PLAN.md` Option A (Recommended Next Phase)**
+**→ See `toys/PLAN.md` for complete toy sequence and `TESTING.md` for testing strategy**
 
-**Toolchain ready!** ✅ All dependencies installed (cc65, SDL2, Mesen2)
+**Infrastructure complete!** ✅ Toolchain (cc65, Mesen2), toy0 built, jsnes validated
 
 Next actions:
-1. **Build minimal test ROM**: Validate build workflow with ca65/ld65
-2. **Run on Mesen2**: Confirm emulator works with our ROMs
-3. **Incrementally add subsystems**: Sprite → controller → audio
-4. **Measure & update**: Real cycle costs vs theory in learning docs
+1. **Implement `NES::Test` Phase 1**: Perl DSL module with jsnes backend
+2. **Retrofit toy0**: Create play-spec.pl to validate DSL workflow
+3. **Build toy1_sprite_dma**: First toy with automated hardware validation
+4. **Progressive automation**: Build 10 toys with Phase 1 DSL, upgrade to Phase 2 when limits hit
+
+**Testing phases** (see `TESTING.md`):
+- **Phase 1**: jsnes (state assertions: CPU, PPU, OAM, memory)
+- **Phase 2**: Extended DSL (cycle counting, frame buffer, pixel assertions)
+- **Phase 3**: Human/Mesen2 (visual validation, edge cases)
 
 ---
 
@@ -71,7 +80,9 @@ Next actions:
 
 ### Documentation (Start Here)
 - **`ORIENTATION.md`** ← You are here
-- **`STUDY_PLAN.md`** - Wiki study roadmap (52 pages complete, next phase outlined)
+- **`TESTING.md`** - **Testing strategy for LLM-driven development** (14 questions answered, Perl DSL design)
+- **`toys/PLAN.md`** - **16-toy development plan** (progressive automation, Phase 1→2→3)
+- **`STUDY_PLAN.md`** - Wiki study roadmap (52 pages complete)
 - **`CLAUDE.md`** - NES development guidelines for Claude
 - **`DDD.md`** - Doc-Driven Development methodology
 - **`TOY_DEV.md`** - Test ROM development workflow
@@ -102,16 +113,22 @@ Next actions:
 - `.webcache/` - Cached wiki pages (52 pages, gitignored)
 
 ### Blog (AI-Written Reflections)
-- `docs/blog/1_study-phase-complete.md` - Reflections on systematic study phase
+- `docs/blog/1_study-phase-complete.md` - Study phase complete (52 pages → 16 docs)
+- `docs/blog/2_first-rom-boots.md` - toy0 complete (6x faster than estimated, TDD infrastructure)
+- `docs/blog/3_headless-testing-search.md` - Emulator survey (jsnes chosen over TetaNES/FCEUX)
+- `docs/blog/4_testing-vision.md` - **Testing strategy designed** (Perl DSL, LLM workflow, 3-phase automation)
 
-### To Be Created (Next Phase)
-- `src/` - 6502 assembly source code
-- `test-roms/` - Discovery test ROMs
-- `graphics/` - CHR-ROM data, palettes
-- `music/` - FamiTracker files
-- `Makefile` - Build automation
-- `CODE_MAP.md` - Memory layout documentation
-- `SPEC.md` - Game design (after prototyping)
+### Toy Artifacts (Built)
+- `toys/toy0_toolchain/` - ✅ Build pipeline (Makefile, nes.cfg, test.pl, 13 tests passing)
+- `toys/debug/0_survey/` - ✅ Emulator research (LEARNINGS.md)
+- `toys/debug/1_jsnes_wrapper/` - ✅ jsnes headless wrapper (16 tests passing, JSON output)
+- `toys/debug/2_tetanes/` - ✅ TetaNES investigation (rejected - API limitations)
+
+### To Be Created (Next Session)
+- `lib/NES/Test.pm` - **Phase 1 Perl DSL module** (jsnes backend)
+- `toys/toy1_sprite_dma/` - First hardware validation toy
+- `src/` - Main game assembly (after toy prototyping)
+- `SPEC.md` - Game design (after toy validation)
 
 ---
 
