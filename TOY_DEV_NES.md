@@ -77,23 +77,26 @@ done_testing();
 - Measure actual timings vs theory
 - Screenshot comparisons for visual tests (if needed)
 
-**Document in LEARNINGS.md:**
+**Document in toy's LEARNINGS.md:**
 - Actual cycle counts measured
-- Differences from wiki documentation
+- Differences from wiki documentation (reference wiki page)
 - Edge cases discovered
 - Constraints hit (e.g., "can only update 8 sprites/frame, not 27")
 
 ### 4. Extract Learnings (LEARNINGS.md - Final Pass)
 
-Update theory docs with findings:
-- **learnings/sprite_techniques.md**: "OAM DMA takes exactly 513 cycles (tested in toy1)"
-- **learnings/timing_and_interrupts.md**: "Vblank budget: 2273 cycles minus NMI overhead = 2260 usable (measured)"
-- **Open questions**: Mark as answered or spawn new questions
+Finalize toy's LEARNINGS.md with all findings:
+- Measured cycle counts and timings
+- Constraints discovered vs wiki expectations
+- Working patterns and code ready for reuse
+- Open questions answered or new questions spawned
 
 **Reusable patterns:**
 - Working Makefile patterns → template for future toys
 - CHR conversion scripts → `tools/` directory
 - Init sequences → copy to main game with attribution
+
+**Note**: Toy findings stay in toy's LEARNINGS.md. Reference `learnings/` docs for wiki knowledge, but don't duplicate.
 
 ---
 
@@ -183,6 +186,7 @@ test: hello.nes
 - Combine TWO validated base toys
 - Test interaction/conflicts (e.g., DPCM vs controller reads)
 - Only after base toys proven individually
+- **Use when needed**: Not every pair needs integration toy, only when interactions uncertain
 
 ### Technique Toys
 **Examples:** toy_sprite0_hit, toy_mid_frame_palette, toy_metatiles
@@ -192,25 +196,29 @@ test: hello.nes
 
 ---
 
-## Integration with Learning Docs
+## Relationship to External Learning Docs
+
+**Separation of concerns:**
+- `learnings/` = Knowledge from external sources (wiki, tutorials, documentation)
+- `toys/toyN/LEARNINGS.md` = Findings from experimentation and measurement
 
 ### Before Building Toy
-1. Read relevant theory docs (`learnings/sprite_techniques.md`, etc.)
+1. Read relevant external knowledge docs (`learnings/sprite_techniques.md`, etc.)
 2. Identify questions in `learnings/.docdd/5_open_questions.md`
-3. Document in toy's LEARNINGS.md what to learn
+3. Document in toy's LEARNINGS.md what to validate/measure
 
 ### During Implementation
 - Update toy's LEARNINGS.md with findings as discovered
-- Note deviations from wiki/theory immediately
+- Note deviations from wiki expectations (reference wiki pages)
 - Capture cycle counts, memory usage, constraints
 
 ### After Completion
-1. **Update theory docs** with measured reality:
-   - `learnings/sprite_techniques.md` ← cycle counts from toy1
-   - `learnings/timing_and_interrupts.md` ← vblank measurements
+1. **Finalize toy LEARNINGS.md** with all findings (measurements, constraints, patterns)
 2. **Mark questions answered** in `learnings/.docdd/5_open_questions.md`
 3. **Spawn new questions** if edge cases discovered
-4. **Extract patterns** to `tools/` or document for main game
+4. **Extract reusable patterns** to `tools/` or document for main game
+
+**No duplication**: Toy findings remain in toy's LEARNINGS.md. Don't copy measurements back to `learnings/` - they serve different purposes.
 
 ---
 

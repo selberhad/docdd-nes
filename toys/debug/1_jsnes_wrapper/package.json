@@ -1,0 +1,15 @@
+{
+  "name": "nes-headless",
+  "version": "0.1.0",
+  "description": "Headless NES emulator wrapper for automated testing",
+  "main": "nes-headless.js",
+  "scripts": {
+    "test": "node nes-headless.js ../../toy0_toolchain/hello.nes"
+  },
+  "keywords": ["nes", "emulator", "testing", "headless"],
+  "author": "docdd-nes",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "jsnes": "^1.2.1"
+  }
+}

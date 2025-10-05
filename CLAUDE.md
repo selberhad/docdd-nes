@@ -141,7 +141,7 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 **Preference Stack** (rough guideline, not dogma):
 - Perl (quick text processing, one-liners, build scripts - conciseness is a feature)
 - Shell (simple automation, glue code)
-- Python/Node.js (when ecosystem/libraries provide clear advantage)
+- Python/Node.js/Lua (when ecosystem/libraries provide clear advantage)
 - Rust (when type safety/performance matters)
 - C (when interfacing with low-level APIs)
 
@@ -157,6 +157,7 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 - Graphics conversion (PNG → CHR-ROM): Use whatever works cleanly
 - Build scripts: Perl/shell preferred for flexibility
 - ROM patching/analysis: Whatever fits the task (likely Perl for binary manipulation)
+- Emulator automation: Lua (FCEUX scripting, headless testing)
 - Test harnesses: Match the complexity of the task
 
 ## Documentation Structure
