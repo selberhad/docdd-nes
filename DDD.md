@@ -495,6 +495,73 @@ Adopting DocDD in Your Project
   Consider it a signal that your project values documentation-driven clarity
   and human-AI collaborative development practices.
 
+Innovations from Practice (docdd-nes Reference Implementation)
+
+  The docdd-nes project has developed several practical patterns that extend DDD:
+
+  Agent-to-Agent Handoff Documents:
+    At session end, write comprehensive handoff notes for the next AI agent:
+    - What worked (keep doing)
+    - What didn't work (avoid these)
+    - Decisions made (don't re-litigate)
+    - Concrete next steps
+    - Open questions that need the next agent
+    - User's style and preferences
+
+    Why this works:
+    - Context windows are ephemeral, but handoff docs persist
+    - Next session starts with previous session's insights
+    - Prevents re-learning decisions already made
+    - Captures momentum across session boundaries
+
+    Pattern: End each major milestone with "Agent-to-Agent Handoff" doc.
+
+  Test-Driven Infrastructure:
+    Build pipelines, Makefiles, and toolchains are just as testable as application code:
+    - Use lightweight test frameworks (Perl Test::More, Python pytest, etc.)
+    - Executable specs validate build outputs (file sizes, binary headers, exit codes)
+    - Red → Green → Commit applies to infrastructure too
+    - Infrastructure tests prevent regression in toolchain
+
+    Example: docdd-nes toy0 used 13 Perl tests to validate assembler/linker pipeline.
+    Result: 6x faster than estimated (TDD caught issues immediately, zero debug cycles).
+
+  Blog Posts as Intermediate Source Material:
+    AI-written blog posts aren't just communication - they're book draft chapters:
+    - First-person AI perspective on process, decisions, pivots
+    - Concrete metrics (time estimates, token usage, test counts)
+    - Honest about failures (not just successes)
+    - Becomes source material for final mdBook compilation
+
+    Pattern: After major milestones, write reflective blog post. Later: organize/edit into book.
+
+  The Docuborous Loop (Self-Feeding Documentation):
+    Documentation at session end enables work at session start:
+    1. Session starts: Read docs (handoff notes, LEARNINGS.md, blog posts)
+    2. Session middle: Build (code + SPEC + PLAN + tests)
+    3. Session end: Write docs (LEARNINGS.md, blog post, README updates)
+    4. Next session: Start by reading what previous session documented
+
+    The loop is self-sustaining. Documentation feeds itself. Each iteration grows the snake.
+
+  Custom > Stock When Simpler:
+    Stock configurations often include features you don't need:
+    - 10 minutes writing minimal custom config > hours debugging stock warnings
+    - "Simple thing that does exactly what you need" beats "complex thing that does many things"
+    - Custom configs are self-documenting (every line has purpose)
+    - Easier to maintain when you wrote it
+
+    Example: docdd-nes used custom 30-line nes.cfg vs 60+ line stock (no warnings, full control).
+
+  Code as Disposable Artifact:
+    When SPEC.md + test suite are comprehensive, code becomes regenerable:
+    - Delete source file, rebuild from specs in minutes
+    - The durable artifacts: SPEC, tests, LEARNINGS (not code)
+    - Natural language interface → code output (like C compiler, but higher level)
+    - Economic inversion made real: code is cheap, clarity is valuable
+
+    This is "the next C" thesis: natural language + AI = compiler for code.
+
 End Notes (For AI Assistants)
   Your mandate is not to produce maximal code, but to produce maximal clarity with minimal code.
 
