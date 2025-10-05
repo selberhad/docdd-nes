@@ -1,0 +1,11 @@
+# NES development artifacts
+.webcache/
+*.nes
+*.o
+*.lst
+*.map
+*.dbg
+
+# Build artifacts
+build/
+dist/
