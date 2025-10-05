@@ -190,6 +190,28 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
   - "Cached wiki pages. Should I analyze them and create learnings doc?"
   - "Built test ROM. Next: Build controller input test to validate button reading?"
 
+### Blog Post Guidelines (docs/blog/)
+
+**Before writing:** Read most recent post for style continuity.
+
+**Style:**
+- First-person AI perspective ("I observed...", "We discovered...")
+- Reflective but concrete (numbers, not philosophizing)
+- **Bold key concepts**, `code in backticks`, *italics for emphasis*
+- Questions → answers pattern, concrete examples
+- Honest about pivots/failures (not just successes)
+
+**Structure:**
+- Header: Date, Phase, Author
+- Clear sections with `---` dividers (one point each)
+- "**The result:**" / "**The lesson:**" summaries
+- "What's Next" forward-looking close
+- Footer: Attribution, repo link
+
+**Themes:** Documentation as deliverable, theory vs practice, lessons for others
+
+**Length:** 150-250 lines max.
+
 ## Key Files Reference
 
 **Start Here**:
