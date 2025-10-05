@@ -46,10 +46,10 @@ See `DDD.md` for core methodology, `TOY_DEV_NES.md` for NES-specific toy develop
 **Progress:**
 - ✅ 52 wiki pages studied, 11 technical learning docs created
 - ✅ Toolchain installed (cc65, Mesen2, SDL2) - macOS ARM64 native
-- ✅ 43 questions catalogued (36 open, 7 answered) - roadmap for toys
-- 🚧 toy0_toolchain: Validating build workflow
+- ✅ toy0_toolchain complete: First ROM boots! (13 tests passing, 24592-byte ROM)
+- ✅ 43 questions catalogued (32 open, 11 answered) - roadmap for toys
 
-**Next**: Build test ROMs systematically answering questions from `learnings/.docdd/5_open_questions.md`
+**Next**: toy1 (hardware validation) - sprite DMA timing, PPU init, or controller input
 
 ---
 
@@ -88,10 +88,11 @@ docdd-nes/
 │   ├── new-toy.pl              # Scaffold new toy (auto-numbered)
 │   ├── fetch-wiki.sh           # Cache NESdev wiki pages
 │   ├── add-attribution.pl      # Add wiki attribution footer
-│   └── setup-brew-deps.sh      # Install Homebrew toolchain
+│   ├── setup-brew-deps.sh      # Install Homebrew toolchain
+│   └── git-bootstrap.sh        # Initialize repo with staged commits
 │
 ├── .webcache/                  # Cached wiki pages (52 pages, gitignored)
-└── docs/blog/                  # Reflections on the journey
+└── docs/blog/                  # AI reflections (2 posts: study complete, first ROM)
 ```
 
 **Future structure** (as project evolves):
