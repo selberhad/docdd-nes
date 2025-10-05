@@ -12,6 +12,11 @@
 *.map          # Memory map files
 *.dbg          # Debug symbol files
 
+# Explicitly ignore build artifacts under toys/
+/toys/**/**/*.nes
+/toys/**/**/*.o
+/toys/**/**/*.dbg
+
 # Intermediate build outputs
 build/
 dist/
