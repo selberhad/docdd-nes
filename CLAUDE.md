@@ -12,7 +12,7 @@ This is **docdd-nes** - an NES game development project using **Doc-Driven Devel
 
 This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a learning-driven workflow combining Discovery (understand NES architecture) + Execution (build the game). See `DDD.md` for full methodology.
 
-**Long-term deliverable**: Transform `learnings/` into an mdbook - a cleaned up, streamlined condensation of the NESdev wiki. Oriented for LLM agents but human-friendly (clear, concise language works for both). Write learnings with this eventual compilation in mind.
+**Long-term deliverable**: Compile an mdbook from blog posts, `learnings/` docs, and meta-docs - a cleaned up, streamlined condensation of the NESdev wiki. Oriented for LLM agents but human-friendly (clear, concise language works for both). The mdbook source material is being written now (not separate future work).
 
 ### Current Documentation Structure
 

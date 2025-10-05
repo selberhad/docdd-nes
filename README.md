@@ -11,6 +11,7 @@ Building an NES game from scratch in 6502 assembly to test DDD methodology in a 
 **Dual deliverable:**
 
 1. **Agent-facing mdBook**: A clean, concise distillation of NESdev knowledge optimized for LLM agents (but human-friendly)
+   - Compiled from blog posts, learning docs, and meta-docs (intermediate source material)
    - Condensed from NESdev wiki and practical experience
    - Focused on constraints, cycle budgets, and working patterns
    - Theory validated through practice (measured cycle counts, tested techniques)
@@ -154,7 +155,8 @@ cd toys/toy1_sprite_dma
    ```
 
 3. **Book phase** (future): Compile learnings into mdbook
-   - Clean up learning docs for clarity
+   - Source material: Blog posts + learning docs + meta-docs (already written!)
+   - Clean up for clarity, organize by theme
    - Add toy code snippets as examples
    - Cross-reference toys as "see toy3_sprite_input for working implementation"
    - Publish as agent-facing NES development guide
