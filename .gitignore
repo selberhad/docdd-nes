@@ -1,11 +1,173 @@
-# NES development artifacts
-.webcache/
-*.nes
-*.o
-*.lst
-*.map
-*.dbg
+# ==============================================================================
+# NES Development Artifacts
+# ==============================================================================
 
-# Build artifacts
+# Cached documentation (rebuild with tools/fetch-wiki.sh)
+.webcache/
+
+# Build artifacts (rebuild with make)
+*.nes          # Compiled NES ROMs
+*.o            # Object files from ca65
+*.lst          # Listing files
+*.map          # Memory map files
+*.dbg          # Debug symbol files
+
+# Intermediate build outputs
 build/
 dist/
+*.chr          # Compiled CHR-ROM (unless source graphics)
+*.bin          # Binary data files
+
+# ==============================================================================
+# macOS System Files
+# ==============================================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon files
+Icon
+
+# Thumbnails
+._*
+
+# Files created by macOS Finder
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# ==============================================================================
+# Editor/IDE Files
+# ==============================================================================
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Atom
+.atom/
+
+# ==============================================================================
+# Development Tools
+# ==============================================================================
+
+# Perl artifacts
+blib/
+.build/
+_build/
+cover_db/
+inc/
+Build
+!Build/
+Build.bat
+.last_cover_stats
+Makefile.old
+MANIFEST.bak
+META.yml
+MYMETA.yml
+MYMETA.json
+nytprof.out
+pm_to_blib
+
+# Python (if used for tooling)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.venv
+
+# Node.js (if used for tooling)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Rust (if used for tooling)
+target/
+Cargo.lock
+
+# ==============================================================================
+# Test/Debug Artifacts
+# ==============================================================================
+
+# Test outputs
+test_output/
+*.tap
+*.log
+
+# Emulator save states/saves (keep out of version control)
+*.sav
+*.state
+*.ss*
+
+# Screenshot/recording artifacts
+screenshots/
+recordings/
+*.png
+*.jpg
+*.gif
+*.mp4
+
+# ==============================================================================
+# Temporary Files
+# ==============================================================================
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+*.temp
+*~
+
+# Patch files
+*.orig
+*.rej
+
+# ==============================================================================
+# Project-Specific Exclusions
+# ==============================================================================
+
+# Exclude final game ROM (if different from toys)
+# main_game.nes
+
+# Exclude large asset sources (if committed separately)
+# assets/source/
+
+# Future: Exclude specific tool outputs as needed
