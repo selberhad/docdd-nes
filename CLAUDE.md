@@ -194,6 +194,13 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
   - "Cached wiki pages. Should I analyze them and create learnings doc?"
   - "Built test ROM. Next: Build controller input test to validate button reading?"
 
+### NEXT_SESSION.md Protocol
+**CRITICAL: Always delete and rewrite, never update in place:**
+- `NEXT_SESSION.md` is ephemeral (gitignored, session handoff only)
+- When updating for next session: `rm NEXT_SESSION.md && Write new content`
+- **DO NOT** use Read + Edit pattern (wastes tokens on old content)
+- Include: Current status, what we learned, what to do next, key files to review
+
 ### Blog Post Guidelines (docs/blog/)
 
 **Before writing:** Read most recent post for style continuity.
