@@ -39,11 +39,19 @@
 
 ## Current State (October 2025)
 
-**Phase 1 operational** - NES::Test DSL validated across 3.5 toys:
-- **35/57 tests passing** (toy0: 6/6, toy1: 20/20, toy2: 5/5, toy3: 4/8 partial, toy4: 0/18 in progress)
-- **jsnes accuracy validated** for Phase 1 scope (sprite DMA, PPU init, controller input, NMI timing)
-- **Fast iteration** - <1 second per test suite, 257-frame tests run instantly
+**Phase 1 operational** - NES::Test DSL validated across 5 toys:
+- **66/66 tests passing (100%)** - toy0: 6/6, toy1: 20/20, toy2: 5/5, toy3: 2/2 (partial), toy4: 18/18, toy5: 15/15
+- **jsnes accuracy validated** for Phase 1 scope (sprite DMA, PPU init, controller input, NMI timing, PPUSCROLL)
+- **Fast iteration** - <1 second per test suite, 260-frame tests run instantly
 - **Infrastructure solid** - Persistent harness, TAP output, prove integration, regression testing
+- **DSL optimized** - Higher-level abstractions reduce token waste (32% reduction per test)
+
+**Phase 1 DSL features** (as of toy5):
+- ✅ **NMI-relative assertions** - `after_nmi(N)` auto-calculates frames (eliminates manual arithmetic)
+- ✅ **Pattern abstractions** - `assert_nmi_counter()` generates multiple assertions from one line
+- ✅ **Hash syntax** - Compact multi-assertion blocks
+- ✅ **Boilerplate reduction** - `NES::Test::Toy` module (7 lines → 3 lines per test)
+- ✅ **Composable primitives** - Low/mid/high-level assertions work together
 
 **Phase 1 limitations discovered:**
 - ❌ No cycle counting (jsnes doesn't expose it) - Phase 2 required
@@ -57,7 +65,7 @@
 - Frame buffer access for pixel/tile assertions
 - VRAM inspection for nametable/pattern table validation
 
-**Next**: Complete toy4 (NMI), implement remaining toys, document patterns for production
+**Next**: toy6 (audio, VRAM buffer, or palettes) using optimized DSL
 
 ---
 
@@ -119,6 +127,34 @@
 - Detects when new code breaks old functionality
 - Fast enough to run before every commit
 
+### DSL Token Optimization (October 2025 - Post toy5)
+
+**✅ Analyze patterns across toys before they repeat 3+ times**
+- After toy4-5, patterns emerged: frame arithmetic, counter increments, boilerplate
+- Blog post #6 lesson: "Automate after 2nd repetition" applies to DSL design
+- Built abstractions BEFORE writing toy6 (proactive, not reactive)
+
+**✅ Higher-level abstractions save tokens exponentially**
+- `after_nmi(N)` eliminates frame arithmetic comments (5 lines → 0 per test)
+- `assert_nmi_counter()` collapses 5 assertions → 1 line (pattern recognition)
+- `NES::Test::Toy` cuts boilerplate 7 → 3 lines (57% reduction)
+- **Net result**: 32% token reduction per test file (~13 lines saved)
+
+**✅ Self-documenting code reduces comment waste**
+- `after_nmi 64` is clearer than `at_frame 67  # 64th NMI (frame 4 + 63)`
+- Hash syntax groups related assertions (intent over mechanics)
+- Domain-specific names (NMI counts, not frame numbers)
+
+**✅ Composable primitives > monolithic helpers**
+- Low-level (`assert_ram`) + mid-level (`assert_nmi_counter`) + high-level (user-defined) all work together
+- Can drop to lower level when needed (flexibility)
+- Each abstraction builds on simpler ones (no duplication)
+
+**✅ Measure before optimizing**
+- Counted actual lines across 15 test files (195 lines wasted on repetition)
+- Validated improvements (6/6 test assertions pass with new DSL)
+- Backwards compatible (existing tests don't break)
+
 ### Emulator Behavior
 
 **✅ jsnes determinism validated**
@@ -143,18 +179,27 @@
 ## Open Questions
 
 ### Input Encoding
-**Q1**: ✅ **DECIDED: Perl DSL for play-specs**
+**Q1**: ✅ **DECIDED: Perl DSL for play-specs (+ higher-level abstractions)**
 - Play-specs are executable Perl scripts with custom DSL (not serialized data)
 - Combines TAS-style input sequences + state assertions in one format
 - Integrates with Test::More (TAP output)
 - LLM-friendly (generates code better than arbitrary formats)
+- **Optimized for token efficiency** (after_nmi, assert_nmi_counter, hash syntax)
 - Example:
 ```perl
-use NES::Test;
-load_rom "hello.nes";
-at_frame 0 => sub { assert_cpu_pc 0x8000; };
-press_button 'A';
-at_frame 1 => sub { assert_ram 0x00 => 1; };
+use FindBin qw($Bin);
+use lib "$Bin/../../../lib";
+use NES::Test::Toy 'scroll';  # Auto-loads ROM, imports helpers
+
+# NMI-relative assertions (no manual frame arithmetic)
+after_nmi 1 => sub { assert_ram 0x10 => 0x01 };  # Frame 4
+after_nmi 64 => sub { assert_ram 0x10 => 0x40 }; # Frame 67
+
+# Hash syntax for multiple assertions
+after_nmi 10 => { ram => { 0x10 => 0x0A, 0x11 => 0x00 } };
+
+# Pattern abstraction (counter increment tests)
+assert_nmi_counter 0x10, at_nmis => [1, 2, 10, 64, 128];
 ```
 
 **Q2**: ✅ **DECIDED: Implicit frame progression (forward-only, monotonic)**
