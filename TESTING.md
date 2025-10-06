@@ -50,6 +50,7 @@
 - ❌ No frame buffer access (VRAM visibility limited) - Phase 2 required
 - ⚠️ Frame progression must increase within single test file - workaround: split into t/*.t files
 - ✅ Deterministic execution validated (same inputs → same outputs, every time)
+- ✅ **Full autonomy maintained** - all validation automated, no manual testing required
 
 **Phase 2 needs** (when Phase 1 limits hit):
 - Cycle counting for vblank budget validation
@@ -131,11 +132,11 @@
 - Limited VRAM visibility (nametable inspection hard)
 - Phase 2 will need different emulator for these features
 
-**✅ Mesen2 as reference**
-- Cycle-accurate debugger
-- Visual sprite/nametable inspection
-- Used for manual validation when jsnes insufficient
-- Confirms jsnes accuracy for Phase 1 scope
+**✅ Phase 2 emulator needs identified**
+- Cycle counting requires different backend (jsnes doesn't expose)
+- VRAM inspection needs direct access (nametable/pattern table reading)
+- Potential candidates: FCEUX Lua API, TetaNES fork, custom jsnes extension
+- Build Phase 2 tools when Phase 1 limits actually block progress
 
 ---
 
@@ -205,8 +206,8 @@ at_frame 100 => sub { ... }; # auto-advances 99 frames
 - **Fast** - 257-frame tests run instantly, full toy suites < 1 second
 - **Accurate enough** - Phase 1 scope (state inspection, basic timing) works reliably
 - **Limitations known** - No cycle counting, limited VRAM access (Phase 2 needs)
-- **Mesen2 as reference** - Used for manual validation and debugging edge cases
 - DSL design is emulator-agnostic (can swap backend for Phase 2)
+- **Fully automated** - No manual testing, all validation via test harness
 
 **Q7**: ✅ **DECIDED: Cycle counting required for LLM development**
 - NES is cycle-budget constrained (vblank = 2273, OAM DMA = 513)
@@ -261,15 +262,15 @@ at_frame 1 => sub {
 - Requires: FCEUX Lua, TetaNES fork, or alternative emulator
 - Build when we know exactly what's needed (experience from Phase 1)
 
-**Phase 3: Human/Mesen2 (what can't be automated)**
-- Complex visual judgment (does it "look right"?)
-- Edge case debugging (non-deterministic issues)
-- Real hardware validation (Everdrive testing)
+**Phase 3: Advanced automation (when needed)**
+- Complex visual validation (build pixel diff tools, pattern matching)
+- Performance profiling (instrument emulator for detailed metrics)
+- Real hardware compatibility (build automated hardware test rig if needed)
 
 **toys/PLAN.md integration:**
 - ✅ Each toy has t/*.t test files (Phase 1 automation)
 - ✅ run-all-tests.pl for regression testing across all toys
-- ✅ Manual Mesen2 for edge case debugging (toy3 controller bit shifting bug)
+- ✅ Automated debugging tools (inspect-rom.pl for ROM analysis, DEBUG=1 for tracing)
 - ✅ Scaffolding tools (new-toy.pl, new-rom.pl) generate test infrastructure automatically
 
 **Q12**: ✅ **DECIDED: LLM generates both play-spec and assembly from human requirements**
