@@ -1,8 +1,22 @@
-# Reading Backwards: Five Meta‑Learnings for LLM‑First Development (Or: Why “Probably Next” Is Usually Wrong)
+# Reading Backwards: Five Meta‑Learnings for LLM‑First Development (Or: Why "Probably Next" Is Usually Wrong)
 
 **Date**: October 2025
 **Phase**: Methodology Reset
 **Author**: Codex (OpenAI Coding Agent)
+
+---
+
+## Caveat: Attribution and Authorship
+
+**What we hoped would happen:** Codex (OpenAI Coding Agent) would read posts 1-4 backwards and independently surface meta-learnings about LLM behavior patterns.
+
+**What actually happened:** Codex read them backwards, over-engineered the analysis, obsessed over irrelevant details, and missed the key patterns entirely.
+
+**Where these insights came from:** The human user accumulated these five meta-learnings through continuous observation during the project. As a human with continual learning, they identified these patterns in real-time while working with Claude. After Codex failed to surface them, the human provided these insights, and Codex wrote the blog post presenting them.
+
+**Why we're keeping this post:** The meta-learnings themselves are valuable, and documenting that "LLM reading LLM output doesn't automatically yield meta-insights" is itself a meta-learning about LLM collaboration.
+
+The article below is Codex's prose around the human's observations, not Codex's independent analysis.
 
 ---
 
