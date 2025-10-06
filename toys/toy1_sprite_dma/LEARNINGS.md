@@ -137,33 +137,97 @@ sta $4014       ; Start DMA transfer
 
 ## Findings
 
-*To be filled during implementation*
+**Duration**: 45 minutes | **Status**: Complete | **Result**: All 20 tests passing
 
 ### ✅ Validated
 
+**OAM DMA works exactly as documented:**
+- Writing `#$02` to `$4014` triggers DMA from `$0200-$02FF` → PPU OAM
+- jsnes accurately emulates OAM DMA (all 4 test sprites transferred correctly)
+- No PPU initialization required for DMA to function
+- DMA works with rendering disabled (PPUMASK = 0)
+
+**Frame timing (critical discovery):**
+- Frame 0: Reset vector executes, but state not yet observable
+- Frame 1: Reset code complete, RAM populated, DMA can execute
+- play-spec must check frame 1+ for post-reset state
+
+**NES::Test Phase 1 validation:**
+- Shadow OAM assertions work (`assert_ram 0x0200 => 100`)
+- PPU OAM assertions work (`assert_sprite 0, y => 100`)
+- jsnes `nes.ppu.spriteMem` accessible and accurate
+- Deterministic (same ROM → same state every run)
+
+**TDD workflow success:**
+- Red → Green → Commit pattern efficient
+- Incremental sprite addition caught issues early
+- play-spec provided instant feedback
+
 ### ⚠️ Challenged
+
+**Frame 0 timing assumption:**
+- Initially tried asserting at frame 0 (failed - reset code not yet executed)
+- Wiki doesn't document "observable state" timing for test harnesses
+- **Lesson**: Frame 1 is first frame with visible post-reset state
 
 ### ❌ Failed
 
+*None - all tests passed first try after frame timing fix*
+
 ### 🌀 Uncertain
+
+**jsnes cycle accuracy:**
+- Phase 1 cannot measure 513-cycle DMA timing
+- Assumed accurate based on state correctness
+- Phase 2 upgrade needed to verify cycle count
+
+**DMA from non-$0200 addresses:**
+- Didn't test alternate page-aligned addresses (e.g., $0300)
+- Theory says any page works, not validated in this toy
 
 ---
 
 ## Patterns for Production
 
-*To be extracted after toy completion*
+**OAM DMA pattern (copy to main game):**
+```asm
+; In NMI handler (during vblank):
+    LDA #$02        ; High byte of shadow OAM
+    STA $4014       ; Trigger DMA (513 cycles)
+    ; OAM now updated, safe to continue
+```
 
-**Reusable code patterns:**
-- OAM DMA initialization sequence
-- Shadow OAM buffer layout ($0200-$02FF convention)
-- Sprite data structure (helper functions?)
+**Shadow OAM initialization:**
+```asm
+; Reserve $0200-$02FF for sprite data
+; Each sprite = 4 bytes: Y, tile, attr, X
+; Example: Sprite 0 at (80, 100), tile $42, palette 1
+    LDA #100
+    STA $0200       ; Y position
+    LDA #$42
+    STA $0201       ; Tile number
+    LDA #$01
+    STA $0202       ; Attributes (palette 1)
+    LDA #80
+    STA $0203       ; X position
+```
 
-**Testing patterns:**
-- play-spec structure for state validation toys
-- Assertions for sprite/OAM data
-- Phase 1 limitations and workarounds
+**play-spec patterns for hardware validation:**
+```perl
+# Check state AFTER reset (frame 1+, not frame 0)
+at_frame 1 => sub {
+    assert_ram 0x0200 => 100;  # Shadow OAM
+    assert_sprite 0, y => 100;  # PPU OAM (after DMA)
+};
+```
 
-**Integration notes:**
-- How to integrate DMA into main game NMI handler
-- Memory layout conventions (shadow OAM placement)
-- Build patterns (Makefile, assembly structure)
+**Memory layout conventions:**
+- `$0200-$02FF`: Shadow OAM (256 bytes, page-aligned)
+- Update during game logic (no timing constraints)
+- DMA during vblank (NMI handler)
+
+**NES::Test Phase 1 capabilities validated:**
+- State assertions work (CPU, RAM, OAM, PPU)
+- Frame progression reliable
+- Deterministic emulation confirmed
+- Ready for toy2+
