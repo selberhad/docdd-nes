@@ -6,7 +6,7 @@
 
 ## Current State (October 2025)
 
-**Phase**: 🛠️ **Testing Infrastructure Design Complete → Ready to Implement**
+**Phase**: 🚀 **NES::Test Phase 1 Complete → Ready to Build toy1**
 
 ### Progress Summary
 - ✅ **52 wiki pages studied** (all core priorities complete)
@@ -15,6 +15,8 @@
 - ✅ **toy0_toolchain complete** (build pipeline validated, 6x faster than estimated)
 - ✅ **Debug infrastructure surveyed** (jsnes chosen for Phase 1 automation)
 - ✅ **Testing strategy defined** (`TESTING.md` - LLM-driven play-spec workflow)
+- ✅ **NES::Test Phase 1 implemented** (Perl DSL + persistent jsnes harness)
+- ✅ **toy1_sprite_dma planned** (SPEC, PLAN, LEARNINGS ready)
 
 ### What We Know
 **Complete NES architecture understanding documented in `learnings/`**:
@@ -38,22 +40,26 @@
 
 ---
 
-## Next Step: Implement NES::Test Phase 1
+## Next Step: Build toy1_sprite_dma
 
-**→ See `toys/PLAN.md` for complete toy sequence and `TESTING.md` for testing strategy**
+**→ See `toys/toy1_sprite_dma/PLAN.md` for detailed TDD steps**
 
-**Infrastructure complete!** ✅ Toolchain (cc65, Mesen2), toy0 built, jsnes validated
+**All infrastructure ready!** ✅ NES::Test Phase 1, build pipeline, testing strategy
 
-Next actions:
-1. **Implement `NES::Test` Phase 1**: Perl DSL module with jsnes backend
-2. **Retrofit toy0**: Create play-spec.pl to validate DSL workflow
-3. **Build toy1_sprite_dma**: First toy with automated hardware validation
-4. **Progressive automation**: Build 10 toys with Phase 1 DSL, upgrade to Phase 2 when limits hit
+Next session tasks (from toy1 PLAN.md):
+1. **Copy build infrastructure** from toy0 (Makefile, nes.cfg)
+2. **Write failing play-spec.pl** (Red - OAM DMA assertions)
+3. **Implement assembly incrementally** (Green - shadow OAM → DMA trigger)
+4. **Document findings** in LEARNINGS.md
+5. **Extract patterns** for future toys
 
-**Testing phases** (see `TESTING.md`):
-- **Phase 1**: jsnes (state assertions: CPU, PPU, OAM, memory)
-- **Phase 2**: Extended DSL (cycle counting, frame buffer, pixel assertions)
-- **Phase 3**: Human/Mesen2 (visual validation, edge cases)
+**Estimated time**: 2-3 hours (first hardware validation toy, TDD workflow)
+
+**What toy1 validates** (see `toys/toy1_sprite_dma/SPEC.md`):
+- OAM DMA mechanism ($4014 trigger)
+- Shadow OAM ($0200) → PPU OAM transfer
+- NES::Test Phase 1 for hardware validation
+- 4 test sprites with known positions/attributes
 
 ---
 
