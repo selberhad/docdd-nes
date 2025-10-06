@@ -39,7 +39,14 @@ vblankwait1:
     LDA #$01
     STA $0010
 
-    ; TODO: Wait second vblank
+    ; Wait for second vblank
+vblankwait2:
+    BIT $2002
+    BPL vblankwait2     ; Loop while bit 7 = 0
+
+    ; Set marker 2 (warmup complete)
+    LDA #$02
+    STA $0010
 
 loop:
     JMP loop
