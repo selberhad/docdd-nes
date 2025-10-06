@@ -131,6 +131,19 @@ for my $rom_path (@roms) {
         printf "  NMI   (\$FFFA): \$%04X  [%02X %02X]\n", $nmi_vector, $vec_bytes[0], $vec_bytes[1];
         printf "  RESET (\$FFFC): \$%04X  [%02X %02X]  ← CPU starts here\n", $reset_vector, $vec_bytes[2], $vec_bytes[3];
         printf "  IRQ   (\$FFFE): \$%04X  [%02X %02X]\n", $irq_vector, $vec_bytes[4], $vec_bytes[5];
+
+        # Show first 16 bytes at reset vector (if it points into PRG-ROM)
+        if ($reset_vector >= 0x8000 && $reset_vector < 0x8000 + $prg_size) {
+            my $code_offset = 16 + ($reset_vector - 0x8000);
+            seek $fh, $code_offset, 0;
+            my $code_sample;
+            if (read($fh, $code_sample, 16) == 16) {
+                my @code_bytes = unpack('C16', $code_sample);
+                print "\nCode at RESET vector (\$" . sprintf("%04X", $reset_vector) . "):\n  ";
+                printf "%02X " x 16, @code_bytes;
+                print "\n";
+            }
+        }
     }
 
     close $fh;
