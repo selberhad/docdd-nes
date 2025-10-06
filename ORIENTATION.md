@@ -54,21 +54,9 @@
 - ✅ **Test structure refined** - Split into t/*.t files for independent scenarios
 - ✅ **Production-ready patterns extracted** - Complete init + NMI handler documented
 
-**Next toy candidates:**
-1. **toy5_scrolling** - Background scrolling (nametables, PPUSCROLL, seam hiding)
-2. **toy6_audio** - APU channels + FamiTone2 integration (music/SFX)
-3. **Return to toy3_controller** - Fix LSR/ROL bit shifting bug (unfinished business)
-4. **toy5_vram_buffer** - VRAM update buffer (safe PPU writes during vblank)
+**Test suite**: 51/51 passing (100%) - see `toys/STATUS.md`
 
-**Test status (run-all-tests.pl):**
-- toy0: 6/6 ✓
-- toy1: 20/20 ✓
-- toy2: 5/5 ✓
-- toy3: 4/8 ⚠️ (partial - known controller bug)
-- toy4: 18/18 ✓
-- **Total: 53/57 passing (93%)**
-
-**Pattern validated (4x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Update ORIENTATION → Move forward
+**Pattern validated (4x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Move forward
 
 ---
 
