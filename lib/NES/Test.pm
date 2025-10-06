@@ -16,6 +16,7 @@ our @EXPORT = qw(
     press_button
     release_button
     run_frames
+    set_verbosity
     assert_ram
     assert_cpu_pc
     assert_cpu_a
@@ -189,6 +190,20 @@ sub run_frames {
     }
 
     # Don't update state (lazy evaluation)
+}
+
+sub set_verbosity {
+    my ($level) = @_;
+
+    croak "No ROM loaded (call load_rom first)" unless $current_rom;
+
+    my $response = _send_command('setVerbosity', { level => $level });
+
+    if ($response->{status} ne 'ok') {
+        croak "Failed to set verbosity: $response->{message}";
+    }
+
+    note "Verbosity set to $level";
 }
 
 # Assertion helpers
