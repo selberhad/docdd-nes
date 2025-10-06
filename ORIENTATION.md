@@ -6,7 +6,7 @@
 
 ## Current State (October 2025)
 
-**Phase**: 🎮 **Three Toys Complete → toy4_nmi Next**
+**Phase**: 🎮 **Four Toys Complete → Next Subsystem**
 
 ### Progress Summary
 - ✅ **52 wiki pages studied** (all core priorities complete)
@@ -19,6 +19,7 @@
 - ✅ **toy1_sprite_dma complete** (OAM DMA validated, 20/20 tests passing, 45 min)
 - ✅ **toy2_ppu_init complete** (2-vblank warmup validated, 5/5 tests passing, 30 min)
 - ⚠️ **toy3_controller partial** (4/8 tests passing, timeboxed, moving on - controller read logic bug)
+- ✅ **toy4_nmi complete** (NMI handler + integration validated, 18/18 tests passing, 45 min)
 
 ### What We Know
 **Complete NES architecture understanding documented in `learnings/`**:
@@ -42,24 +43,32 @@
 
 ---
 
-## Next Step: toy4_nmi (NMI Handler)
+## Next Step: Choose Next Subsystem
 
-**toy3 findings** (see `toys/toy3_controller/LEARNINGS.md`):
-- ⚠️ **Partial validation** - 4/8 tests passing (50% success)
-- ✅ **Tool improvement** - Extended `inspect-rom.pl` to show 64 bytes of code
-- ✅ **Lesson learned** - Always try clean rebuild before deep debugging (stale artifacts cause mysterious failures)
-- ✅ **jsnes validated** - Controller emulation works correctly, isolated bug to ROM logic
-- ❌ **Controller read bug** - LSR/ROL bit shifting has errors (A=0x00 instead of 0x80, B=0x04 instead of 0x40)
-- 🕐 **Timeboxed** - 3 debugging attempts, gained insights, moving on to unblock other subsystems
+**toy4 findings** (see `toys/toy4_nmi/LEARNINGS.md`):
+- ✅ **Full validation** - 18/18 tests passing (100% success, 45 min)
+- ✅ **4-frame init offset discovered** - First NMI fires at frame 4 (not frame 1)
+- ✅ **Pattern 2 (NMI only) validated** - All work in NMI, main loop idles
+- ✅ **Integration successful** - toy1 (OAM DMA) + toy2 (PPU init) + toy4 (NMI) compose cleanly
+- ✅ **jsnes NMI emulation accurate** - Deterministic across 260 frames
+- ✅ **Test structure refined** - Split into t/*.t files for independent scenarios
+- ✅ **Production-ready patterns extracted** - Complete init + NMI handler documented
 
-**toy4 candidates:**
-1. **toy4_nmi** - NMI handler + OAM DMA integration (vblank interrupt, sprite updates)
-2. **toy4_full_init** - Combine toy1 + toy2 patterns (integration test)
-3. Return to **toy3_controller** debug session (fix bit shifting bug)
+**Next toy candidates:**
+1. **toy5_scrolling** - Background scrolling (nametables, PPUSCROLL, seam hiding)
+2. **toy6_audio** - APU channels + FamiTone2 integration (music/SFX)
+3. **Return to toy3_controller** - Fix LSR/ROL bit shifting bug (unfinished business)
+4. **toy5_vram_buffer** - VRAM update buffer (safe PPU writes during vblank)
 
-**Recommended:** toy4_nmi (critical subsystem, unblocks sprite animation work)
+**Test status (run-all-tests.pl):**
+- toy0: 6/6 ✓
+- toy1: 20/20 ✓
+- toy2: 5/5 ✓
+- toy3: 4/8 ⚠️ (partial - known controller bug)
+- toy4: 18/18 ✓
+- **Total: 53/57 passing (93%)**
 
-**Pattern validated (3x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Update ORIENTATION → Move forward
+**Pattern validated (4x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Update ORIENTATION → Move forward
 
 ---
 
@@ -141,12 +150,13 @@
 - `toys/toy1_sprite_dma/` - ✅ OAM DMA validation (20/20 tests passing, 45 min)
 - `toys/toy2_ppu_init/` - ✅ PPU 2-vblank warmup (5/5 tests passing, 30 min)
 - `toys/toy3_controller/` - ⚠️ Controller input (4/8 tests passing, partial - LSR/ROL bug)
+- `toys/toy4_nmi/` - ✅ NMI handler + integration (18/18 tests passing, 45 min)
 - `toys/debug/0_survey/` - ✅ Emulator research (LEARNINGS.md)
 - `toys/debug/1_jsnes_wrapper/` - ✅ jsnes headless wrapper (16 tests passing)
 - `toys/debug/2_tetanes/` - ✅ TetaNES investigation (rejected - API limitations)
 
 ### To Be Created (Next Session)
-- `toys/toy4_nmi/` - NMI handler + OAM DMA integration
+- Next toy (scrolling, audio, VRAM buffer, or return to controller debug)
 - `src/` - Main game assembly (after toy prototyping)
 - `SPEC.md` - Game design (after toy validation)
 
