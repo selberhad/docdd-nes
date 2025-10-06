@@ -6,7 +6,7 @@
 
 ## Current State (October 2025)
 
-**Phase**: 🚀 **NES::Test Phase 1 Complete → Ready to Build toy1**
+**Phase**: 🎮 **First Hardware Toy Complete → toy2 Next**
 
 ### Progress Summary
 - ✅ **52 wiki pages studied** (all core priorities complete)
@@ -16,7 +16,7 @@
 - ✅ **Debug infrastructure surveyed** (jsnes chosen for Phase 1 automation)
 - ✅ **Testing strategy defined** (`TESTING.md` - LLM-driven play-spec workflow)
 - ✅ **NES::Test Phase 1 implemented** (Perl DSL + persistent jsnes harness)
-- ✅ **toy1_sprite_dma planned** (SPEC, PLAN, LEARNINGS ready)
+- ✅ **toy1_sprite_dma complete** (OAM DMA validated, 20/20 tests passing, 45 min actual vs 2-3hr estimated)
 
 ### What We Know
 **Complete NES architecture understanding documented in `learnings/`**:
@@ -40,26 +40,22 @@
 
 ---
 
-## Next Step: Build toy1_sprite_dma
+## Next Step: Build toy2_ppu_init
 
-**→ See `toys/toy1_sprite_dma/PLAN.md` for detailed TDD steps**
+**toy1 findings** (see `toys/toy1_sprite_dma/LEARNINGS.md`):
+- ✅ OAM DMA works perfectly (jsnes accurate)
+- ✅ Frame 1+ for observable state (critical timing discovery)
+- ✅ NES::Test Phase 1 validated for hardware toys
+- ✅ TDD workflow efficient (45 min vs 2-3hr estimate)
 
-**All infrastructure ready!** ✅ NES::Test Phase 1, build pipeline, testing strategy
+**Next session: toy2_ppu_init**
+1. Scaffold with `tools/new-toy.pl ppu_init`
+2. Write LEARNINGS.md (PPU warmup, vblank detection)
+3. Write SPEC.md (minimal PPU init sequence)
+4. Build with TDD (play-spec → assembly)
+5. Validate PPU timing behavior
 
-Next session tasks (from toy1 PLAN.md):
-1. **Copy build infrastructure** from toy0 (Makefile, nes.cfg)
-2. **Write failing play-spec.pl** (Red - OAM DMA assertions)
-3. **Implement assembly incrementally** (Green - shadow OAM → DMA trigger)
-4. **Document findings** in LEARNINGS.md
-5. **Extract patterns** for future toys
-
-**Estimated time**: 2-3 hours (first hardware validation toy, TDD workflow)
-
-**What toy1 validates** (see `toys/toy1_sprite_dma/SPEC.md`):
-- OAM DMA mechanism ($4014 trigger)
-- Shadow OAM ($0200) → PPU OAM transfer
-- NES::Test Phase 1 for hardware validation
-- 4 test sprites with known positions/attributes
+**Pattern established:** LEARNINGS → SPEC → PLAN → TDD → Document findings
 
 ---
 
