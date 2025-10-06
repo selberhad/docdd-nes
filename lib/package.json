@@ -1,0 +1,10 @@
+{
+  "name": "nes-test-harness",
+  "version": "0.1.0",
+  "description": "NES test harness using jsnes for automated ROM validation",
+  "main": "nes-test-harness.js",
+  "dependencies": {
+    "jsnes": "^1.2.1"
+  },
+  "private": true
+}
