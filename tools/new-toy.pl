@@ -6,18 +6,29 @@ die "Usage: $0 <toy_name>\n" unless @ARGV == 1;
 my $name = shift;
 $name =~ s/^toy\d+_//; # Strip toy prefix if provided
 
+# Detect if we're in repo root or toys/ directory
+use Cwd;
+my $cwd = getcwd();
+my $toys_dir = ($cwd =~ m{/toys$}) ? '.' : 'toys';
+
+# Create toys dir if running from root and it doesn't exist
+if ($toys_dir eq 'toys' && !-d 'toys') {
+    mkdir 'toys' or die "Failed to create toys/: $!\n";
+}
+
 # Find highest toyN number
 my $max = -1;
-opendir(my $dh, 'toys') or mkdir 'toys';
-while (my $entry = readdir($dh)) {
-    if ($entry =~ /^toy(\d+)_/) {
-        $max = $1 if $1 > $max;
+if (opendir(my $dh, $toys_dir)) {
+    while (my $entry = readdir($dh)) {
+        if ($entry =~ /^toy(\d+)_/) {
+            $max = $1 if $1 > $max;
+        }
     }
+    closedir $dh;
 }
-closedir $dh;
 
 my $num = $max + 1;
-my $dir = "toys/toy${num}_${name}";
+my $dir = "$toys_dir/toy${num}_${name}";
 mkdir $dir or die "Failed to create $dir: $!\n";
 
 # Template generator
