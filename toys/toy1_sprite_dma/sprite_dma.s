@@ -15,7 +15,17 @@ reset:
     SEI
     CLD
 
-    ; TODO: Initialize shadow OAM
+    ; Initialize sprite 0 in shadow OAM ($0200-$0203)
+    LDA #100        ; Y position
+    STA $0200
+    LDA #$42        ; Tile number
+    STA $0201
+    LDA #$01        ; Attributes
+    STA $0202
+    LDA #80         ; X position
+    STA $0203
+
+    ; TODO: Add sprites 1-3
     ; TODO: Trigger DMA
 
 loop:
