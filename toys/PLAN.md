@@ -18,8 +18,11 @@
 **Status**:
 - ✅ toy0_toolchain: Build pipeline validated (Perl tests, Mesen2 boots)
 - ✅ toys/debug/0-2: Emulator survey complete (jsnes chosen for Phase 1)
-- 📋 TESTING.md: Complete testing strategy defined (14 questions answered)
-- ⏭️ Next: Implement `NES::Test` Phase 1, build toy1 with automated validation
+- ✅ TESTING.md: Complete testing strategy defined (14 questions answered)
+- ✅ NES::Test Phase 1: Implemented (lib/NES/Test.pm, 16 assertions, persistent jsnes harness)
+- ✅ toy1_sprite_dma: Complete (20/20 tests passing, 45 min, OAM DMA validated)
+- ✅ toy2_ppu_init: Complete (5/5 tests passing, 30 min, PPU warmup validated)
+- ⏭️ Next: toy3 (controller input OR full init integration)
 
 ---
 
@@ -51,39 +54,58 @@
 
 ### Phase 1: Core Subsystems (jsnes validation)
 
-**toy1_sprite_dma** - OAM DMA and sprite display
+**toy1_sprite_dma** - OAM DMA and sprite display ✅
+- **Status**: Complete (20/20 tests passing, 45 min actual vs 2-3hr estimated)
 - **Focus**: Sprite DMA timing, OAM update, sprite rendering
-- **Play-spec** (Phase 1):
+- **Key findings**:
+  - OAM DMA works perfectly (writing #$02 to $4014 triggers shadow OAM → PPU OAM)
+  - jsnes accurately emulates DMA (all 4 test sprites transferred correctly)
+  - Frame 1+ for observable state (critical discovery - frame 0 mid-reset)
+  - NES::Test Phase 1 validated for hardware validation
+- **Play-spec** (actual):
   ```perl
-  at_frame 0 => sub {
-      assert_ram 0x0200 => 0;  # OAM empty
-  };
-  # ... DMA execution
   at_frame 1 => sub {
-      assert_ram 0x0200 => { $_ != 0 };  # OAM populated
-      assert_sprite 0, y => 100;  # sprite visible
+      assert_ram 0x0200 => 100;  # Shadow OAM
+  };
+  at_frame 2 => sub {
+      assert_sprite 0, y => 100, tile => 0x42, attr => 0x01, x => 80;
+      assert_sprite 1, y => 110, tile => 0x43, attr => 0x02, x => 90;
+      # ... sprites 2-3
   };
   ```
 - **Phase 2 upgrade**: Add `assert_routine_cycles 'oam_dma' => 513`
-- **Phase 3 validation**: Visual sprite display in Mesen2
-- **Questions answered**: Q1.4 (basic), Q6.2 (partial)
-- **Updates**: `learnings/sprite_techniques.md`
+- **Phase 3 validation**: Visual sprite display in Mesen2 (deferred)
+- **Questions answered**: Q1.4 (basic - state inspection works), Q6.2 (partial)
+- **Learnings**: `toys/toy1_sprite_dma/LEARNINGS.md`
 
-**toy2_ppu_init** - PPU initialization and vblank
+**toy2_ppu_init** - PPU initialization and vblank ✅
+- **Status**: Complete (5/5 tests passing, 30 min actual vs 1-2hr estimated)
 - **Focus**: PPU warmup, vblank detection, rendering enable
-- **Play-spec** (Phase 1):
+- **Key findings**:
+  - PPU 2-vblank warmup works exactly as documented
+  - BIT $2002 / BPL pattern reliably detects vblank transitions
+  - Frame timing: Frame 1 (reset), Frame 2 (1st vblank), Frame 3 (2nd vblank, ready)
+  - **CRITICAL**: NES RAM NOT zero-initialized! (starts at 0xFF, must explicitly init vars)
+  - jsnes PPUSTATUS bit 7 accurate, vblank flag toggles correctly
+  - Standard init pattern established for all future toys
+- **Play-spec** (actual):
   ```perl
-  at_frame 0 => sub {
-      assert_ppu_status 0x00;  # pre-init
+  at_frame 1 => sub {
+      assert_ppu_ctrl 0x00;
+      assert_ppu_mask 0x00;
+      assert_ram 0x0010 => 0x00;  # Marker initialized
   };
   at_frame 2 => sub {
-      assert_ppu_status 0x80;  # vblank flag set
+      assert_ram 0x0010 => 0x01;  # First vblank complete
+  };
+  at_frame 3 => sub {
+      assert_ram 0x0010 => 0x02;  # Second vblank complete, PPU ready
   };
   ```
-- **Phase 2 upgrade**: Measure vblank wait cycles
-- **Phase 3 validation**: Rendering stability in Mesen2
-- **Questions answered**: Q1.4 (partial), Q2.2 (partial)
-- **Updates**: `learnings/wiki_architecture.md` PPU section
+- **Phase 2 upgrade**: Measure 29,658 cycle warmup timing
+- **Phase 3 validation**: Rendering stability in Mesen2 (deferred)
+- **Questions answered**: Q1.4 (partial - frame timing), RAM init lesson learned
+- **Learnings**: `toys/toy2_ppu_init/LEARNINGS.md`
 
 **toy3_controller** - Controller input reading
 - **Focus**: 3-step controller read, button state validation
@@ -444,16 +466,30 @@
 
 ## Next Steps
 
-**Immediate (this session):**
-1. Delete old PLAN.md and PLAN_DEBUG.md
-2. Rename PLAN_V2.md → PLAN.md
-3. Update ORIENTATION.md to reference new plan
+**Completed:**
+- ✅ NES::Test Phase 1 implemented (lib/NES/Test.pm)
+- ✅ toy0 retrofitted with play-spec (validation)
+- ✅ toy1_sprite_dma built with automated validation (20/20 tests)
+- ✅ toy2_ppu_init built with automated validation (5/5 tests)
 
-**Next session:**
-1. Implement `NES::Test` Phase 1 module
-2. Create toy0 play-spec (validate DSL)
-3. Build toy1_sprite_dma with automated validation
+**Immediate (next session):**
+1. **Choose toy3 direction:**
+   - **Option A**: toy3_controller (new subsystem - controller input)
+   - **Option B**: toy3_full_init (integration - combine toy1 + toy2)
+   - **Option C**: toy4_nmi (NMI handler, vblank interrupt)
+2. Build chosen toy with TDD workflow (LEARNINGS → SPEC → PLAN → implement)
+3. Continue validating NES::Test Phase 1 capabilities
+
+**Medium-term:**
+- Complete toy3-5 (controller, graphics pipeline, attributes)
+- Evaluate Phase 1 limitations (which toys need Phase 2?)
+- Decide Phase 2 emulator backend (cycle counting + frame buffer)
+
+**Long-term:**
+- Implement Phase 2 DSL when limits hit
+- Build remaining toys (6-16)
+- Start game prototype with validated patterns
 
 ---
 
-**Status: Ready to implement.** Testing strategy complete, toy sequence updated, progressive automation defined.
+**Status: Phase 1 progressing well.** 2 hardware toys complete, TDD workflow validated, jsnes accuracy confirmed.
