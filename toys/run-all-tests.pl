@@ -15,7 +15,22 @@ while (my $entry = readdir($dh)) {
     next unless $entry =~ /^toy\d+_/;
     next unless -d "$toys_dir/$entry";
 
-    my $spec = "$toys_dir/$entry/play-spec.pl";
+    my $toy_dir = "$toys_dir/$entry";
+
+    # Check for t/*.t files (new pattern)
+    if (-d "$toy_dir/t") {
+        opendir(my $t_dh, "$toy_dir/t") or next;
+        my @t_files = grep { /\.t$/ && -f "$toy_dir/t/$_" } readdir($t_dh);
+        closedir $t_dh;
+
+        if (@t_files) {
+            push @test_files, map { "$toy_dir/t/$_" } sort @t_files;
+            next;
+        }
+    }
+
+    # Fallback to play-spec.pl (old pattern)
+    my $spec = "$toy_dir/play-spec.pl";
     if (-f $spec) {
         push @test_files, $spec;
     } else {
