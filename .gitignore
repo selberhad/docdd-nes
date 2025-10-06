@@ -175,4 +175,7 @@ recordings/
 # Exclude large asset sources (if committed separately)
 # assets/source/
 
+# Local development aids (not part of project)
+NEXT_SESSION.md
+
 # Future: Exclude specific tool outputs as needed
