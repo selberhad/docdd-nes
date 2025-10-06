@@ -110,8 +110,19 @@
 - `5_open_questions.md` - **36 open questions + 7 answered** (roadmap for practical work)
 
 ### Utilities
+
+**Scaffolding:**
+- `tools/new-toy.pl <name>` - Scaffold new toy directory (SPEC, PLAN, README, LEARNINGS)
+- `tools/new-rom.pl <name> [dir]` - Scaffold ROM build (Makefile, nes.cfg, .s skeleton, play-spec.pl)
+
+**Testing:**
+- `toys/run-all-tests.pl` - Run all toy regression tests (uses `prove`)
+
+**Documentation:**
 - `tools/fetch-wiki.sh` - Cache NESdev wiki pages to `.webcache/`
 - `tools/add-attribution.pl` - Add wiki attribution to learning docs
+
+**Setup:**
 - `tools/setup-brew-deps.sh` - Install Homebrew toolchain dependencies (cc65, sdl2)
 - `.webcache/` - Cached wiki pages (52 pages, gitignored)
 
