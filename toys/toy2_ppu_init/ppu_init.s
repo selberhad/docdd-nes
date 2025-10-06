@@ -19,8 +19,14 @@ reset:
     LDX #$FF
     TXS
 
-    ; TODO: Disable PPU
-    ; TODO: Clear vblank flag
+    ; Disable PPU
+    INX                 ; X = 0
+    STX $2000           ; PPUCTRL = 0 (NMI disabled)
+    STX $2001           ; PPUMASK = 0 (rendering disabled)
+
+    ; Clear vblank flag (unknown state at power-on)
+    BIT $2002
+
     ; TODO: Wait first vblank
     ; TODO: Wait second vblank
 
