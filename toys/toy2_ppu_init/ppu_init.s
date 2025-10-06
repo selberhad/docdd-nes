@@ -24,10 +24,21 @@ reset:
     STX $2000           ; PPUCTRL = 0 (NMI disabled)
     STX $2001           ; PPUMASK = 0 (rendering disabled)
 
+    ; Initialize marker byte
+    STX $0010           ; Marker = 0 (X still = 0)
+
     ; Clear vblank flag (unknown state at power-on)
     BIT $2002
 
-    ; TODO: Wait first vblank
+    ; Wait for first vblank
+vblankwait1:
+    BIT $2002
+    BPL vblankwait1     ; Loop while bit 7 = 0
+
+    ; Set marker 1 (proves first vblank reached)
+    LDA #$01
+    STA $0010
+
     ; TODO: Wait second vblank
 
 loop:
