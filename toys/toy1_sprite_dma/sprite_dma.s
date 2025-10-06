@@ -25,7 +25,36 @@ reset:
     LDA #80         ; X position
     STA $0203
 
-    ; TODO: Add sprites 1-3
+    ; Sprite 1
+    LDA #110
+    STA $0204
+    LDA #$43
+    STA $0205
+    LDA #$02
+    STA $0206
+    LDA #90
+    STA $0207
+
+    ; Sprite 2
+    LDA #120
+    STA $0208
+    LDA #$44
+    STA $0209
+    LDA #$03
+    STA $020A
+    LDA #100
+    STA $020B
+
+    ; Sprite 3
+    LDA #130
+    STA $020C
+    LDA #$45
+    STA $020D
+    LDA #$00
+    STA $020E
+    LDA #110
+    STA $020F
+
     ; TODO: Trigger DMA
 
 loop:
