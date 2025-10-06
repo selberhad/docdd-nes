@@ -6,7 +6,7 @@
 
 ## Current State (October 2025)
 
-**Phase**: 🎮 **First Hardware Toy Complete → toy2 Next**
+**Phase**: 🎮 **Two Hardware Toys Complete → toy3 Next**
 
 ### Progress Summary
 - ✅ **52 wiki pages studied** (all core priorities complete)
@@ -17,6 +17,7 @@
 - ✅ **Testing strategy defined** (`TESTING.md` - LLM-driven play-spec workflow)
 - ✅ **NES::Test Phase 1 implemented** (Perl DSL + persistent jsnes harness)
 - ✅ **toy1_sprite_dma complete** (OAM DMA validated, 20/20 tests passing, 45 min actual vs 2-3hr estimated)
+- ✅ **toy2_ppu_init complete** (2-vblank warmup validated, 5/5 tests passing, 30 min actual vs 1-2hr estimated)
 
 ### What We Know
 **Complete NES architecture understanding documented in `learnings/`**:
@@ -40,22 +41,22 @@
 
 ---
 
-## Next Step: Build toy2_ppu_init
+## Next Step: Choose toy3
 
-**toy1 findings** (see `toys/toy1_sprite_dma/LEARNINGS.md`):
-- ✅ OAM DMA works perfectly (jsnes accurate)
-- ✅ Frame 1+ for observable state (critical timing discovery)
-- ✅ NES::Test Phase 1 validated for hardware toys
-- ✅ TDD workflow efficient (45 min vs 2-3hr estimate)
+**toy2 findings** (see `toys/toy2_ppu_init/LEARNINGS.md`):
+- ✅ PPU 2-vblank warmup works perfectly (jsnes accurate)
+- ✅ Frame timing confirmed (frame 1→2→3 progression)
+- ✅ **Critical lesson**: NES RAM not zero-initialized (must explicitly init variables!)
+- ✅ Standard init pattern established for all future toys
 
-**Next session: toy2_ppu_init**
-1. Scaffold with `tools/new-toy.pl ppu_init`
-2. Write LEARNINGS.md (PPU warmup, vblank detection)
-3. Write SPEC.md (minimal PPU init sequence)
-4. Build with TDD (play-spec → assembly)
-5. Validate PPU timing behavior
+**toy3 candidates:**
+1. **toy3_controller** - Controller input (3-step read sequence, new subsystem)
+2. **toy3_full_init** - Combine toy1 + toy2 (integration: full init + sprite DMA)
+3. **toy4_nmi** - NMI handler (vblank interrupt, OAM DMA in NMI)
 
-**Pattern established:** LEARNINGS → SPEC → PLAN → TDD → Document findings
+**Recommended:** Controller input (covers next critical subsystem) OR Full init (integrates learned patterns)
+
+**Pattern validated (2x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Update ORIENTATION
 
 ---
 
