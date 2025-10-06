@@ -200,49 +200,108 @@ reset:
 
 ## Findings
 
-**Duration**: TBD | **Status**: Planning | **Result**: TBD
+**Duration**: 30 minutes | **Status**: Complete | **Result**: All 5 tests passing
 
 ### ✅ Validated
-*To be filled during implementation*
+
+**PPU 2-vblank warmup works exactly as documented:**
+- BIT $2002 / BPL pattern reliably detects vblank transitions
+- First vblank completes by frame 2
+- Second vblank completes by frame 3
+- jsnes accurately emulates PPUSTATUS bit 7 (vblank flag)
+
+**Frame timing (confirmed):**
+- Frame 1: Init code executing, marker = 0 (reset in progress)
+- Frame 2: First vblank complete, marker = 1
+- Frame 3: Second vblank complete, marker = 2 (PPU ready)
+
+**jsnes PPU accuracy:**
+- PPUCTRL/PPUMASK correctly initialize to $00
+- PPUSTATUS bit 7 toggles correctly during vblank
+- Vblank wait loops complete without hanging
+- Deterministic (same ROM → same state every run)
+
+**NES::Test Phase 1 validation:**
+- `assert_ppu_ctrl`, `assert_ppu_mask` work correctly
+- Frame-by-frame marker byte testing validated
+- No issues with PPU register assertions
 
 ### ⚠️ Challenged
-*To be filled during implementation*
+
+**RAM initialization assumption:**
+- Initially assumed RAM starts at 0 (incorrect!)
+- NES does NOT initialize RAM on power-on (undefined values, often 0xFF)
+- Must explicitly initialize marker byte to 0 before first vblank
+- **Lesson**: Always initialize RAM variables explicitly
 
 ### ❌ Failed
-*To be filled during implementation*
+
+*None - all planned tests passed*
 
 ### 🌀 Uncertain
-*To be filled during implementation*
+
+**29,658 cycle warmup timing:**
+- Phase 1 cannot measure cycle counts (jsnes limitation)
+- Cannot verify "writes ignored before warmup" behavior
+- Frame-level timing confirmed, but cycle-level unvalidated
+- **Phase 2 upgrade needed** for cycle counting
+
+**jsnes vs real hardware:**
+- No real hardware validation yet (deferred to Phase 3)
+- Assumed jsnes PPU timing is accurate
+- May discover differences in Mesen2 or real NES
 
 ---
 
 ## Patterns for Production
 
-*To be filled with working code patterns after validation*
+**Standard PPU init sequence (VALIDATED - use in all future toys):**
 
-**Expected patterns:**
 ```asm
-; Standard PPU init sequence (to be validated):
 reset:
-    sei              ; Disable IRQs
-    cld              ; Clear decimal mode
-    ldx #$ff
-    txs              ; Initialize stack
-    inx              ; X = 0
-    stx $2000        ; Disable NMI
-    stx $2001        ; Disable rendering
+    SEI                 ; Disable IRQs
+    CLD                 ; Clear decimal mode
 
-    bit $2002        ; Clear vblank flag
+    ; Initialize stack
+    LDX #$FF
+    TXS
 
-@vblankwait1:
-    bit $2002        ; Read PPUSTATUS
-    bpl @vblankwait1 ; Loop while bit 7 = 0
+    ; Disable PPU
+    INX                 ; X = 0
+    STX $2000           ; PPUCTRL = 0 (NMI disabled)
+    STX $2001           ; PPUMASK = 0 (rendering disabled)
 
-    ; Clear RAM here (if needed)
+    ; Initialize RAM variables (NES does NOT zero RAM!)
+    ; Example: STX $0010 for marker byte
 
-@vblankwait2:
-    bit $2002
-    bpl @vblankwait2
+    ; Clear vblank flag (unknown state at power-on)
+    BIT $2002
+
+    ; Wait for first vblank (~27,384 cycles)
+vblankwait1:
+    BIT $2002
+    BPL vblankwait1     ; Loop while bit 7 = 0
+
+    ; Clear RAM here (between vblank waits, ~29,658 cycles available)
+    ; Example: Clear 2KB with indexed loop
+
+    ; Wait for second vblank (ensures PPU fully stabilized)
+vblankwait2:
+    BIT $2002
+    BPL vblankwait2     ; Loop while bit 7 = 0
 
     ; PPU now ready for configuration
+    ; Safe to write PPUCTRL, PPUMASK, PPUSCROLL, PPUADDR
 ```
+
+**Key points:**
+- **Always initialize RAM variables** - NES doesn't zero RAM on power-on
+- **Clear vblank flag first** - State unknown at reset, read $2002 before loop
+- **Two vblank waits required** - First stabilizes PPU, second ensures ready
+- **BIT $2002 / BPL pattern** - Standard 6502 polling idiom (bit 7 → N flag)
+- **Use time between vblanks** - ~29,658 cycles to clear RAM (optional but recommended)
+
+**Reuse in future toys:**
+- Copy this init sequence to all future toy ROMs
+- Modify RAM clearing section as needed
+- PPU configuration after second vblank
