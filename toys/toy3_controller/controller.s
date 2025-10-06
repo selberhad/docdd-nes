@@ -19,12 +19,31 @@ reset:
     LDX #$FF
     TXS
 
-    ; TODO: Disable PPU
-    ; TODO: Wait 2 vblanks
-    ; TODO: Read controller
-    ; TODO: Store button state
+    ; Disable PPU
+    INX                 ; X = 0
+    STX $2000           ; PPUCTRL = 0 (NMI disabled)
+    STX $2001           ; PPUMASK = 0 (rendering disabled)
+
+    ; Initialize button state (NES doesn't zero RAM!)
+    STX $0010           ; buttons = 0
+
+    ; Clear vblank flag
+    BIT $2002
+
+    ; Wait first vblank
+vblankwait1:
+    BIT $2002
+    BPL vblankwait1
+
+    ; Wait second vblank
+vblankwait2:
+    BIT $2002
+    BPL vblankwait2
+
+    ; PPU ready, fall through to main loop
 
 loop:
+    ; TODO: Read controller
     JMP loop
 
 nmi_handler:
