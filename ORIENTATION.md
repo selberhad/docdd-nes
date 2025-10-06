@@ -117,6 +117,7 @@
 
 **Testing:**
 - `toys/run-all-tests.pl` - Run all toy regression tests (uses `prove`)
+- `tools/inspect-rom.pl <rom.nes>` - Decode iNES header and show reset vectors
 
 **Documentation:**
 - `tools/fetch-wiki.sh` - Cache NESdev wiki pages to `.webcache/`
