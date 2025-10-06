@@ -66,6 +66,13 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 
 ## Development Best Practices
 
+**CRITICAL: Full Autonomy Required**
+- **NEVER ask the user to test ROMs manually** (e.g., "test in Mesen2", "open the emulator")
+- **You are a scientist on another planet** - figure everything out autonomously
+- **Only automated testing counts** - if the test harness can't verify it, find another way
+- **Goal**: LLM can develop NES games end-to-end without human intervention
+- If blocked: Create simpler tests, build new tools, investigate deeper - don't delegate to human
+
 **CRITICAL: Document Constraints**
 - NES has extreme limitations (2KB RAM, 256 bytes stack, cycle-counted everything)
 - When hitting a constraint, document it in CONSTRAINTS.md with workaround
@@ -77,6 +84,7 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 - Build test ROMs to validate understanding BEFORE integrating into main game
 - One test ROM per subsystem (controller_test.nes, sprite_dma_test.nes, etc.)
 - Document test results in LEARNINGS.md
+- **All testing must be automated** - use test harness, build tools, write scripts
 
 **CRITICAL: Memory Map Everything**
 - Update CODE_MAP.md with memory layout decisions
