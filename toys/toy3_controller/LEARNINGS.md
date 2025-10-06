@@ -215,77 +215,92 @@ a_not_pressed:
 
 ## Findings
 
-**Duration**: TBD (active debugging) | **Status**: Blocked - ROM execution failure | **Result**: 3/8 tests passing, ROM not executing
+**Duration**: ~45 minutes (debugging session) | **Status**: INCOMPLETE - Moving to toy4 | **Result**: 4/8 tests passing, controller reading has logic bug
 
 ### ✅ Validated
 
-**Test harness improvements:**
-- Added verbosity system (0=off, 1=info, 2=debug) via `DEBUG=1` env var or `set_verbosity(level)` API
-- Debug logging shows jsnes controller state DOES update correctly (0x40 → 0x41 on button press)
+**Tool improvements:**
+- **Extended inspect-rom.pl** - Now shows 64 bytes of code at reset vector (was 16)
+- Added address labels ($8000, $8010, etc.) for easier reading
+- Binary comparison reveals code structure differences between toys
+- **Committed**: Updated inspect-rom.pl to show 4 rows of 16 bytes
+
+**ROM execution fixed:**
+- **Initial problem**: ROM appeared valid but jsnes wouldn't execute it
+- **Solution**: Clean rebuild (`make clean && make`) fixed execution issue
+- **Root cause**: Unknown (possibly stale build artifact)
+- **Lesson**: Always try clean rebuild before deep debugging
+
+**Test harness works correctly:**
+- jsnes controller emulation DOES work (buttons press/release correctly)
+- Debug output shows state changes: `[40,40,40,40,40,40,40,40]` → `[41,40,40,40,40,40,40,40]` on button A
+- Harness button validation bug fixed (commit e8d04dc)
 - Foundation tests still pass: toy1 (20/20), toy2 (5/5)
 
-**jsnes controller emulation works correctly:**
-- Button A press: state changes from `[40,40,40,40,40,40,40,40]` to `[41,40,40,40,40,40,40,40]` ✓
-- Button Up press: state changes to `[40,40,40,40,41,40,40,40]` ✓
-- jsnes.Controller implementation confirmed working
-
-**Harness button validation bug fixed:**
-- **Bug**: `if (!BUTTONS[buttonName])` failed for button A (value 0)
-- **Cause**: jsnes.Controller.BUTTON_A = 0, so `!BUTTONS['A']` → `!0` → true (treated as missing)
-- **Fix**: Changed to `if (!(buttonName in BUTTONS))` to properly check key existence
-- **Commit**: e8d04dc
+**Partial controller validation:**
+- Some buttons work correctly: START (0x10), UP+A combo (0x88), no-button baseline (0x00)
+- Test pattern: 4/8 tests passing
 
 ### ⚠️ Challenged
 
-**CRITICAL: ROM execution failure in jsnes:**
-- CPU PC = 0x0000 (should be executing from reset vector)
-- All RAM undefined/inaccessible
-- Debug markers never written (ROM init sequence not running)
-- Loop counter never increments (main loop not executing)
-- **But**: toy1 and toy2 ROMs still execute correctly in same harness
+**Controller reading logic has bugs:**
+- **Pattern**: Some buttons work, others fail in specific ways
+- **Working**: START (0x10), UP+A combo (0x88), no-button (0x00)
+- **Failing**:
+  - A button: expect 0x80, got 0x00 (bit 7 not set)
+  - B button: expect 0x40, got 0x04 (wrong bit position)
+  - UP alone: expect 0x08, got 0x02 (wrong bit position)
+  - A+B combo: expect 0xC0, got 0x03 (both wrong)
 
-**Evidence:**
+**Evidence from debug output:**
 ```
-# Frame 0:
-#   CPU PC = 0x0000
-#   Debug marker (0x0012) = undef (expected 5)
-#   Loop counter (0x0011) = undef (should increment)
-#   RAM[0x0010] = 0x00 (button byte, never written)
+# Button A pressed:
+[DEBUG] buttonDown: controller=1, button=A (index=0)
+[DEBUG] getState: frame=2, ctrl1=[41,40,40,40,40,40,40,40]  # jsnes works!
+not ok 2 - RAM[0x0010] = 0x80
+#          got: '0'         # ROM reads wrong value
+#     expected: '128'
+
+# Button B pressed:
+[DEBUG] buttonDown: controller=1, button=B (index=1)
+[DEBUG] getState: frame=3, ctrl1=[40,41,40,40,40,40,40,40]  # jsnes works!
+not ok 3 - RAM[0x0010] = 0x40
+#          got: '4'         # Wrong bit (bit 2 instead of bit 6)
+#     expected: '64'
 ```
 
-**This explains why buttons "don't work":**
-- jsnes controller state DOES change (we see it in debug logs)
-- But ROM never reads $4016 (because ROM isn't running at all)
-- Tests fail because ROM never writes button byte to RAM
+**Hypothesis:**
+- Controller read loop may have off-by-one error
+- LSR/ROL bit shifting logic may be incorrect
+- Button order may be reversed or rotated
 
-### ❌ Failed
+### ❌ Failed (Timeboxed - Moving On)
 
-**ROM loading/execution:**
-- controller.nes does not execute in jsnes
-- Same build infrastructure as toy1/toy2 (which DO work)
-- Same harness (verified with toy1/toy2 regression tests)
-- Issue is specific to toy3's ROM binary
+**Complete controller validation:**
+- 4/8 tests passing (50% success rate)
+- Single buttons A, B, UP have bit position errors
+- Controller reading logic needs debugging (likely LSR/ROL issue)
 
-### 🌀 Uncertain
+**Decision: Moving to toy4_nmi**
+- Timeboxed to 3 debugging attempts (completed)
+- Gained valuable insights (inspect-rom.pl improvements, clean rebuild lesson)
+- Controller reading is a known pattern - can return to debug later
+- Unblocks progress on other critical subsystems (NMI, sprite DMA integration)
 
-**Why doesn't toy3 ROM execute?**
-- Same build process as toy1/toy2 (Makefile, nes.cfg, ca65/ld65)
-- ROM file exists and builds without errors
-- iNES header appears correct (visual inspection of controller.nes)
-- jsnes loads ROM without error messages
+### 🌀 Open Questions (For Later)
 
-**Hypotheses:**
-1. **ROM corruption during build** - binary differs from toy1/toy2 in a way jsnes rejects
-2. **iNES header mismatch** - mapper/mirroring/size incorrect
-3. **Build artifacts** - debug symbols or linker output affecting binary
-4. **jsnes loadROM issue** - ROM size validation, header parsing failure
+**What's wrong with the controller read loop?**
+- Why does START (0x10) work but A (0x80) returns 0x00?
+- Why does B button give 0x04 instead of 0x40? (bit 2 vs bit 6)
+- Is the LSR/ROL order wrong? Off-by-one in loop counter?
+- Is button order reversed (reading right-to-left instead of left-to-right)?
 
-**Next steps (RTFM first):**
-1. **Compare ROM headers**: `hexdump -C controller.nes | head` vs toy1/toy2
-2. **Validate iNES spec**: Check byte-by-byte header (16 bytes) against nesdev wiki
-3. **Check ROM size**: Verify PRG-ROM and CHR-ROM sizes match header
-4. **Test in Mesen2**: Does ROM boot outside jsnes? (validates ROM itself)
-5. **Minimal reproduction**: Simplify controller.s to bare minimum (just infinite loop)
+**Next steps (when revisiting):**
+1. Read controller.s read_controller1 subroutine closely
+2. Check loop counter initialization (LDX #$08 correct?)
+3. Verify LSR/ROL order (should be LSR $4016, ROL target)
+4. Test minimal controller read in isolation (single button, print each bit)
+5. Compare working toy1/toy2 code if they have controller reads
 
 ---
 
@@ -351,4 +366,17 @@ read_loop:
    if (!(buttonName in BUTTONS)) { ... }
    ```
 
-**Status**: Pattern works in principle, but jsnes controller emulation needs debugging before full validation possible.
+**Status**: PARTIAL VALIDATION ONLY (4/8 tests passing)
+- ✅ jsnes controller emulation works correctly
+- ✅ NES::Test DSL works for button presses
+- ✅ Frame timing works (button state readable next frame)
+- ❌ Controller read loop has bit position bugs (needs debugging)
+
+**Lessons learned:**
+1. **Clean rebuild first** - Stale build artifacts can cause mysterious execution failures
+2. **inspect-rom.pl is invaluable** - Extended to 64 bytes for better code comparison
+3. **Debug output critical** - Proved jsnes works, isolated bug to ROM logic
+4. **Timeboxing works** - 3 attempts gave progress, avoided rabbit hole
+5. **Some validation > no validation** - 50% passing still proves infrastructure works
+
+**To revisit later:** Debug controller read loop LSR/ROL logic (likely off-by-one or bit order issue).

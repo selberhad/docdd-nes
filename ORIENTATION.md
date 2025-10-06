@@ -6,7 +6,7 @@
 
 ## Current State (October 2025)
 
-**Phase**: 🎮 **Two Hardware Toys Complete → toy3 Next**
+**Phase**: 🎮 **Three Toys Complete → toy4_nmi Next**
 
 ### Progress Summary
 - ✅ **52 wiki pages studied** (all core priorities complete)
@@ -16,8 +16,9 @@
 - ✅ **Debug infrastructure surveyed** (jsnes chosen for Phase 1 automation)
 - ✅ **Testing strategy defined** (`TESTING.md` - LLM-driven play-spec workflow)
 - ✅ **NES::Test Phase 1 implemented** (Perl DSL + persistent jsnes harness)
-- ✅ **toy1_sprite_dma complete** (OAM DMA validated, 20/20 tests passing, 45 min actual vs 2-3hr estimated)
-- ✅ **toy2_ppu_init complete** (2-vblank warmup validated, 5/5 tests passing, 30 min actual vs 1-2hr estimated)
+- ✅ **toy1_sprite_dma complete** (OAM DMA validated, 20/20 tests passing, 45 min)
+- ✅ **toy2_ppu_init complete** (2-vblank warmup validated, 5/5 tests passing, 30 min)
+- ⚠️ **toy3_controller partial** (4/8 tests passing, timeboxed, moving on - controller read logic bug)
 
 ### What We Know
 **Complete NES architecture understanding documented in `learnings/`**:
@@ -41,22 +42,24 @@
 
 ---
 
-## Next Step: Choose toy3
+## Next Step: toy4_nmi (NMI Handler)
 
-**toy2 findings** (see `toys/toy2_ppu_init/LEARNINGS.md`):
-- ✅ PPU 2-vblank warmup works perfectly (jsnes accurate)
-- ✅ Frame timing confirmed (frame 1→2→3 progression)
-- ✅ **Critical lesson**: NES RAM not zero-initialized (must explicitly init variables!)
-- ✅ Standard init pattern established for all future toys
+**toy3 findings** (see `toys/toy3_controller/LEARNINGS.md`):
+- ⚠️ **Partial validation** - 4/8 tests passing (50% success)
+- ✅ **Tool improvement** - Extended `inspect-rom.pl` to show 64 bytes of code
+- ✅ **Lesson learned** - Always try clean rebuild before deep debugging (stale artifacts cause mysterious failures)
+- ✅ **jsnes validated** - Controller emulation works correctly, isolated bug to ROM logic
+- ❌ **Controller read bug** - LSR/ROL bit shifting has errors (A=0x00 instead of 0x80, B=0x04 instead of 0x40)
+- 🕐 **Timeboxed** - 3 debugging attempts, gained insights, moving on to unblock other subsystems
 
-**toy3 candidates:**
-1. **toy3_controller** - Controller input (3-step read sequence, new subsystem)
-2. **toy3_full_init** - Combine toy1 + toy2 (integration: full init + sprite DMA)
-3. **toy4_nmi** - NMI handler (vblank interrupt, OAM DMA in NMI)
+**toy4 candidates:**
+1. **toy4_nmi** - NMI handler + OAM DMA integration (vblank interrupt, sprite updates)
+2. **toy4_full_init** - Combine toy1 + toy2 patterns (integration test)
+3. Return to **toy3_controller** debug session (fix bit shifting bug)
 
-**Recommended:** Controller input (covers next critical subsystem) OR Full init (integrates learned patterns)
+**Recommended:** toy4_nmi (critical subsystem, unblocks sprite animation work)
 
-**Pattern validated (2x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Update ORIENTATION
+**Pattern validated (3x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Update ORIENTATION → Move forward
 
 ---
 
@@ -134,14 +137,16 @@
 - `docs/blog/4_testing-vision.md` - **Testing strategy designed** (Perl DSL, LLM workflow, 3-phase automation)
 
 ### Toy Artifacts (Built)
-- `toys/toy0_toolchain/` - ✅ Build pipeline (Makefile, nes.cfg, test.pl, 13 tests passing)
+- `toys/toy0_toolchain/` - ✅ Build pipeline (Makefile, nes.cfg, 6/6 tests passing)
+- `toys/toy1_sprite_dma/` - ✅ OAM DMA validation (20/20 tests passing, 45 min)
+- `toys/toy2_ppu_init/` - ✅ PPU 2-vblank warmup (5/5 tests passing, 30 min)
+- `toys/toy3_controller/` - ⚠️ Controller input (4/8 tests passing, partial - LSR/ROL bug)
 - `toys/debug/0_survey/` - ✅ Emulator research (LEARNINGS.md)
-- `toys/debug/1_jsnes_wrapper/` - ✅ jsnes headless wrapper (16 tests passing, JSON output)
+- `toys/debug/1_jsnes_wrapper/` - ✅ jsnes headless wrapper (16 tests passing)
 - `toys/debug/2_tetanes/` - ✅ TetaNES investigation (rejected - API limitations)
 
 ### To Be Created (Next Session)
-- `lib/NES/Test.pm` - **Phase 1 Perl DSL module** (jsnes backend)
-- `toys/toy1_sprite_dma/` - First hardware validation toy
+- `toys/toy4_nmi/` - NMI handler + OAM DMA integration
 - `src/` - Main game assembly (after toy prototyping)
 - `SPEC.md` - Game design (after toy validation)
 

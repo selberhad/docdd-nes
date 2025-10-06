@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use List::Util qw(min);
 
 # iNES ROM header inspector
 # Decodes and displays iNES header format for .nes files
@@ -132,16 +133,25 @@ for my $rom_path (@roms) {
         printf "  RESET (\$FFFC): \$%04X  [%02X %02X]  ← CPU starts here\n", $reset_vector, $vec_bytes[2], $vec_bytes[3];
         printf "  IRQ   (\$FFFE): \$%04X  [%02X %02X]\n", $irq_vector, $vec_bytes[4], $vec_bytes[5];
 
-        # Show first 16 bytes at reset vector (if it points into PRG-ROM)
+        # Show first 64 bytes at reset vector (if it points into PRG-ROM)
         if ($reset_vector >= 0x8000 && $reset_vector < 0x8000 + $prg_size) {
             my $code_offset = 16 + ($reset_vector - 0x8000);
             seek $fh, $code_offset, 0;
             my $code_sample;
-            if (read($fh, $code_sample, 16) == 16) {
-                my @code_bytes = unpack('C16', $code_sample);
-                print "\nCode at RESET vector (\$" . sprintf("%04X", $reset_vector) . "):\n  ";
-                printf "%02X " x 16, @code_bytes;
-                print "\n";
+            my $code_len = 64;
+            if (read($fh, $code_sample, $code_len) > 0) {
+                my @code_bytes = unpack('C*', $code_sample);
+                print "\nCode at RESET vector (\$" . sprintf("%04X", $reset_vector) . ", first $code_len bytes):\n";
+
+                # Print in rows of 16 bytes with address
+                for (my $i = 0; $i < @code_bytes; $i += 16) {
+                    my $addr = $reset_vector + $i;
+                    printf "  \$%04X: ", $addr;
+
+                    my @row = @code_bytes[$i .. min($i+15, $#code_bytes)];
+                    printf "%02X " x scalar(@row), @row;
+                    print "\n";
+                }
             }
         }
     }
