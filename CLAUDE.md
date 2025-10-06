@@ -231,6 +231,7 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 **Utilities**:
 - `tools/fetch-wiki.sh` - Cache NESdev wiki pages
 - `tools/add-attribution.pl` - Add wiki attribution to docs
+- `tools/new-toy.pl <name>` - **Scaffold new toy directory** (SPEC.md, PLAN.md, README.md, LEARNINGS.md)
 - `.webcache/` - Cached wiki pages (52 pages, gitignored)
 
 **To Be Created** (next phase):

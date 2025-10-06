@@ -9,7 +9,11 @@ $name =~ s/^toy\d+_//; # Strip toy prefix if provided
 # Find highest toyN number
 my $max = -1;
 opendir(my $dh, 'toys') or mkdir 'toys';
-$max = $1 > $max ? $1 : $max while readdir($dh) =~ /^toy(\d+)_/;
+while (my $entry = readdir($dh)) {
+    if ($entry =~ /^toy(\d+)_/) {
+        $max = $1 if $1 > $max;
+    }
+}
 closedir $dh;
 
 my $num = $max + 1;
@@ -36,5 +40,14 @@ write_doc('README.md', ucfirst($name) . ' (toy' . $num . ')',
 write_doc('LEARNINGS.md', 'LEARNINGS — ' . ucfirst($name),
     "## Learning Goals\n\n### Questions to Answer\n\n### Decisions to Make\n\n## Findings\n\n## Patterns for Production\n");
 
-print "Created $dir/\n";
-print "  SPEC.md PLAN.md README.md LEARNINGS.md\n";
+print "\n";
+print "✅ Created $dir/\n";
+print "   SPEC.md PLAN.md README.md LEARNINGS.md\n";
+print "\n";
+print "📋 Next steps for LLM:\n";
+print "   1. Review TOY_DEV.md and TOY_DEV_NES.md (toy methodology)\n";
+print "   2. Review relevant learnings/ docs for this subsystem\n";
+print "   3. Check learnings/.docdd/5_open_questions.md for questions to answer\n";
+print "   4. Reference docs/guides/ for SPEC, PLAN, LEARNINGS writing guidance\n";
+print "   5. Start with LEARNINGS.md (define questions BEFORE planning)\n";
+print "\n";
