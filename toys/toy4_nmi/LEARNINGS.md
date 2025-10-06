@@ -1,6 +1,6 @@
 # LEARNINGS — NMI Handler
 
-**Duration**: TBD | **Status**: Planning | **Estimate**: 1-2 hours
+**Duration**: ~45 minutes | **Status**: Complete ✅ | **Estimate**: 1-2 hours (beat estimate)
 
 ## Learning Goals
 
@@ -35,23 +35,23 @@
 ### Decisions to Make
 
 **NMI handler pattern for testing:**
-- [ ] Use "Main only" pattern (simplest - NMI sets flag, main does work)?
-- [ ] Use "NMI only" pattern (all work in NMI)?
-- [ ] Test both patterns?
+- [x] Use "NMI only" pattern (all work in NMI) - **CHOSEN**
+- Simplest to test, easiest to observe behavior
+- Main loop does nothing (infinite JMP)
 
 **NMI flag storage:**
-- [ ] Zero page byte for NMI flag ($0010)?
-- [ ] Frame counter separate from NMI flag?
+- [x] Frame counter at $0010 (separate from sprite_x at $0011)
+- Two independent counters validates NMI can update multiple RAM locations
 
 **Observable behavior:**
-- [ ] Increment frame counter in NMI?
-- [ ] Update sprite position in NMI?
-- [ ] Both (counter + sprite animation)?
+- [x] Both counter + sprite animation - **CHOSEN**
+- Frame counter proves NMI fires every frame
+- Sprite X position proves OAM DMA works in NMI
 
 **Integration with toy1/toy2:**
-- [ ] Reuse toy1 OAM DMA pattern exactly?
-- [ ] Reuse toy2 PPU init pattern exactly?
-- [ ] Combine both with NMI handler?
+- [x] Reused toy1 OAM DMA pattern exactly ($4014 write)
+- [x] Reused toy2 PPU init pattern exactly (2 vblank warmup)
+- [x] Combined both with NMI handler - integration validated
 
 ### Success Criteria
 
@@ -211,67 +211,215 @@ sta $2000
 ## Decisions to Make
 
 **Test ROM scope:**
-- [ ] Test Pattern 1 (Main only) or Pattern 2 (NMI only)?
-- [ ] Include frame counter + sprite animation or just counter?
-- [ ] Test NMI enable/disable or just enable?
+- [x] Pattern 2 (NMI only) - all work in NMI handler
+- [x] Both counter + sprite animation
+- [x] Test NMI enable only (disable not needed for this toy)
 
 **Observable behavior:**
-- [ ] Frame counter in RAM ($0010)?
-- [ ] Sprite X position updates every frame?
-- [ ] Debug markers in NMI handler?
+- [x] Frame counter at $0010 (increments every NMI)
+- [x] Sprite X position updates every frame (increments, visible in OAM)
+- No debug markers needed (counters ARE the markers)
 
 **Validation approach:**
-- [ ] Assert frame counter increments?
-- [ ] Assert sprite position changes?
-- [ ] How many frames to test (10? 60?)?
+- [x] Assert frame counter increments (frames 4, 5, 13)
+- [x] Assert sprite position changes (matches counter)
+- [x] Test up to frame 260 (wraparound at 256 validated)
 
 **Integration strategy:**
-- [ ] Copy toy1 OAM DMA code exactly?
-- [ ] Copy toy2 PPU init code exactly?
-- [ ] Combine both with NMI handler?
+- [x] Copied toy1 OAM DMA code exactly (LDA #$02, STA $4014)
+- [x] Copied toy2 PPU init pattern exactly (2 vblank warmup)
+- [x] Combined successfully - all integration tests pass
 
 ---
 
 ## Findings
 
-**Duration**: TBD | **Status**: Planning | **Result**: TBD
+**Duration**: ~45 minutes | **Status**: Complete ✅ | **Result**: 18/18 tests passing
 
 ### ✅ Validated
 
-(To be filled after implementation)
+**Q1: jsnes NMI emulation works correctly**
+- ✅ jsnes fires NMI when $2000 bit 7 set
+- ✅ NMI fires every vblank (~60Hz) - frame counter increments reliably
+- ✅ Observable via RAM counter ($0010)
+- ✅ NMI timing consistent across 260 frames tested
+- ✅ NMI vector at $FFFA works correctly
+
+**Q2: OAM DMA in NMI handler works perfectly**
+- ✅ toy1 OAM DMA pattern works inside NMI handler
+- ✅ Sprite position updates every frame via NMI
+- ✅ OAM buffer ($0203) matches RAM variable ($0011)
+- ⏭️ Cycle cost not observable (jsnes Phase 1 limitation)
+
+**Q3: Frame synchronization - Pattern 2 (NMI only) validated**
+- ✅ "NMI only" pattern works - main loop idles, NMI does all work
+- ⏭️ Pattern 1 (Main only) not tested (not needed for this toy)
+- ⏭️ Pattern 3 (NMI+Main) not tested (future toy if needed)
+
+**Q4: Observable NMI behavior via RAM inspection**
+- ✅ Frame counter tracks NMI count reliably
+- ✅ Sprite position updates observable (both RAM and OAM)
+- ✅ Counter wraparound at 256 works (0xFF → 0x00 → 0x01)
+- ✅ Minimal testable behavior: INC counter + OAM DMA
+
+**Integration validated:**
+- ✅ toy1 (OAM DMA) + toy2 (PPU init) + toy4 (NMI) = working combination
+- ✅ Full init sequence + NMI enable works perfectly
+- ✅ No edge cases found in jsnes NMI emulation
 
 ### ⚠️ Challenged
 
-(To be filled after implementation)
+**4-frame initialization offset discovered:**
+- Initial assumption: NMI fires at frame 1
+- Reality: First NMI fires at frame 4
+- Breakdown:
+  - Frame 1-2: PPU warmup (2 vblank waits)
+  - Frame 3: NMI enable written to $2000
+  - Frame 4: First NMI fires (at next vblank)
+- **Lesson**: Account for init overhead when designing tests
+- **Pattern**: Test at frames 4, 5, 13 (not 1, 2, 10)
+
+**Test structure evolution:**
+- Single play-spec.pl failed (frame numbers must increase)
+- Split into 4 test files (t/01-simple.t, etc.)
+- Each file starts fresh emulator instance
+- **Lesson**: Multiple test files > single file for independent scenarios
 
 ### ❌ Failed
 
-(To be filled after implementation)
+None - all expectations met
 
 ### 🌀 Uncertain
 
-(To be filled after implementation)
+**Cycle counting (Phase 2 need):**
+- Can't measure NMI handler cycle cost with jsnes
+- Theory: NMI handler should fit in 2273 cycle vblank budget
+- Current handler: ~20 cycles (2x INC + LDA/STA + OAM DMA)
+- OAM DMA: 513-514 cycles (theory from learnings)
+- **Validation deferred**: Need Phase 2 emulator with cycle counting
+
+**Visual sprite animation (Phase 2/3 need):**
+- OAM X position updates verified (RAM + OAM inspection)
+- Actual visual sprite movement not validated (no frame buffer access)
+- **Good enough for Phase 1**: State assertions prove it works
 
 ---
 
 ## Patterns for Production
 
-(To be extracted after validation)
+**Extracted from working nmi.s (18/18 tests passing):**
 
-**NMI handler pattern:**
+### NMI Handler Pattern (Pattern 2: NMI Only)
+
 ```asm
-; (To be documented after testing)
+nmi_handler:
+    ; Increment frame counter
+    INC $0010
+
+    ; Update sprite X position
+    INC $0011
+    LDA $0011
+    STA $0203        ; OAM byte 3 (X position)
+
+    ; Upload OAM via DMA
+    LDA #$02
+    STA $4014
+
+    RTI
 ```
 
-**Frame synchronization pattern:**
+**Why this works:**
+- All game logic in NMI (consistent timing)
+- Main loop idles (`JMP loop`)
+- OAM DMA happens during vblank (safe)
+- Simple, testable, reliable
+
+### Complete Initialization Pattern
+
 ```asm
-; (To be documented after testing)
+reset:
+    ; 1. CPU init
+    SEI              ; Disable IRQ
+    CLD              ; Clear decimal mode
+    LDX #$FF
+    TXS              ; Set up stack
+
+    ; 2. Clear RAM variables
+    LDA #$00
+    STA $0010        ; frame_counter = 0
+    STA $0011        ; sprite_x = 0
+
+    ; 3. Disable rendering
+    STA $2000        ; PPUCTRL = 0
+    STA $2001        ; PPUMASK = 0
+    BIT $2002        ; Clear vblank flag
+
+    ; 4. Wait 2 vblanks for PPU warmup (from toy2)
+vblankwait1:
+    BIT $2002
+    BPL vblankwait1
+vblankwait2:
+    BIT $2002
+    BPL vblankwait2
+
+    ; 5. Set up OAM sprite (from toy1)
+    LDA #$78         ; Y = 120
+    STA $0200
+    LDA #$00         ; Tile = 0
+    STA $0201
+    LDA #$00         ; Attributes = 0
+    STA $0202
+    LDA #$00         ; X = 0 (will be updated by NMI)
+    STA $0203
+
+    ; 6. Enable NMI
+    LDA #%10000000   ; NMI enable (bit 7)
+    STA $2000
+
+    ; 7. Main loop - all work in NMI
+loop:
+    JMP loop
 ```
 
-**OAM DMA in NMI pattern:**
+### OAM DMA in NMI Pattern
+
 ```asm
-; (To be documented after testing)
+; Inside NMI handler:
+LDA #$02         ; High byte of OAM buffer address ($0200)
+STA $4014        ; Trigger OAM DMA
+; Takes 513-514 cycles (theory - not measured in Phase 1)
 ```
 
-**Key lessons learned:**
-(To be documented after testing)
+**Critical notes:**
+- OAM DMA must happen during vblank (inside NMI is safe)
+- Copies 256 bytes from $0200-$02FF to PPU OAM
+- Update shadow OAM ($0200-$02FF) before DMA, not after
+
+### Key Lessons Learned
+
+**4-frame initialization offset:**
+- First NMI fires at frame 4, not frame 1
+- 2 frames PPU warmup + 1 frame NMI enable + 1 frame vblank wait
+- **Always account for init overhead in tests**
+
+**Pattern 2 (NMI only) is easiest to test:**
+- All work in NMI = deterministic timing
+- Main loop does nothing = no synchronization complexity
+- Observable behavior: increment counters, update OAM
+
+**jsnes NMI emulation is accurate (Phase 1 scope):**
+- Fires every vblank reliably
+- OAM DMA works correctly
+- Counter wraparound works (0xFF → 0x00)
+- Deterministic across 260 frames
+
+**Integration patterns compose cleanly:**
+- toy1 (OAM DMA) + toy2 (PPU init) + toy4 (NMI) = working ROM
+- Reuse validated patterns exactly (don't reinvent)
+- Each toy validates one subsystem, combine for full game
+
+**Test structure best practice:**
+- Split scenarios into t/*.t files (not single play-spec.pl)
+- Each test starts fresh emulator (avoids frame progression conflicts)
+- Maps cleanly to SPEC.md test scenarios
+- Example: 4 scenarios = 4 files (01-simple.t, 02-sprite.t, etc.)
