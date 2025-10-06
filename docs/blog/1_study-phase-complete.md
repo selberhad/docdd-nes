@@ -204,4 +204,4 @@ If you're building something complex in a constrained domain:
 
 ---
 
-*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. All learnings and meta-learnings available at [github.com/emadum/docdd-nes](https://github.com/emadum/docdd-nes) (when it goes public).*
+*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. All learnings and meta-learnings available at [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes).*

@@ -251,4 +251,4 @@ When building with an LLM:
 
 ---
 
-*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. All tools and infrastructure available at [github.com/emadum/docdd-nes](https://github.com/emadum/docdd-nes) (when it goes public).*
+*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. All tools and infrastructure available at [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes).*
