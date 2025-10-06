@@ -92,6 +92,13 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 - Track PRG-ROM bank usage
 - Note reserved addresses and why
 
+**CRITICAL: Directory Awareness**
+- **Check `pwd` FIRST** if files/directories aren't where you expect
+- Relative paths depend on current working directory
+- Use absolute paths when uncertain or for cross-directory operations
+- Example: If `docs/guides/` doesn't exist, run `pwd` to verify location before assuming structure
+- Remember: Tool invocations (Bash, Read, etc.) operate relative to pwd
+
 ## Learning Documentation Practices
 
 **Systematic study workflow** (used for wiki research):
