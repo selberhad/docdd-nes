@@ -43,8 +43,29 @@ vblankwait2:
     ; PPU ready, fall through to main loop
 
 loop:
-    ; TODO: Read controller
+    JSR read_controller1
     JMP loop
+
+read_controller1:
+    ; Step 1: Strobe controller
+    LDA #$01
+    STA $4016           ; Start strobe
+    LDA #$00
+    STA $4016           ; End strobe (latches state)
+
+    ; Clear button byte before reading
+    STA $0010           ; A still = 0 from above
+
+    ; Step 2: Read 8 buttons
+    LDX #$08            ; 8 buttons to read
+read_loop:
+    LDA $4016           ; Read bit 0
+    LSR                 ; Shift bit 0 to carry
+    ROL $0010           ; Rotate carry into buttons
+    DEX
+    BNE read_loop
+
+    RTS
 
 nmi_handler:
 irq_handler:
