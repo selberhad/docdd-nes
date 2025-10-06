@@ -136,7 +136,10 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 **Engineering Discipline**:
 - Never over-engineer. Try the simplest thing first.
 - RTFM before building anything. Read docs, understand the problem space, then act.
-- Write a script as soon as a useful pattern repeats. Don't wait for pain - automate immediately.
+- **CRITICAL: Write a script as soon as a useful pattern repeats.** Don't wait for pain - automate immediately.
+  - If you're about to run similar commands 2+ times, STOP and write a tool.
+  - Example: Repeatedly running `hexdump | grep` → write `tools/inspect-rom.pl` instead.
+  - Tools save tokens and create reusable infrastructure.
 
 **Preference Stack** (rough guideline, not dogma):
 - Perl (quick text processing, one-liners, build scripts - conciseness is a feature)
