@@ -215,43 +215,140 @@ a_not_pressed:
 
 ## Findings
 
-**Duration**: TBD | **Status**: Planning | **Result**: TBD
+**Duration**: 1.5 hours (paused for debugging) | **Status**: Partial | **Result**: 3/8 tests passing, jsnes controller issues discovered
 
 ### ✅ Validated
-*To be filled during implementation*
+
+**3-step controller read pattern works:**
+- Strobe pattern (write $01, write $00 to $4016) correctly latches state
+- 8-read loop with LSR/ROL builds button byte correctly
+- **Critical**: Must clear button byte before each read (ROL accumulates previous state)
+- Some buttons work correctly (Up, no-buttons state)
+
+**NES::Test `press_button` integration:**
+- Frame timing: button press at frame N → readable at frame N+1
+- Button state appears after one frame delay (as expected)
+- Combination syntax `press_button 'A+B'` works
+
+**TDD workflow continues to be efficient:**
+- Found and fixed critical bug in nes-test-harness.js during development
+- Incremental commits helped isolate issues
 
 ### ⚠️ Challenged
-*To be filled during implementation*
+
+**CRITICAL BUG FOUND: nes-test-harness.js button validation:**
+- **Bug**: `if (!BUTTONS[buttonName])` failed for button A (value 0)
+- **Cause**: jsnes.Controller.BUTTON_A = 0, so `!BUTTONS['A']` → `!0` → true (treated as missing)
+- **Fix**: Changed to `if (!(buttonName in BUTTONS))` to properly check key existence
+- **Impact**: Button A was completely unusable in all previous toys (toy1, toy2 didn't use controller)
+- **Commit**: e8d04dc "fix(test): Fix button validation bug in nes-test-harness"
+
+**jsnes controller emulation inconsistency:**
+- ✅ Up button ($08) works correctly
+- ✅ No buttons ($00) works correctly
+- ❌ A button ($80) doesn't register (reads as $00)
+- ❌ B button ($40) doesn't register (reads as $00)
+- ❌ Start button ($10) doesn't register (reads as $00)
+- ❌ Button combinations inconsistent
+
+**Possible causes:**
+1. jsnes button polarity issue (inverted logic?)
+2. jsnes buttonDown/buttonUp not updating internal state correctly
+3. Missing jsnes initialization step
+4. Button read timing issue (reading too early/late?)
 
 ### ❌ Failed
-*To be filled during implementation*
+
+**Full 8-button validation:**
+- Cannot validate all buttons work until jsnes issue resolved
+- 3/8 tests passing (38% success rate)
+- Button state byte format unconfirmed for most buttons
+
+**Phase 1 limitation revealed:**
+- jsnes controller emulation may not be accurate enough for full validation
+- May need Phase 2 (different emulator) sooner than expected
 
 ### 🌀 Uncertain
-*To be filled during implementation*
+
+**jsnes controller accuracy:**
+- Why does Up work but A/B/Start don't?
+- Is this a jsnes bug or our implementation issue?
+- Does jsnes require specific initialization we're missing?
+- Are we reading at the wrong time in the frame?
+
+**Next steps to resolve:**
+1. Debug jsnes button state directly (console log in harness)
+2. Compare jsnes controller implementation to NES spec
+3. Test with Mesen2 manually (Phase 3 validation)
+4. Consider alternative: TetaNES, FCEUX Lua, or different emulator for Phase 2
+
+**Pattern validation incomplete:**
+- Cannot confirm %ABSS UDLR byte format until all buttons work
+- LSR/ROL pattern seems correct (Up works as expected)
+- Strobe timing appears correct (no-buttons clears properly)
 
 ---
 
 ## Patterns for Production
 
-*To be filled with working code patterns after validation*
+**Controller read pattern (PARTIAL - jsnes issues, works for some buttons):**
 
-**Expected patterns:**
 ```asm
-; Standard controller read (to be validated):
 read_controller1:
+    ; Step 1: Strobe controller
     LDA #$01
-    STA $4016       ; Start strobe
+    STA $4016           ; Start strobe
     LDA #$00
-    STA $4016       ; End strobe
+    STA $4016           ; End strobe (latches state)
 
-    LDX #$08        ; 8 buttons
+    ; CRITICAL: Clear button byte before reading
+    ; (ROL accumulates, must start from 0 each frame)
+    STA $0010           ; A still = 0 from above
+
+    ; Step 2: Read 8 buttons
+    LDX #$08            ; 8 buttons to read
 read_loop:
-    LDA $4016       ; Read bit 0
-    LSR             ; Shift to carry
-    ROL buttons1    ; Build result byte
+    LDA $4016           ; Read bit 0
+    LSR                 ; Shift bit 0 to carry
+    ROL $0010           ; Rotate carry into buttons
     DEX
     BNE read_loop
+
     RTS
 
-; buttons1 = %ABSS UDLR after return
+; After return: $0010 = %ABSS UDLR (theory - partially validated)
+; - Bit 7: A button
+; - Bit 6: B button
+; - Bit 5: Select
+; - Bit 4: Start
+; - Bit 3: Up (CONFIRMED working)
+; - Bit 2: Down
+; - Bit 1: Left
+; - Bit 0: Right
 ```
+
+**Key lessons learned:**
+
+1. **Must clear target byte before ROL loop:**
+   ```asm
+   STA $0010    ; Clear before reading (ROL accumulates!)
+   ```
+
+2. **Frame timing for NES::Test:**
+   ```perl
+   press_button 'Up';
+   at_frame N+1 => sub {
+       assert_ram 0x0010 => 0x08;  # Readable next frame
+   };
+   ```
+
+3. **nes-test-harness.js button validation bug (FIXED):**
+   ```javascript
+   // WRONG (treats button A as invalid):
+   if (!BUTTONS[buttonName]) { ... }
+
+   // CORRECT (checks key existence):
+   if (!(buttonName in BUTTONS)) { ... }
+   ```
+
+**Status**: Pattern works in principle, but jsnes controller emulation needs debugging before full validation possible.
