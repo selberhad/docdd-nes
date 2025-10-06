@@ -203,11 +203,17 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
   - "Built test ROM. Next: Build controller input test to validate button reading?"
 
 ### NEXT_SESSION.md Protocol
-**CRITICAL: Always delete and rewrite, never update in place:**
-- `NEXT_SESSION.md` is ephemeral (gitignored, session handoff only)
-- When updating for next session: `rm NEXT_SESSION.md && Write new content`
+**CRITICAL: Only update at END OF SESSION, not end of toy:**
+- `NEXT_SESSION.md` is ephemeral (gitignored, session-to-session handoff only)
+- **Session ≠ Toy**: One session may span multiple toys, or one toy may span multiple sessions
+- **ONLY write when session is ending** (user says "done for now", tokens running low, etc.)
+- **DO NOT write after completing a toy** if continuing work in same session
+
+**When updating for next session:**
+- Always delete and rewrite: `rm NEXT_SESSION.md && Write new content`
 - **DO NOT** use Read + Edit pattern (wastes tokens on old content)
 - Include: Current status, what we learned, what to do next, key files to review
+- Make it clear where we left off and what's the immediate next action
 
 ### Blog Post Guidelines (docs/blog/)
 
