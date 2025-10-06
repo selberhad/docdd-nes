@@ -13,6 +13,7 @@ use Exporter 'import';
 our @EXPORT = qw(
     load_rom
     at_frame
+    after_nmi
     press_button
     release_button
     run_frames
@@ -27,6 +28,7 @@ our @EXPORT = qw(
     assert_ppu_ctrl
     assert_ppu_mask
     assert_ppu_status
+    assert_nmi_counter
 );
 
 our $VERSION = '0.01';
@@ -99,10 +101,31 @@ sub at_frame {
     # Fetch current state
     _update_state();
 
-    # Run assertions
+    # Run assertions (support CODE ref or HASH ref)
     if (ref $assertions eq 'CODE') {
         $assertions->();
+    } elsif (ref $assertions eq 'HASH') {
+        # Hash syntax: { ram => { addr => val, ... }, sprite => [...], ... }
+        if (exists $assertions->{ram}) {
+            for my $addr (keys %{$assertions->{ram}}) {
+                assert_ram($addr, $assertions->{ram}{$addr});
+            }
+        }
     }
+}
+
+sub after_nmi {
+    my ($nmi_count, $assertions) = @_;
+
+    croak "NMI count must be positive" unless $nmi_count > 0;
+
+    # NMI fires at frame 4, 5, 6, ... (3 + N pattern from toy4/5)
+    # after_nmi(1) => frame 4 (first NMI has fired)
+    # after_nmi(2) => frame 5 (second NMI has fired)
+    # Formula: frame = 3 + nmi_count
+    my $frame = 3 + $nmi_count;
+
+    at_frame($frame, $assertions);
 }
 
 sub press_button {
@@ -325,6 +348,21 @@ sub assert_ppu_status {
     is($actual, $expected, sprintf("PPU STATUS = 0x%02X", $expected));
 }
 
+sub assert_nmi_counter {
+    my ($addr, %opts) = @_;
+
+    croak "at_nmis parameter required" unless exists $opts{at_nmis};
+    croak "at_nmis must be array ref" unless ref $opts{at_nmis} eq 'ARRAY';
+
+    my @nmi_counts = @{$opts{at_nmis}};
+
+    for my $nmi_count (@nmi_counts) {
+        after_nmi $nmi_count => sub {
+            assert_ram($addr, $nmi_count);
+        };
+    }
+}
+
 # Internal helpers
 
 sub _start_harness {
@@ -470,9 +508,34 @@ Phase 1 uses jsnes backend with persistent Node.js process.
 
 Load NES ROM file for testing. Starts persistent test harness.
 
-=head2 at_frame($frame, $coderef)
+=head2 at_frame($frame, $coderef_or_hashref)
 
 Advance emulator to specified frame and run assertions.
+
+Supports code ref or hash ref syntax:
+
+    at_frame 10 => sub {
+        assert_ram 0x10 => 0x42;
+    };
+
+    at_frame 10 => {
+        ram => { 0x10 => 0x42, 0x11 => 0x00 }
+    };
+
+=head2 after_nmi($nmi_count, $coderef_or_hashref)
+
+Advance to frame where Nth NMI has fired and run assertions.
+
+Automatically calculates frame from NMI count (frame = 3 + N).
+First NMI fires at frame 4 due to init sequence (2 vblank waits + NMI enable).
+
+    after_nmi 1 => sub {         # Frame 4 - first NMI
+        assert_ram 0x10 => 0x01;
+    };
+
+    after_nmi 10 => {            # Frame 13 - 10th NMI
+        ram => { 0x10 => 0x0A }
+    };
 
 =head2 press_button($buttons)
 
@@ -508,6 +571,21 @@ Assert sprite OAM attributes (y, tile, attr, x).
 =head2 assert_ppu_ctrl($expected), assert_ppu_mask($expected), etc.
 
 Assert PPU register values.
+
+=head2 assert_nmi_counter($addr, at_nmis => \@counts)
+
+Assert that memory address increments with each NMI (common pattern).
+
+    # Assert RAM[0x10] increments per NMI, sample at NMI counts 1, 2, 10, 64
+    assert_nmi_counter 0x10, at_nmis => [1, 2, 10, 64];
+
+Generates multiple assertions automatically (1 per NMI count in list).
+Equivalent to:
+
+    after_nmi 1 => sub { assert_ram 0x10 => 1 };
+    after_nmi 2 => sub { assert_ram 0x10 => 2 };
+    after_nmi 10 => sub { assert_ram 0x10 => 10 };
+    after_nmi 64 => sub { assert_ram 0x10 => 64 };
 
 =head1 IMPLEMENTATION NOTES
 
