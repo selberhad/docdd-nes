@@ -55,7 +55,10 @@ reset:
     LDA #110
     STA $020F
 
-    ; TODO: Trigger DMA
+    ; Trigger OAM DMA
+    LDA #$02        ; High byte of shadow OAM address
+    STA $4014       ; Start DMA transfer
+    ; CPU stalled for ~513 cycles during DMA
 
 loop:
     JMP loop
