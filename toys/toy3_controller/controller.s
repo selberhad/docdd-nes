@@ -19,30 +19,54 @@ reset:
     LDX #$FF
     TXS
 
+    ; Debug marker 1: Reset entered
+    LDA #$01
+    STA $0012
+
     ; Disable PPU
-    INX                 ; X = 0
+    LDX #$00
     STX $2000           ; PPUCTRL = 0 (NMI disabled)
     STX $2001           ; PPUMASK = 0 (rendering disabled)
 
     ; Initialize button state (NES doesn't zero RAM!)
     STX $0010           ; buttons = 0
+    STX $0011           ; loop counter = 0
+
+    ; Debug marker 2: PPU disabled
+    LDA #$02
+    STA $0012
 
     ; Clear vblank flag
     BIT $2002
+
+    ; Debug marker 3: Starting vblank wait 1
+    LDA #$03
+    STA $0012
 
     ; Wait first vblank
 vblankwait1:
     BIT $2002
     BPL vblankwait1
 
+    ; Debug marker 4: Vblank 1 done
+    LDA #$04
+    STA $0012
+
     ; Wait second vblank
 vblankwait2:
     BIT $2002
     BPL vblankwait2
 
+    ; Debug marker 5: Vblank 2 done, entering loop
+    LDA #$05
+    STA $0012
+
     ; PPU ready, fall through to main loop
 
 loop:
+    ; Debug: increment frame counter to prove loop is running
+    INC $0011           ; $0011 = loop iteration counter
+
     JSR read_controller1
     JMP loop
 
