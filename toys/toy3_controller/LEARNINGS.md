@@ -215,77 +215,77 @@ a_not_pressed:
 
 ## Findings
 
-**Duration**: 1.5 hours (paused for debugging) | **Status**: Partial | **Result**: 3/8 tests passing, jsnes controller issues discovered
+**Duration**: TBD (active debugging) | **Status**: Blocked - ROM execution failure | **Result**: 3/8 tests passing, ROM not executing
 
 ### ✅ Validated
 
-**3-step controller read pattern works:**
-- Strobe pattern (write $01, write $00 to $4016) correctly latches state
-- 8-read loop with LSR/ROL builds button byte correctly
-- **Critical**: Must clear button byte before each read (ROL accumulates previous state)
-- Some buttons work correctly (Up, no-buttons state)
+**Test harness improvements:**
+- Added verbosity system (0=off, 1=info, 2=debug) via `DEBUG=1` env var or `set_verbosity(level)` API
+- Debug logging shows jsnes controller state DOES update correctly (0x40 → 0x41 on button press)
+- Foundation tests still pass: toy1 (20/20), toy2 (5/5)
 
-**NES::Test `press_button` integration:**
-- Frame timing: button press at frame N → readable at frame N+1
-- Button state appears after one frame delay (as expected)
-- Combination syntax `press_button 'A+B'` works
+**jsnes controller emulation works correctly:**
+- Button A press: state changes from `[40,40,40,40,40,40,40,40]` to `[41,40,40,40,40,40,40,40]` ✓
+- Button Up press: state changes to `[40,40,40,40,41,40,40,40]` ✓
+- jsnes.Controller implementation confirmed working
 
-**TDD workflow continues to be efficient:**
-- Found and fixed critical bug in nes-test-harness.js during development
-- Incremental commits helped isolate issues
-
-### ⚠️ Challenged
-
-**CRITICAL BUG FOUND: nes-test-harness.js button validation:**
+**Harness button validation bug fixed:**
 - **Bug**: `if (!BUTTONS[buttonName])` failed for button A (value 0)
 - **Cause**: jsnes.Controller.BUTTON_A = 0, so `!BUTTONS['A']` → `!0` → true (treated as missing)
 - **Fix**: Changed to `if (!(buttonName in BUTTONS))` to properly check key existence
-- **Impact**: Button A was completely unusable in all previous toys (toy1, toy2 didn't use controller)
-- **Commit**: e8d04dc "fix(test): Fix button validation bug in nes-test-harness"
+- **Commit**: e8d04dc
 
-**jsnes controller emulation inconsistency:**
-- ✅ Up button ($08) works correctly
-- ✅ No buttons ($00) works correctly
-- ❌ A button ($80) doesn't register (reads as $00)
-- ❌ B button ($40) doesn't register (reads as $00)
-- ❌ Start button ($10) doesn't register (reads as $00)
-- ❌ Button combinations inconsistent
+### ⚠️ Challenged
 
-**Possible causes:**
-1. jsnes button polarity issue (inverted logic?)
-2. jsnes buttonDown/buttonUp not updating internal state correctly
-3. Missing jsnes initialization step
-4. Button read timing issue (reading too early/late?)
+**CRITICAL: ROM execution failure in jsnes:**
+- CPU PC = 0x0000 (should be executing from reset vector)
+- All RAM undefined/inaccessible
+- Debug markers never written (ROM init sequence not running)
+- Loop counter never increments (main loop not executing)
+- **But**: toy1 and toy2 ROMs still execute correctly in same harness
+
+**Evidence:**
+```
+# Frame 0:
+#   CPU PC = 0x0000
+#   Debug marker (0x0012) = undef (expected 5)
+#   Loop counter (0x0011) = undef (should increment)
+#   RAM[0x0010] = 0x00 (button byte, never written)
+```
+
+**This explains why buttons "don't work":**
+- jsnes controller state DOES change (we see it in debug logs)
+- But ROM never reads $4016 (because ROM isn't running at all)
+- Tests fail because ROM never writes button byte to RAM
 
 ### ❌ Failed
 
-**Full 8-button validation:**
-- Cannot validate all buttons work until jsnes issue resolved
-- 3/8 tests passing (38% success rate)
-- Button state byte format unconfirmed for most buttons
-
-**Phase 1 limitation revealed:**
-- jsnes controller emulation may not be accurate enough for full validation
-- May need Phase 2 (different emulator) sooner than expected
+**ROM loading/execution:**
+- controller.nes does not execute in jsnes
+- Same build infrastructure as toy1/toy2 (which DO work)
+- Same harness (verified with toy1/toy2 regression tests)
+- Issue is specific to toy3's ROM binary
 
 ### 🌀 Uncertain
 
-**jsnes controller accuracy:**
-- Why does Up work but A/B/Start don't?
-- Is this a jsnes bug or our implementation issue?
-- Does jsnes require specific initialization we're missing?
-- Are we reading at the wrong time in the frame?
+**Why doesn't toy3 ROM execute?**
+- Same build process as toy1/toy2 (Makefile, nes.cfg, ca65/ld65)
+- ROM file exists and builds without errors
+- iNES header appears correct (visual inspection of controller.nes)
+- jsnes loads ROM without error messages
 
-**Next steps to resolve:**
-1. Debug jsnes button state directly (console log in harness)
-2. Compare jsnes controller implementation to NES spec
-3. Test with Mesen2 manually (Phase 3 validation)
-4. Consider alternative: TetaNES, FCEUX Lua, or different emulator for Phase 2
+**Hypotheses:**
+1. **ROM corruption during build** - binary differs from toy1/toy2 in a way jsnes rejects
+2. **iNES header mismatch** - mapper/mirroring/size incorrect
+3. **Build artifacts** - debug symbols or linker output affecting binary
+4. **jsnes loadROM issue** - ROM size validation, header parsing failure
 
-**Pattern validation incomplete:**
-- Cannot confirm %ABSS UDLR byte format until all buttons work
-- LSR/ROL pattern seems correct (Up works as expected)
-- Strobe timing appears correct (no-buttons clears properly)
+**Next steps (RTFM first):**
+1. **Compare ROM headers**: `hexdump -C controller.nes | head` vs toy1/toy2
+2. **Validate iNES spec**: Check byte-by-byte header (16 bytes) against nesdev wiki
+3. **Check ROM size**: Verify PRG-ROM and CHR-ROM sizes match header
+4. **Test in Mesen2**: Does ROM boot outside jsnes? (validates ROM itself)
+5. **Minimal reproduction**: Simplify controller.s to bare minimum (just infinite loop)
 
 ---
 
