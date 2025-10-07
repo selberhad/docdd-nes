@@ -16,13 +16,16 @@
 - **Phase 3**: Human/Mesen2 (complex visual, edge cases, real hardware)
 
 **Status**:
-- ✅ toy0_toolchain: Build pipeline validated (Perl tests, Mesen2 boots)
+- ✅ toy0_toolchain: Build pipeline validated (Perl tests, automated)
 - ✅ toys/debug/0-2: Emulator survey complete (jsnes chosen for Phase 1)
 - ✅ TESTING.md: Complete testing strategy defined (14 questions answered)
-- ✅ NES::Test Phase 1: Implemented (lib/NES/Test.pm, 16 assertions, persistent jsnes harness)
+- ✅ NES::Test Phase 1: Implemented (lib/NES/Test.pm, persistent jsnes harness)
 - ✅ toy1_sprite_dma: Complete (20/20 tests passing, 45 min, OAM DMA validated)
 - ✅ toy2_ppu_init: Complete (5/5 tests passing, 30 min, PPU warmup validated)
-- ⏭️ Next: toy3 (controller input OR full init integration)
+- ✅ toy3_controller: Partial (2/2 tests passing, 6 skipped, timeboxed)
+- ✅ toy4_nmi: Complete (18/18 tests passing, 45 min, NMI handler + integration)
+- ✅ toy5_scrolling: Complete (15/15 tests passing, 20 min, PPUSCROLL validated)
+- ⏭️ Next: toy6 (audio, VRAM buffer, palettes, or sprite0)
 
 ---
 
@@ -467,18 +470,22 @@
 ## Next Steps
 
 **Completed:**
-- ✅ NES::Test Phase 1 implemented (lib/NES/Test.pm)
+- ✅ NES::Test Phase 1 implemented (lib/NES/Test.pm, NES::Test::Toy.pm)
 - ✅ toy0 retrofitted with play-spec (validation)
-- ✅ toy1_sprite_dma built with automated validation (20/20 tests)
-- ✅ toy2_ppu_init built with automated validation (5/5 tests)
+- ✅ toy1_sprite_dma built with automated validation (20/20 tests, 45 min)
+- ✅ toy2_ppu_init built with automated validation (5/5 tests, 30 min)
+- ✅ toy3_controller partial (2/2 tests, 6 skipped, timeboxed - controller bug)
+- ✅ toy4_nmi built with automated validation (18/18 tests, 45 min)
+- ✅ toy5_scrolling built with automated validation (15/15 tests, 20 min)
 
 **Immediate (next session):**
-1. **Choose toy3 direction:**
-   - **Option A**: toy3_controller (new subsystem - controller input)
-   - **Option B**: toy3_full_init (integration - combine toy1 + toy2)
-   - **Option C**: toy4_nmi (NMI handler, vblank interrupt)
+1. **Choose toy6 direction:**
+   - **Option A**: toy6_audio (APU channels + FamiTone2)
+   - **Option B**: toy6_vram_buffer (VRAM update buffer, column streaming)
+   - **Option C**: toy6_palettes (palette manipulation)
+   - **Option D**: toy6_sprite0 (sprite 0 hit detection)
 2. Build chosen toy with TDD workflow (LEARNINGS → SPEC → PLAN → implement)
-3. Continue validating NES::Test Phase 1 capabilities
+3. Continue validating NES::Test Phase 1 capabilities (66/66 tests passing)
 
 **Medium-term:**
 - Complete toy3-5 (controller, graphics pipeline, attributes)
@@ -492,4 +499,4 @@
 
 ---
 
-**Status: Phase 1 progressing well.** 2 hardware toys complete, TDD workflow validated, jsnes accuracy confirmed.
+**Status: Phase 1 progressing well.** 5 hardware toys complete (66/66 tests passing), TDD workflow validated, jsnes accuracy confirmed.
