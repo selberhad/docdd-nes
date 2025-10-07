@@ -58,6 +58,14 @@ vblankwait2:
     LDA #$30        ; White
     STA $2007       ; Writes to $3F01
 
+    ; Test 4: Edge case color values
+    ; $3F02 = $0D (blacker than black - documented special value)
+    ; $3F03 = $0F (canonical black)
+    LDA #$0D
+    STA $2007       ; Auto-increment to $3F02
+    LDA #$0F
+    STA $2007       ; Auto-increment to $3F03
+
 loop:
     JMP loop
 
