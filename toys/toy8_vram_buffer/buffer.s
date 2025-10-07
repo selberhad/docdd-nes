@@ -52,9 +52,68 @@ vblankwait2:
     JMP main
 
 main:
-    JMP main
+    ; Queue single tile: $2000 (0,0) = $42
+    LDX BUFFER_COUNT
+    CPX #MAX_ENTRIES
+    BCS skip_queue          ; Full, skip
+
+    ; Calculate buffer offset: count * 3
+    TXA
+    ASL                     ; count * 2
+    STA temp
+    TXA
+    CLC
+    ADC temp                ; count * 3
+    TAX
+
+    ; Store entry (addr_hi, addr_lo, tile)
+    LDA #$20                ; addr_hi = $20
+    STA BUFFER_DATA,X
+    LDA #$00                ; addr_lo = $00 (tile 0,0)
+    STA BUFFER_DATA+1,X
+    LDA #$42                ; tile value
+    STA BUFFER_DATA+2,X
+
+    ; Increment count
+    INC BUFFER_COUNT
+
+skip_queue:
+    JMP skip_queue          ; Infinite loop
+
+; flush_buffer: Write all queued tiles to nametable during vblank
+flush_buffer:
+    LDX BUFFER_COUNT
+    BEQ flush_done
+
+    LDY #0                  ; Buffer offset
+
+flush_loop:
+    ; Set PPUADDR
+    BIT $2002               ; Reset latch
+    LDA BUFFER_DATA,Y       ; addr_hi
+    STA $2006
+    INY
+    LDA BUFFER_DATA,Y       ; addr_lo
+    STA $2006
+    INY
+
+    ; Write tile
+    LDA BUFFER_DATA,Y       ; tile value
+    STA $2007
+    INY
+
+    DEX
+    BNE flush_loop
+
+    ; Clear buffer
+    LDA #0
+    STA BUFFER_COUNT
+
+flush_done:
+    RTS
 
 nmi_handler:
+    JSR flush_buffer
     RTI
 
 irq_handler:
