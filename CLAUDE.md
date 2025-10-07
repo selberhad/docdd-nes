@@ -235,6 +235,26 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 - Read `docs/blog/README.md` to refresh house style memory
 - Add new post summary to README.md TOC (matching existing format)
 
+### End-of-Session Reflection Protocol (Optional)
+
+**When to use:** After writing NEXT_SESSION.md, if context window permits (~<70% usage)
+
+**Purpose:** Extract meta-learnings while they're fresh, potentially write blog post
+
+**Workflow:**
+1. Meta chit-chat about the session (user prompts or AI initiates)
+2. Identify blog-worthy insights (strong enough for standalone post)
+3. Write blog post if insight merits it (following blog guidelines above)
+4. Update blog TOC per protocol
+
+**Why this works:**
+- Remaining context would be "wasted" otherwise
+- Meta-insights are freshest immediately after the work
+- Blog posts as calibration artifacts compound value
+- Natural end-of-session reflection point
+
+**Don't force it:** If no strong insights emerge, or context is tight (>70%), skip this step.
+
 ---
 
 ## NES-Specific Guidelines

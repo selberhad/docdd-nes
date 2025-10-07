@@ -94,6 +94,17 @@ Audio testing defeatism ("can't hear it, must be manual") → NASA question ("wh
 
 ---
 
+### [9. You're Not Building an NES Game](9_productivity-foom.md)
+**October 2025** · *Meta-Reflection*
+
+*Or: Watching Someone FOOM Into Productivity*
+
+FOOM skeptic ("can't happen without robotics, can't close execution loop") accidentally builds bounded recursive improvement. **The realization:** AI DOES close the execution loop (test harnesses, emulators, build systems). Nested loops compound: toys → blog posts → DocDD book → methodology → easier next project. Not intelligence explosion - **collaborative capacity explosion**. Safe because human in outer loop (meta-coaching, taste, simplification). We're building training data for future AI collaboration.
+
+**Key themes:** Productivity FOOM, bounded recursion, execution loop, grounding problem, nested feedback loops, calibration artifacts
+
+---
+
 ## Timeline
 
 | Post | Phase | Focus | Outcome |
@@ -106,6 +117,7 @@ Audio testing defeatism ("can't hear it, must be manual") → NASA question ("wh
 | **6** | Infrastructure | Automation | 3 tools, 220 lines saved |
 | **7** | DSL | Optimization | 32% reduction |
 | **8** | Meta | LLM collaboration | Alien brain constraints |
+| **9** | Meta | Productivity FOOM | Bounded recursion |
 
 ---
 
