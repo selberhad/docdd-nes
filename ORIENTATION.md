@@ -97,17 +97,16 @@ See `docs/blog/README.md` for full index.
 
 **Development machine**: macOS Apple Silicon (ARM64) - prefer native tools or Homebrew packages.
 
-**Core tools** (install via `tools/setup-brew-deps.sh`):
-- **cc65** (ca65/ld65) - Assembler + linker
-- **SDL2** - Mesen2 dependency
+**Core tools**:
+- **cc65** (ca65/ld65) - Assembler + linker (install via `tools/setup-brew-deps.sh`)
+- **jsnes** - Headless NES emulator for automated testing (npm package, via `lib/nes-test-harness.js`)
 
-**Emulators**:
-- **Mesen2** - Best debugger, cycle-accurate (manual download, native ARM64)
-- **jsnes** - Headless testing (via `lib/nes-test-harness.js`, npm package)
-
-**To be added when needed**:
-- **NEXXT** - Graphics editor (when creating first tileset)
-- **FamiStudio** - Music tracker (cross-platform alternative to FamiTracker)
+**Python** (scientific computing for audio analysis):
+- **miniforge** (conda) - Already in PATH
+- Why conda: Native ARM64 binaries for numpy/scipy, optimized BLAS
+- Install dependencies: `pip install numpy` or `conda install numpy`
+- Usage in scripts: Shebang `#!/opt/homebrew/Caskroom/miniforge/base/bin/python3`
+- No venv needed: Base environment sufficient for single-purpose analysis tools
 
 ---
 
