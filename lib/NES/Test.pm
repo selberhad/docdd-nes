@@ -29,6 +29,9 @@ our @EXPORT = qw(
     assert_ppu_mask
     assert_ppu_status
     assert_nmi_counter
+    assert_audio_playing
+    assert_silence
+    assert_frequency_near
 );
 
 our $VERSION = '0.01';
@@ -361,6 +364,94 @@ sub assert_nmi_counter {
             assert_ram($addr, $nmi_count);
         };
     }
+}
+
+# Audio assertions
+
+sub assert_audio_playing {
+    croak "No ROM loaded" unless $current_rom;
+
+    my $wav_path = _capture_audio(10);
+    my $analysis = _analyze_audio($wav_path);
+
+    ok($analysis->{is_playing}, sprintf("Audio is playing (RMS=%.4f)", $analysis->{rms}));
+}
+
+sub assert_silence {
+    croak "No ROM loaded" unless $current_rom;
+
+    my $wav_path = _capture_audio(10);
+    my $analysis = _analyze_audio($wav_path);
+
+    ok($analysis->{is_silence}, sprintf("Audio is silent (RMS=%.4f)", $analysis->{rms}));
+}
+
+sub assert_frequency_near {
+    my ($target_hz, $tolerance) = @_;
+    $tolerance //= 5;
+
+    croak "No ROM loaded" unless $current_rom;
+
+    my $wav_path = _capture_audio(10);
+    my $analysis = _analyze_audio($wav_path);
+
+    my $actual_freq = $analysis->{frequency};
+    my $diff = abs($actual_freq - $target_hz);
+
+    ok($diff <= $tolerance,
+       sprintf("Frequency %.1f Hz within %d Hz of %d Hz (diff=%.1f)",
+               $actual_freq, $tolerance, $target_hz, $diff));
+}
+
+sub _capture_audio {
+    my ($frames) = @_;
+    $frames //= 10;
+
+    my $response = _send_command('captureAudio', { frames => $frames });
+
+    if ($response->{status} ne 'ok') {
+        croak "Failed to capture audio: $response->{message}";
+    }
+
+    # Decode base64 WAV and write to temp file
+    require MIME::Base64;
+    my $wav_data = MIME::Base64::decode_base64($response->{wav});
+    my $temp_path = "/tmp/nes_audio_$$.wav";
+
+    open my $fh, '>', $temp_path or croak "Failed to write $temp_path: $!";
+    binmode $fh;
+    print $fh $wav_data;
+    close $fh;
+
+    return $temp_path;
+}
+
+sub _analyze_audio {
+    my ($wav_path) = @_;
+
+    # Find analyze-audio.py script
+    my $module_dir = dirname(abs_path(__FILE__));
+    my $analyze_script = "$module_dir/../../tools/analyze-audio.py";
+
+    unless (-f $analyze_script) {
+        croak "Audio analysis script not found: $analyze_script";
+    }
+
+    # Run Python analysis
+    my $json_output = `python3 $analyze_script $wav_path 2>&1`;
+    my $exit_code = $? >> 8;
+
+    if ($exit_code != 0) {
+        croak "Audio analysis failed: $json_output";
+    }
+
+    my $analysis = decode_json($json_output);
+
+    if (exists $analysis->{error}) {
+        croak "Audio analysis error: $analysis->{error}";
+    }
+
+    return $analysis;
 }
 
 # Internal helpers
