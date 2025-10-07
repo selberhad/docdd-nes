@@ -48,10 +48,15 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
   - PPU/APU technical specs
 
 **Workflow**:
-1. Cache wiki pages: `tools/fetch-wiki.sh PageName`
+1. Cache wiki pages: `tools/fetch-wiki.sh PageName` → `.webcache/nesdevwiki/PageName.html`
 2. Study and extract to topic-specific learning docs (`learnings/*.md`)
 3. Add attribution footer: `tools/add-attribution.pl learnings/doc.md`
 4. Reference wiki URLs (not .webcache paths) for GitHub/mdbook compatibility
+
+**Reading cached HTML files**:
+- Use `lynx -dump -nolist /path/to/file.html` to convert HTML → clean text
+- Strips HTML tags, formats tables, preserves structure
+- Much easier to parse than raw HTML
 
 ## Development Best Practices
 
