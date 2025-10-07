@@ -42,7 +42,7 @@ Project overview and vision. Dual deliverable (mdBook + toy library), DDD in gre
 Testing infrastructure code (production). Contains NES::Test Perl module (play-spec DSL) and nes-test-harness.js (jsnes wrapper). See lib/CODE_MAP.md.
 
 ### **tools/**
-Utility scripts for scaffolding, testing, inspection, and documentation. Bash/Perl automation tools.
+Utility scripts for scaffolding, testing, inspection, and documentation. Bash/Perl automation tools. See tools/CODE_MAP.md.
 
 ## Artifacts
 

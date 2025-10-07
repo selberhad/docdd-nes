@@ -40,68 +40,48 @@ See `DDD.md` for core methodology, `TOY_DEV_NES.md` for NES-specific toy develop
 
 ---
 
-## Current Status
-
-**Phase**: 🎓 Study complete → 🔨 Building toys (practical validation phase)
-
-**Progress:**
-- ✅ 52 wiki pages studied, 11 technical learning docs created
-- ✅ Toolchain installed (cc65, Mesen2, SDL2) - macOS ARM64 native
-- ✅ toy0_toolchain complete: First ROM boots! (13 tests passing, 24592-byte ROM)
-- ✅ 43 questions catalogued (32 open, 11 answered) - roadmap for toys
-
-**Next**: toy1 (hardware validation) - sprite DMA timing, PPU init, or controller input
-
----
-
 ## Repository Structure
 
 ```
 docdd-nes/
-├── README.md                    # ← You are here
-├── DDD.md                       # Core methodology
-├── TOY_DEV_NES.md              # NES-specific toy development
-├── ORIENTATION.md              # Project status, tools, next steps
-├── STUDY_PLAN.md               # Wiki study roadmap (phase 0 complete)
+├── CODE_MAP.md                  # Project structure reference
+├── AGENTS.md                    # Quick reference for AI assistants
+├── CLAUDE.md                    # Full development guidelines
+├── ORIENTATION.md               # Navigation guide
+├── DDD.md                       # Methodology (project-agnostic)
+├── TOY_DEV.md / TOY_DEV_NES.md  # Toy development workflows
+├── TESTING.md                   # Testing strategy (Perl DSL)
 │
-├── learnings/                  # Technical learning docs (theory)
-│   ├── wiki_architecture.md    # Core NES architecture
-│   ├── sprite_techniques.md    # PPU sprite programming
-│   ├── timing_and_interrupts.md # Cycle budgets, vblank
-│   ├── audio.md                # APU, sound engines
-│   ├── toolchain.md            # Tool selection
-│   └── .docdd/                 # Meta-learning docs
-│       └── 5_open_questions.md # 43 questions → toy roadmap
+├── learnings/                   # Technical learning docs
+│   ├── wiki_architecture.md     # Core NES architecture
+│   ├── sprite_techniques.md     # PPU sprite programming
+│   ├── audio.md                 # APU, sound engines
+│   └── .docdd/                  # Meta-learning docs
+│       └── 5_open_questions.md  # Questions → toy roadmap
 │
-├── toys/                       # Test ROM library (practice)
-│   └── toy0_toolchain/         # First toy: build validation
-│       ├── SPEC.md             # Behavioral contract
-│       ├── PLAN.md             # Implementation roadmap
-│       ├── LEARNINGS.md        # Findings (roadmap + artifact)
-│       ├── README.md           # Quick orientation
-│       ├── test.pl             # Perl test suite
-│       ├── hello.s             # Minimal 6502 assembly
-│       ├── nes.cfg             # Linker config
-│       ├── Makefile            # Build automation
-│       └── hello.nes           # Output ROM
+├── toys/                        # Test ROM library
+│   ├── STATUS.md                # Test counts, completion status
+│   ├── PLAN.md                  # Development roadmap
+│   ├── run-all-tests.pl         # Regression test runner
+│   └── toy*_*/                  # Individual toys (SPEC, PLAN, LEARNINGS)
 │
-├── tools/                      # Utility scripts
-│   ├── new-toy.pl              # Scaffold new toy (auto-numbered)
-│   ├── fetch-wiki.sh           # Cache NESdev wiki pages
-│   ├── add-attribution.pl      # Add wiki attribution footer
-│   ├── setup-brew-deps.sh      # Install Homebrew toolchain
-│   └── git-bootstrap.sh        # Initialize repo with staged commits
+├── lib/                         # Testing infrastructure (CODE_MAP.md)
+│   ├── NES/Test.pm              # Perl DSL for play-specs
+│   └── nes-test-harness.js      # jsnes headless wrapper
 │
-├── .webcache/                  # Cached wiki pages (52 pages, gitignored)
-└── docs/blog/                  # AI reflections (2 posts: study complete, first ROM)
+├── tools/                       # Utility scripts (CODE_MAP.md)
+│   ├── new-toy.pl               # Scaffold toy directory
+│   ├── new-rom.pl               # Scaffold ROM build
+│   ├── inspect-rom.pl           # Decode ROM headers
+│   └── setup-brew-deps.sh       # Install toolchain
+│
+├── docs/blog/                   # AI-written reflections
+│   └── README.md                # Blog post index
+│
+└── .webcache/                   # Cached wiki pages (gitignored)
 ```
 
-**Future structure** (as project evolves):
-- `src/` - Main game code (post-toy validation)
-- `graphics/` - CHR-ROM tiles, palettes
-- `music/` - FamiTracker files
-- `CODE_MAP.md` - Memory layout documentation
-- `SPEC.md` - Game design (after prototyping)
+**See `CODE_MAP.md` and subdirectory CODE_MAP files** for detailed documentation of each area.
 
 ---
 

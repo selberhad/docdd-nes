@@ -200,12 +200,12 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 - **DO NOT write after completing a toy** if continuing work in same session
 
 **At start of session:**
-- Read NEXT_SESSION.md for context
+- Read NEXT_SESSION.md for context (if it exists)
 - **Delete after reading**: `rm NEXT_SESSION.md` (keep context clean, force explicit handoff)
 
 **When updating for next session:**
-- Always delete and rewrite: `rm NEXT_SESSION.md && Write new content`
-- **DO NOT** use Read + Edit pattern (wastes tokens on old content)
+- Write fresh content (file already deleted at session start)
+- **DO NOT** read old content first (already consumed and deleted)
 - Include: Current status, what we learned, what to do next, key files to review
 - Make it clear where we left off and what's the immediate next action
 

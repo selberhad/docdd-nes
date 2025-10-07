@@ -89,6 +89,8 @@ See `docs/blog/README.md` for full index.
 
 - **`tools/setup-brew-deps.sh`** - Install Homebrew toolchain dependencies (cc65, sdl2)
 
+**See `tools/CODE_MAP.md`** for detailed documentation of each tool's implementation.
+
 ---
 
 ## Toolchain
