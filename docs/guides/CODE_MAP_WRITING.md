@@ -51,6 +51,25 @@ Subdirectories are mentioned with a reference to their own CODE_MAP.md:
 Production source code. Contains docdd_mcp/ package. See src/docdd_mcp/CODE_MAP.md.
 ```
 
+**When to create subdirectory CODE_MAP files:**
+- Subdirectory has multiple files with different purposes (needs logical grouping)
+- Deep hierarchy (3+ levels)
+- Substantial independent subsystem
+
+**When to describe inline (no subdirectory CODE_MAP):**
+- Subdirectory has <5 files serving the same purpose
+- Shallow namespace/organizational structure (e.g., `lib/Foo/Bar.pm` - just Perl module namespacing)
+- No navigation benefit from separate file
+
+**Example of inline description** (no separate CODE_MAP needed):
+```markdown
+### **NES/Test.pm**
+Core testing DSL module. Provides play-spec primitives for ROM validation.
+
+### **NES/Test/Toy.pm**
+Convenience module for toy tests. Auto-imports NES::Test and reduces boilerplate.
+```
+
 ### 3. Concise Descriptions
 Each file gets 1-3 sentences maximum:
 - What it is
