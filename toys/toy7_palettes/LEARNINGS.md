@@ -76,8 +76,85 @@
 
 ## Findings
 
-_(To be filled after implementation)_
+### Infrastructure Complete (Step 1-2)
+
+**✅ Phase 1 DSL Extended for Palette Testing**
+- Extended `lib/nes-test-harness.js` to expose `nes.ppu.vramMem[0x3F00-0x3F1F]` as palette array
+- Added `assert_palette(addr, expected)` to `lib/NES/Test.pm`
+- Supports address mirroring: `(addr - 0x3F00) & 0x1F` wraps $3F20+ to 0-31 range
+- Palette data successfully transmitted via JSON from Node.js harness to Perl test module
+
+**✅ Q1: Palette writes via PPUADDR + PPUDATA work**
+- Standard pattern: `LDA #$3F; STA $2006; LDA #$00; STA $2006; LDA #$0F; STA $2007`
+- Sequential writes auto-increment (PPUCTRL bit 2 default = increment by 1)
+- No dummy read needed for palette writes (unlike CHR-ROM reads)
+- jsnes accurately emulates basic palette write behavior
+
+**✅ Q7: jsnes palette testing validated**
+- jsnes stores palette in `ppu.vramMem[0x3F00-0x3F1F]`
+- Palette data accessible via test harness (32-byte array)
+- `assert_palette()` works correctly (tested with 0x2D write → reads back 45 decimal)
+- DEBUG=1 confirmed: palette array transmitted correctly through JSON protocol
+
+**⚠️ Q2-Q5: Palette mirroring behavior unclear**
+- Initial assumption about unused entry mirroring ($3F04 → $3F00) not working as expected
+- Got 0x2D from $3F00 (last write to $3F10) instead of 0x16 (from $3F04)
+- **Theory vs Practice gap**: Wiki documentation may differ from jsnes implementation
+- **Next step**: Use `tools/dump-palette.pl` to inspect full palette state and understand actual mirroring
+
+**Debugging tools created:**
+- `tools/dump-palette.pl` - palette RAM inspector (needs refinement)
+- DEBUG=1 tracing in harness + NES::Test.pm
+
+### Open Questions
+
+**Palette mirroring implementation:**
+- Does jsnes implement backdrop mirroring ($3F00 = $3F10)?
+- How does jsnes handle unused entries ($3F04, $3F08, $3F0C, $3F14, $3F18, $3F1C)?
+- Does $3F20+ region mirroring work in jsnes?
+- Need to read jsnes ppu.js `writeMem()` function to understand actual behavior
+
+**Next session priorities:**
+1. Investigate jsnes palette mirroring implementation (read ppu.js writeMem for $3F00-$3FFF range)
+2. Update ROM and tests to match actual jsnes behavior (not wiki theory)
+3. Document jsnes-specific quirks vs hardware
+4. Complete remaining test scenarios
 
 ## Patterns for Production
 
-_(To be filled after implementation)_
+**Palette write pattern (validated):**
+```asm
+; Write single palette entry
+BIT $2002       ; Reset PPUADDR latch
+LDA #$3F
+STA $2006       ; High byte
+LDA #$addr_low
+STA $2006       ; Low byte ($3F00-$3F1F)
+LDA #color
+STA $2007       ; Write color value
+
+; Sequential writes (auto-increment)
+; After first write, subsequent $2007 writes auto-increment address
+```
+
+**Test infrastructure pattern:**
+```perl
+use NES::Test;
+load_rom "rom.nes";
+
+at_frame 3 => sub {
+    assert_palette 0x3F00 => 0x0F;  # Backdrop
+    assert_palette 0x3F01 => 0x30;  # BG pal 0, color 1
+};
+```
+
+**Debugging pattern:**
+```bash
+# Enable detailed tracing
+env DEBUG=1 prove -v t/test.t
+
+# Outputs:
+# [DEBUG] palette slice length: 32, first few: [45,48,0,0]  # jsnes harness
+# [DEBUG-PERL] palette type: ARRAY, length: 32               # Perl module
+# [DEBUG-PERL] palette[0]=45                                  # Actual value
+```

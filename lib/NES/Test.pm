@@ -361,7 +361,7 @@ sub assert_palette {
     # $3F00-$3F1F maps to indices 0-31
     # $3F20-$3FFF mirrors to 0-31 (wrap using & 0x1F)
     my $index = ($addr - 0x3F00) & 0x1F;
-    my $actual = $emulator_state->{palette}[$index];
+    my $actual = $emulator_state->{palette}->[$index];  # Use -> for array ref
 
     if (ref $expected eq 'CODE') {
         # Allow code ref for flexible assertions
@@ -535,6 +535,15 @@ sub _update_state {
     }
 
     $emulator_state = $response->{data};
+
+    # Debug: Check if palette data exists
+    if ($ENV{DEBUG}) {
+        my $pal = $emulator_state->{palette};
+        my $pal_len = $pal ? scalar(@{$pal}) : 0;
+        if ($pal_len > 0) {
+            warn "[DEBUG-PERL] palette array length: $pal_len, palette[0]=" . (defined $pal->[0] ? $pal->[0] : 'undef') . "\n";
+        }
+    }
 }
 
 sub _cleanup_harness {

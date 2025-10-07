@@ -26,21 +26,37 @@ vblankwait2:
     BIT $2002
     BPL vblankwait2
 
-    ; Write palette entries
-    ; Set PPUADDR to $3F00 (backdrop color)
+    ; Write palette entries to test multiple scenarios
+
+    ; Test 1: Basic write + backdrop mirroring
+    ; Write to $3F10 (sprite pal 0, entry 0) - should mirror to $3F00
     BIT $2002       ; Reset PPUADDR latch
     LDA #$3F
     STA $2006       ; PPUADDR high byte
-    LDA #$00
-    STA $2006       ; PPUADDR low byte ($3F00)
+    LDA #$10
+    STA $2006       ; PPUADDR low byte ($3F10)
+    LDA #$2D        ; Green
+    STA $2007       ; Writes to $3F10, mirrors to $3F00
 
-    ; Write $0F to $3F00 (black)
-    LDA #$0F
-    STA $2007       ; PPUDATA writes to $3F00, auto-increments
+    ; Test 2: Unused entry mirroring
+    ; Write to $3F04 (BG pal 1, entry 0 - unused) - should mirror to $3F00
+    BIT $2002       ; Reset PPUADDR latch
+    LDA #$3F
+    STA $2006
+    LDA #$04
+    STA $2006       ; PPUADDR = $3F04
+    LDA #$16        ; Blue
+    STA $2007       ; Writes to $3F04, should mirror to $3F00
 
-    ; Write $30 to $3F01 (white) - auto-incremented from previous write
-    LDA #$30
-    STA $2007       ; PPUDATA writes to $3F01
+    ; Test 3: Region mirroring
+    ; Write to $3F01 - will be readable at $3F21, $3F41, etc.
+    BIT $2002
+    LDA #$3F
+    STA $2006
+    LDA #$01
+    STA $2006       ; PPUADDR = $3F01
+    LDA #$30        ; White
+    STA $2007       ; Writes to $3F01
 
 loop:
     JMP loop
