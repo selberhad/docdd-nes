@@ -1,96 +1,26 @@
 # ORIENTATION — docdd-nes
 
-**Quick Start**: NES game development project using **Doc-Driven Development (DDD)** methodology. Greenfield learning project to test DDD in a constraint-driven context.
+**Project**: NES game development using **Doc-Driven Development (DDD)** methodology. Greenfield learning project to test DDD in a constraint-driven context.
+
+**Purpose**: Document what we learn as we learn it. NES development has a steep learning curve - capture knowledge or lose it.
 
 ---
 
-## Current State (October 2025)
-
-**Phase**: 🎮 **Four Toys Complete → Next Subsystem**
-
-### Progress Summary
-- ✅ **52 wiki pages studied** (all core priorities complete)
-- ✅ **11 technical learning docs** created
-- ✅ **5 meta-learning docs** tracking progress
-- ✅ **toy0_toolchain complete** (build pipeline validated, 6x faster than estimated)
-- ✅ **Debug infrastructure surveyed** (jsnes chosen for Phase 1 automation)
-- ✅ **Testing strategy defined** (`TESTING.md` - LLM-driven play-spec workflow)
-- ✅ **NES::Test Phase 1 implemented** (Perl DSL + persistent jsnes harness)
-- ✅ **toy1_sprite_dma complete** (OAM DMA validated, 20/20 tests passing, 45 min)
-- ✅ **toy2_ppu_init complete** (2-vblank warmup validated, 5/5 tests passing, 30 min)
-- ⚠️ **toy3_controller partial** (4/8 tests passing, timeboxed, moving on - controller read logic bug)
-- ✅ **toy4_nmi complete** (NMI handler + integration validated, 18/18 tests passing, 45 min)
-
-### What We Know
-**Complete NES architecture understanding documented in `learnings/`**:
-- Memory maps (CPU/PPU), timing (vblank budgets, cycle counting)
-- PPU (registers, sprites, scrolling, palettes, nametables)
-- APU (5 channels, FamiTone2 sound engine, music workflow)
-- Controllers (3-step read, edge detection, DPCM conflicts)
-- 6502 optimization (cycle/byte trade-offs, zero page, jump tables)
-- Mappers (NROM → UNROM → MMC1 progression, CHR-ROM vs CHR-RAM)
-- Math routines, compression, toolchain selection (asm6f, Mesen, NEXXT, FamiTracker)
-
-### Decisions Made
-- **Assembler**: cc65 (ca65/ld65) - Homebrew, native ARM64, custom nes.cfg
-- **Emulator (dev)**: Mesen2 - Best debugger, cycle-accurate, native ARM64
-- **Emulator (test)**: jsnes - Headless automation, direct API (Phase 1 testing)
-- **Testing**: Perl DSL (`NES::Test`) - Play-specs as executable contracts (see `TESTING.md`)
-- **Graphics**: NEXXT (when needed)
-- **Audio**: FamiStudio + FamiTone2 engine (cross-platform)
-- **Mapper strategy**: Start NROM, migrate to UNROM when >32KB
-- **Optimization policy**: Avoid unofficial opcodes unless proven bottleneck
-
----
-
-## Next Step: Choose Next Subsystem
-
-**toy4 findings** (see `toys/toy4_nmi/LEARNINGS.md`):
-- ✅ **Full validation** - 18/18 tests passing (100% success, 45 min)
-- ✅ **4-frame init offset discovered** - First NMI fires at frame 4 (not frame 1)
-- ✅ **Pattern 2 (NMI only) validated** - All work in NMI, main loop idles
-- ✅ **Integration successful** - toy1 (OAM DMA) + toy2 (PPU init) + toy4 (NMI) compose cleanly
-- ✅ **jsnes NMI emulation accurate** - Deterministic across 260 frames
-- ✅ **Test structure refined** - Split into t/*.t files for independent scenarios
-- ✅ **Production-ready patterns extracted** - Complete init + NMI handler documented
-
-**Test suite**: 51/51 passing (100%) - see `toys/STATUS.md`
-
-**Pattern validated (4x):** LEARNINGS → SPEC → PLAN → TDD → Document findings → Move forward
-
----
-
-## Tools & Environment
-
-**Toolchain** (✅ installed, macOS ARM64 native):
-- **cc65** (ca65/ld65) - Assembler + linker (via Homebrew)
-- **Mesen2** - Emulator/debugger (native ARM64, cycle-accurate)
-- **SDL2** - Mesen2 dependency (via Homebrew)
-
-**To be added when needed**:
-- **NEXXT** - Graphics editor (when creating first tileset)
-- **FamiStudio** - Music tracker (when creating first music, cross-platform alternative to Windows-only FamiTracker)
-- **blargg test ROMs** - Validation suite (download when validating emulator)
-
-**Build workflow** (to be implemented):
-- Makefile for assembly + asset integration
-- Symbol file generation for debugging
-- Auto-convert graphics/music on change
-
----
-
-## Key Files
+## Project Structure
 
 ### Documentation (Start Here)
-- **`ORIENTATION.md`** ← You are here
-- **`TESTING.md`** - **Testing strategy for LLM-driven development** (14 questions answered, Perl DSL design)
-- **`toys/PLAN.md`** - **16-toy development plan** (progressive automation, Phase 1→2→3)
-- **`STUDY_PLAN.md`** - Wiki study roadmap (52 pages complete)
-- **`CLAUDE.md`** - NES development guidelines for Claude
-- **`DDD.md`** - Doc-Driven Development methodology
-- **`TOY_DEV.md`** - Test ROM development workflow
 
-### Learning Artifacts (Study Output)
+- **`ORIENTATION.md`** ← You are here (navigation guide)
+- **`NEXT_SESSION.md`** - Current status, what to do next (ephemeral, session handoff)
+- **`DDD.md`** - Doc-Driven Development methodology (project-agnostic)
+- **`TOY_DEV.md`** - Toy development workflow (project-agnostic)
+- **`TOY_DEV_NES.md`** - NES-specific toy development workflow
+- **`TESTING.md`** - Testing strategy for LLM-driven development (Perl DSL design)
+- **`CLAUDE.md`** - NES development guidelines and project conventions
+- **`STUDY_PLAN.md`** - Wiki study roadmap
+
+### Learning Artifacts
+
 **Technical learnings** (`learnings/`):
 - `wiki_architecture.md` - Core NES architecture
 - `getting_started.md` - Initialization, registers, limitations
@@ -102,51 +32,132 @@
 - `mappers.md` - Bank switching and memory expansion
 
 **Meta-learnings** (`learnings/.docdd/`):
-- `0_initial_questions.md` - Original 10 question categories (all answered)
-- `1_essential_techniques.md` - Priority 1-2 progress
-- `2_toolchain_optimization.md` - Priority 2.5-3 progress
-- `3_audio_complete.md` - Priority 4 progress
-- `4_mappers_complete.md` - Priority 5 progress
-- `5_open_questions.md` - **36 open questions + 7 answered** (roadmap for practical work)
+- Progress tracking after each study priority
+- `5_open_questions.md` - Consolidated questions with cross-references
 
-### Utilities
+### Toy Artifacts
 
-**Scaffolding:**
-- `tools/new-toy.pl <name>` - Scaffold new toy directory (SPEC, PLAN, README, LEARNINGS)
-- `tools/new-rom.pl <name> [dir]` - Scaffold ROM build (Makefile, nes.cfg, .s skeleton, play-spec.pl)
+**Pattern**: Each `toys/toyN_name/` directory contains:
+- `SPEC.md` - Behavioral contract
+- `PLAN.md` - Implementation roadmap
+- `LEARNINGS.md` - Findings and patterns for production
+- `README.md` - What this toy validates
+- Source files (`.s`, `.cfg`, `Makefile`)
+- Tests (`t/*.t` - Perl test files using `NES::Test`)
 
-**Testing:**
-- `toys/run-all-tests.pl` - Run all toy regression tests (uses `prove`)
-- `tools/inspect-rom.pl <rom.nes>` - Decode iNES header and show reset vectors
+**See `toys/STATUS.md`** for test counts and completion status.
 
-**Documentation:**
-- `tools/fetch-wiki.sh` - Cache NESdev wiki pages to `.webcache/`
-- `tools/add-attribution.pl` - Add wiki attribution to learning docs
-
-**Setup:**
-- `tools/setup-brew-deps.sh` - Install Homebrew toolchain dependencies (cc65, sdl2)
-- `.webcache/` - Cached wiki pages (52 pages, gitignored)
+**See `toys/PLAN.md`** for development roadmap (16 toys planned).
 
 ### Blog (AI-Written Reflections)
-- `docs/blog/1_study-phase-complete.md` - Study phase complete (52 pages → 16 docs)
-- `docs/blog/2_first-rom-boots.md` - toy0 complete (6x faster than estimated, TDD infrastructure)
-- `docs/blog/3_headless-testing-search.md` - Emulator survey (jsnes chosen over TetaNES/FCEUX)
-- `docs/blog/4_testing-vision.md` - **Testing strategy designed** (Perl DSL, LLM workflow, 3-phase automation)
 
-### Toy Artifacts (Built)
-- `toys/toy0_toolchain/` - ✅ Build pipeline (Makefile, nes.cfg, 6/6 tests passing)
-- `toys/toy1_sprite_dma/` - ✅ OAM DMA validation (20/20 tests passing, 45 min)
-- `toys/toy2_ppu_init/` - ✅ PPU 2-vblank warmup (5/5 tests passing, 30 min)
-- `toys/toy3_controller/` - ⚠️ Controller input (4/8 tests passing, partial - LSR/ROL bug)
-- `toys/toy4_nmi/` - ✅ NMI handler + integration (18/18 tests passing, 45 min)
-- `toys/debug/0_survey/` - ✅ Emulator research (LEARNINGS.md)
-- `toys/debug/1_jsnes_wrapper/` - ✅ jsnes headless wrapper (16 tests passing)
-- `toys/debug/2_tetanes/` - ✅ TetaNES investigation (rejected - API limitations)
+`docs/blog/` contains posts chronicling the development process:
+- Study phase completion
+- First ROM boots
+- Testing infrastructure design
+- Meta-learnings about LLM collaboration
 
-### To Be Created (Next Session)
-- Next toy (scrolling, audio, VRAM buffer, or return to controller debug)
-- `src/` - Main game assembly (after toy prototyping)
-- `SPEC.md` - Game design (after toy validation)
+See `docs/blog/README.md` for full index.
+
+### Main Game (Future)
+
+- `src/` - Main game assembly (created after toy prototyping validates patterns)
+- `SPEC.md` - Game design (created when ready to build)
+- `CODE_MAP.md` - Memory layout documentation
+
+---
+
+## Tools & Utilities
+
+### Scaffolding
+
+- **`tools/new-toy.pl <name>`** - Scaffold new toy directory (SPEC, PLAN, README, LEARNINGS)
+- **`tools/new-rom.pl <name> [dir]`** - Scaffold ROM build (Makefile, nes.cfg, .s skeleton, play-spec.pl)
+
+### Testing
+
+- **`toys/run-all-tests.pl`** - Run all toy regression tests (uses `prove`)
+- **`tools/inspect-rom.pl <rom.nes>`** - Decode iNES header and show reset vectors
+
+### Documentation
+
+- **`tools/fetch-wiki.sh <PageName>`** - Cache NESdev wiki pages to `.webcache/`
+- **`tools/add-attribution.pl <file.md>`** - Add wiki attribution to learning docs
+- `.webcache/` - Cached wiki pages (gitignored, created on demand)
+
+### Setup
+
+- **`tools/setup-brew-deps.sh`** - Install Homebrew toolchain dependencies (cc65, sdl2)
+
+---
+
+## Toolchain
+
+**Development machine**: macOS Apple Silicon (ARM64) - prefer native tools or Homebrew packages.
+
+**Core tools** (install via `tools/setup-brew-deps.sh`):
+- **cc65** (ca65/ld65) - Assembler + linker
+- **SDL2** - Mesen2 dependency
+
+**Emulators**:
+- **Mesen2** - Best debugger, cycle-accurate (manual download, native ARM64)
+- **jsnes** - Headless testing (via `lib/nes-test-harness.js`, npm package)
+
+**To be added when needed**:
+- **NEXXT** - Graphics editor (when creating first tileset)
+- **FamiStudio** - Music tracker (cross-platform alternative to FamiTracker)
+
+---
+
+## Testing Infrastructure
+
+**Framework**: `NES::Test` Perl module - play-specs as executable contracts
+
+**See `TESTING.md`** for full testing strategy, DSL design, and usage
+
+---
+
+## Workflow Patterns
+
+### Discovery (Learning Phase)
+
+1. Read `NEXT_SESSION.md` for current status and next steps
+2. Check `learnings/.docdd/5_open_questions.md` for what needs validation
+3. Use `tools/new-toy.pl <name>` to scaffold toy
+4. Follow LEARNINGS → SPEC → PLAN → TDD cycle (see `TOY_DEV.md`)
+5. Extract production patterns to LEARNINGS.md
+6. Update `NEXT_SESSION.md` for next session
+
+### Navigation Tips
+
+- **Looking for architecture info?** → `learnings/*.md`
+- **Looking for open questions?** → `learnings/.docdd/5_open_questions.md`
+- **Looking for test examples?** → Any `toys/toyN_name/t/*.t`
+- **Looking for current status?** → `NEXT_SESSION.md`, `toys/STATUS.md`
+- **Looking for methodology?** → `DDD.md`, `TOY_DEV.md`, `TESTING.md`
+- **Looking for project conventions?** → `CLAUDE.md`
+
+---
+
+## Common Commands
+
+```bash
+# Scaffold new toy
+tools/new-toy.pl toy6_scrolling
+
+# Scaffold ROM build in existing toy
+cd toys/toy6_scrolling
+../../tools/new-rom.pl scroll
+
+# Build ROM
+make
+
+# Inspect ROM binary
+../../tools/inspect-rom.pl scroll.nes
+
+# Run all toy tests (from toys/ directory)
+cd toys && ./run-all-tests.pl
+```
 
 ---
 
