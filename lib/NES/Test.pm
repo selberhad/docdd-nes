@@ -28,6 +28,7 @@ our @EXPORT = qw(
     assert_ppu_ctrl
     assert_ppu_mask
     assert_ppu_status
+    assert_palette
     assert_nmi_counter
     assert_audio_playing
     assert_silence
@@ -349,6 +350,26 @@ sub assert_ppu_status {
 
     my $actual = $emulator_state->{ppu}{status};
     is($actual, $expected, sprintf("PPU STATUS = 0x%02X", $expected));
+}
+
+sub assert_palette {
+    my ($addr, $expected) = @_;
+
+    croak "No emulator state" unless $emulator_state;
+
+    # Convert PPU address to palette array index
+    # $3F00-$3F1F maps to indices 0-31
+    # $3F20-$3FFF mirrors to 0-31 (wrap using & 0x1F)
+    my $index = ($addr - 0x3F00) & 0x1F;
+    my $actual = $emulator_state->{palette}[$index];
+
+    if (ref $expected eq 'CODE') {
+        # Allow code ref for flexible assertions
+        local $_ = $actual;
+        ok($expected->(), sprintf("Palette[0x%04X] matches condition", $addr));
+    } else {
+        is($actual, $expected, sprintf("Palette[0x%04X] = 0x%02X", $addr, $expected));
+    }
 }
 
 sub assert_nmi_counter {
