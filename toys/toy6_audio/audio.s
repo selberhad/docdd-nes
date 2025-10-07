@@ -47,10 +47,10 @@ vblankwait2:
     STA $2000
 
 loop:
-    ; Check if frame 11 reached (change AFTER frame 10)
+    ; Check if frame 100 reached (change to 800 Hz)
     LDA frame_counter
-    CMP #11
-    BNE @skip_change
+    CMP #100
+    BNE @check_silence
 
     ; Change to 800 Hz
     ; Period = 111860.8 / 800 - 1 = 139
@@ -58,8 +58,18 @@ loop:
     STA $4002
     LDA #>139
     STA $4003
+    JMP @done
 
-@skip_change:
+@check_silence:
+    ; Check if frame 150 reached (silence)
+    CMP #150
+    BNE @done
+
+    ; Silence by setting volume to 0
+    LDA #%10110000   ; 50% duty, volume 0
+    STA $4000
+
+@done:
     JMP loop
 
 ; Initialize APU to known state (all channels silent)

@@ -8,10 +8,10 @@ use NES::Test;
 
 load_rom "$Bin/../audio.nes";
 
-# Test: ROM plays 400 Hz tone initially
-at_frame 10 => sub {
-    assert_audio_playing();
-    assert_frequency_near(400, 5);
+# Test: Silence achieved by setting volume to 0
+# ROM should be modified to silence at frame 150
+at_frame 160 => sub {
+    assert_silence();
 };
 
 done_testing();

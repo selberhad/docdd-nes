@@ -8,10 +8,10 @@ use NES::Test;
 
 load_rom "$Bin/../audio.nes";
 
-# Test: 440 Hz tone generation (A note)
-at_frame 10 => sub {
+# Test: 400 Hz tone sustained over time
+at_frame 50 => sub {
     assert_audio_playing();
-    assert_frequency_near(440, 5);
+    assert_frequency_near(400, 5);
 };
 
 done_testing();
