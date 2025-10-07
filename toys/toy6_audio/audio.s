@@ -29,6 +29,15 @@ vblankwait2:
     ; Initialize APU
     JSR init_apu
 
+    ; Play 440 Hz tone (A note)
+    ; Period = 111860.8 / 440 - 1 = 253
+    LDA #<253
+    STA $4002        ; Period low byte
+    LDA #>253
+    STA $4003        ; Period high byte
+    LDA #%10111111   ; 50% duty, max volume
+    STA $4000
+
 loop:
     JMP loop
 
