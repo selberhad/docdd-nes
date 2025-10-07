@@ -39,17 +39,21 @@ sub write_doc {
     close $fh;
 }
 
+write_doc('LEARNINGS.md', 'LEARNINGS — ' . ucfirst($name),
+    "<!-- Read docs/guides/LEARNINGS_WRITING.md before writing this document -->\n\n" .
+    "## Learning Goals\n\n### Questions to Answer\n\n### Decisions to Make\n\n## Findings\n\n## Patterns for Production\n");
+
 write_doc('SPEC.md', 'SPEC — ' . ucfirst($name),
+    "<!-- Read docs/guides/SPEC_WRITING.md before writing this document -->\n\n" .
     "## Purpose\n\n## Input/Output\n\n## Success Criteria\n");
 
 write_doc('PLAN.md', 'PLAN — ' . ucfirst($name),
+    "<!-- Read docs/guides/PLAN_WRITING.md before writing this document -->\n\n" .
     "## Steps\n\n1. [ ] \n\n## Risks\n\n## Dependencies\n");
 
 write_doc('README.md', ucfirst($name) . ' (toy' . $num . ')',
+    "<!-- Read docs/guides/README_WRITING.md before writing this document -->\n\n" .
     "**Quick context**: \n\n## What This Toy Does\n\n## Key APIs\n\n## Gotchas\n");
-
-write_doc('LEARNINGS.md', 'LEARNINGS — ' . ucfirst($name),
-    "## Learning Goals\n\n### Questions to Answer\n\n### Decisions to Make\n\n## Findings\n\n## Patterns for Production\n");
 
 print "\n";
 print "✅ Created $dir/\n";
