@@ -191,11 +191,17 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 - After completing any task, propose the next logical action
 - Don't say "done" or "ready for next step" - suggest a specific next move
 - Identify next task from STUDY_PLAN.md, SPEC.md, TOY_PLAN.md, or infer from context
-- Wait for explicit approval before proceeding
-- Examples:
-  - "Created STUDY_PLAN.md. Want to start working through Priority 1 pages?"
+- **Wait for explicit approval before proceeding**
+
+**Format**: "Should I [specific action], or [alternative]?"
+- ✅ Good: "Should I start Step 1 (extend jsnes harness), or are we done for tonight?"
+- ❌ Bad: "Continue, or wrap up?" (too vague - forces user to clarify what "continue" means)
+- ❌ Bad: "Ready for next session." (declares stopping instead of proposing)
+
+**Examples**:
+  - "Created STUDY_PLAN.md. Should I start working through Priority 1 pages?"
   - "Cached wiki pages. Should I analyze them and create learnings doc?"
-  - "Built test ROM. Next: Build controller input test to validate button reading?"
+  - "Built test ROM. Should I build controller input test to validate button reading?"
 
 ### NEXT_SESSION.md Protocol
 **CRITICAL: Only update at END OF SESSION, not end of toy:**
