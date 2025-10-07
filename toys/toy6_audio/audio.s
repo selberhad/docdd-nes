@@ -5,6 +5,9 @@
     .byte $01, $01, $00, $00
     .res 8, $00
 
+.segment "ZEROPAGE"
+frame_counter: .res 1
+
 .segment "CODE"
 
 reset:
@@ -16,6 +19,7 @@ reset:
     INX  ; X = 0
     STX $2000  ; PPUCTRL = 0
     STX $2001  ; PPUMASK = 0
+    STX frame_counter  ; Initialize frame counter
     BIT $2002  ; Clear vblank
 
     ; Wait 2 vblanks
@@ -29,16 +33,33 @@ vblankwait2:
     ; Initialize APU
     JSR init_apu
 
-    ; Play 440 Hz tone (A note)
-    ; Period = 111860.8 / 440 - 1 = 253
-    LDA #<253
+    ; Play 400 Hz tone initially
+    ; Period = 111860.8 / 400 - 1 = 279
+    LDA #<279
     STA $4002        ; Period low byte
-    LDA #>253
+    LDA #>279
     STA $4003        ; Period high byte
     LDA #%10111111   ; 50% duty, max volume
     STA $4000
 
+    ; Enable NMI
+    LDA #%10000000
+    STA $2000
+
 loop:
+    ; Check if frame 11 reached (change AFTER frame 10)
+    LDA frame_counter
+    CMP #11
+    BNE @skip_change
+
+    ; Change to 800 Hz
+    ; Period = 111860.8 / 800 - 1 = 139
+    LDA #<139
+    STA $4002
+    LDA #>139
+    STA $4003
+
+@skip_change:
     JMP loop
 
 ; Initialize APU to known state (all channels silent)
@@ -66,6 +87,9 @@ init_apu:
     .byte $00,$00,$00,$00  ; DMC
 
 nmi_handler:
+    INC frame_counter
+    RTI
+
 irq_handler:
     RTI
 
