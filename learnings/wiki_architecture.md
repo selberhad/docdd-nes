@@ -48,7 +48,7 @@ The PPU has its own **separate 14-bit address space**:
 | $2800-$2BFF | $0400 | Nametable 2 + Attribute Table 2 | Cartridge or internal VRAM |
 | $2C00-$2FFF | $0400 | Nametable 3 + Attribute Table 3 | Cartridge or internal VRAM |
 | $3000-$3EFF | $0F00 | Mirror of $2000-$2EFF (unused) | - |
-| $3F00-$3F1F | $0020 | **Palette RAM** (color indexes) | Internal to PPU |
+| $3F00-$3F1F | $0020 | **Palette RAM** (25 unique locations, 7 mirror backdrop) | Internal to PPU |
 | $3F20-$3FFF | $00E0 | Mirrors of $3F00-$3F1F | Internal to PPU |
 
 **Key Facts**:
@@ -56,7 +56,7 @@ The PPU has its own **separate 14-bit address space**:
 - Pattern tables hold sprite/tile graphics (CHR-ROM)
 - Nametables define background layout (32x30 tiles = 960 bytes)
 - Attribute tables assign palettes to 2x2 tile groups (64 bytes each)
-- Palette RAM: 32 bytes total (not configurable by cartridge)
+- Palette RAM: 32-byte address space with 25 unique storage locations (backdrop mirroring)
 
 ### PPU Registers (CPU addresses)
 
@@ -121,11 +121,18 @@ The PPU has its own **separate 14-bit address space**:
 - Sprites use **dynamic RAM** - decays if rendering disabled
 
 ### Palette System
-- **32 bytes** of palette RAM at $3F00-$3F1F
+- **32 bytes** address space at $3F00-$3F1F, but only **25 unique storage locations**
 - Background palettes: $3F00-$3F0F (4 palettes x 4 colors)
 - Sprite palettes: $3F10-$3F1F (4 palettes x 4 colors)
-- Color index $00 is transparent
-- Universal background color at $3F00
+- Color index $00 is transparent in each palette
+- Universal **backdrop color** at $3F00 (shared storage)
+
+**Critical mirroring behavior**:
+- $3F00 = $3F10: Backdrop color accessible through both BG and sprite palette base
+- $3F04 = $3F08 = $3F0C = $3F00: BG palette entries 1-3, color 0 mirror backdrop
+- $3F14 = $3F18 = $3F1C = $3F00: Sprite palette entries 1-3, color 0 mirror backdrop
+- All 7 addresses ($3F00, $3F04, $3F08, $3F0C, $3F10, $3F14, $3F18, $3F1C) access the **same storage**
+- These "transparent color" addresses are normally unused during rendering but **writable and readable**
 
 ### Pattern Tables (CHR-ROM)
 - Two pattern tables: $0000-$0FFF and $1000-$1FFF
@@ -422,7 +429,7 @@ sta buttons_released
 
 ### Graphics Constraints
 - 2 bits per pixel = **4 colors per tile/sprite**
-- Palette: 32 bytes total (4 bg + 4 sprite palettes x 4 colors)
+- Palette: 32-byte address space (25 unique colors + 7 backdrop mirrors)
 - Pattern tables: 256 tiles per table (8x8 pixels each)
 - Nametable: 32x30 tiles = 960 bytes
 
@@ -444,8 +451,9 @@ sta buttons_released
 1. **Toggle Reset**: Reading $2002 resets PPUADDR/PPUSCROLL write toggle
 2. **Sprite Y-1**: Must subtract 1 from Y coordinate before writing to OAM
 3. **Sprite 0 Limits**: No hit at x=0-7 (if clipping on), x=255, or if transparent
-4. **Palette $3F00**: Universal background color (all palettes use it)
-5. **OAM Decay**: Dynamic RAM decays without rendering (~1.3ms)
+4. **Palette Backdrop Mirroring**: $3F00/$3F04/$3F08/$3F0C/$3F10/$3F14/$3F18/$3F1C all access same storage
+5. **Palette Entry 0**: Transparent in all palettes, but writable/readable (backdrop override effects)
+6. **OAM Decay**: Dynamic RAM decays without rendering (~1.3ms)
 
 ### Timing Gotchas
 1. **NMI vs VBlank**: NMI is a notification, VBlank is a time period
