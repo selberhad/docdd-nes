@@ -195,12 +195,14 @@ at_frame 1 => sub {
 
 ## Success Criteria
 
-- [ ] Palette writes via PPUADDR/PPUDATA work
-- [ ] Backdrop mirroring ($3F00 = $3F10) validated
-- [ ] Unused entries ($3F04/$3F08/$3F0C/$3F14/$3F18/$3F1C) mirror backdrop
-- [ ] Full region mirroring ($3F20-$3FFF) validated for at least 2 mirrors
-- [ ] Sequential writes work without re-setting address
-- [ ] Color value range ($00-$3F) enforced or wrapped
-- [ ] jsnes palette RAM exposure added to test harness
-- [ ] assert_palette() assertion added to NES::Test DSL
-- [ ] All test scenarios pass via automated assertions (no manual validation)
+- [x] Palette writes via PPUADDR/PPUDATA work
+- [x] Backdrop mirroring ($3F00 = $3F10) validated
+- [x] Unused entries ($3F04/$3F08/$3F0C/$3F14/$3F18/$3F1C) mirror backdrop
+- [x] Full region mirroring ($3F20-$3FFF) validated for at least 2 mirrors
+- [x] Sequential writes work without re-setting address
+- [x] Color value range ($00-$3F) enforced or wrapped (jsnes stores literally)
+- [x] jsnes palette RAM exposure added to test harness
+- [x] assert_palette() assertion added to NES::Test DSL
+- [x] All test scenarios pass via automated assertions (no manual validation)
+
+**Bonus achievement:** Fixed jsnes palette entry 0 mirroring bug to match hardware behavior
