@@ -231,6 +231,10 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 
 **Length:** 150-250 lines max.
 
+**After writing:**
+- Read `docs/blog/README.md` to refresh house style memory
+- Add new post summary to README.md TOC (matching existing format)
+
 ---
 
 ## NES-Specific Guidelines
