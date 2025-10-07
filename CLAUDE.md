@@ -8,24 +8,13 @@ This is **docdd-nes** - an NES game development project using **Doc-Driven Devel
 
 **Philosophy**: Document what we learn as we learn it. NES development has a steep learning curve - capture knowledge or lose it.
 
+**Navigation**: See `ORIENTATION.md` for project structure, tools, and how to get around. See `NEXT_SESSION.md` for current status and next steps.
+
 ## Core Methodology
 
 This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a learning-driven workflow combining Discovery (understand NES architecture) + Execution (build the game). See `DDD.md` for full methodology.
 
 **Long-term deliverable**: Compile an mdbook from blog posts, `learnings/` docs, and meta-docs - a cleaned up, streamlined condensation of the NESdev wiki. Oriented for LLM agents but human-friendly (clear, concise language works for both). The mdbook source material is being written now (not separate future work).
-
-### Current Documentation Structure
-
-**Primary docs**:
-- **ORIENTATION.md**: START HERE - project status, tools, next steps
-- **STUDY_PLAN.md**: Wiki study roadmap and next phase options
-- **learnings/**: 11 technical learning docs (architecture, techniques, toolchain)
-- **learnings/.docdd/**: 5 meta-learning docs (progress tracking, open questions)
-
-**Future docs** (when building):
-- **SPEC.md**: Game design specification
-- **CODE_MAP.md**: Memory layout and code organization
-- **CONSTRAINTS.md**: Hardware limitations encountered and workarounds
 
 ## Operational Modes
 
@@ -124,7 +113,7 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 - Update docs with actual measurements after test ROMs
 
 **Test ROM workflow** (for validation phase):
-- See `TOY_DEV.md` for full methodology
+- See `TOY_DEV.md` and `TOY_DEV_NES.md` for full methodology
 - One test ROM per subsystem (focused experiments)
 - Update learning docs with real cycle counts and edge cases
 
@@ -132,13 +121,7 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 
 **CRITICAL**: Development machine is M1 MacBook Pro (arm64). Prefer native ARM64 tools or Homebrew packages with arm64 bottles.
 
-**Homebrew-first policy**: Install via `brew` when available (ensures arm64 compatibility + easy updates).
-
-**Compatibility checks**:
-- ✅ Native ARM64 binary available
-- ✅ Homebrew bottle (pre-compiled for arm64)
-- ⚠️ Rosetta 2 required (Intel binary, translated)
-- ❌ Incompatible / requires manual compilation
+**See `ORIENTATION.md`** for toolchain details, installation instructions, and available tools.
 
 ---
 
@@ -243,72 +226,6 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 **Themes:** Documentation as deliverable, theory vs practice, lessons for others
 
 **Length:** 150-250 lines max.
-
-## Key Files Reference
-
-**Start Here**:
-- `ORIENTATION.md` - Project status, tools, next steps
-- `STUDY_PLAN.md` - Wiki study roadmap (52 pages complete, practical work next)
-
-**Learning Artifacts** (study output):
-- `learnings/*.md` - 11 technical docs (architecture, techniques, toolchain)
-- `learnings/.docdd/*.md` - 5 meta-docs (progress, open questions)
-- See `learnings/README.md` for full index
-
-**Methodology**:
-- `DDD.md` - Doc-Driven Development methodology
-- `TOY_DEV.md` - Test ROM development workflow
-
-**Utilities**:
-- `tools/fetch-wiki.sh` - Cache NESdev wiki pages
-- `tools/add-attribution.pl` - Add wiki attribution to docs
-- `tools/new-toy.pl <name>` - **Scaffold new toy directory** (SPEC.md, PLAN.md, README.md, LEARNINGS.md)
-- `.webcache/` - Cached wiki pages (52 pages, gitignored)
-
-**To Be Created** (next phase):
-- `src/` - 6502 assembly source
-- `test-roms/` - Discovery test ROMs
-- `Makefile` - Build automation
-- `CODE_MAP.md` - Memory layout documentation
-- `SPEC.md` - Game design
-
-## NES Toolchain (macOS ARM64)
-
-**Confirmed working on Apple Silicon**:
-
-### Assembler
-**Option A** (Homebrew, recommended):
-- `brew install cc65` - Includes ca65 assembler
-- ✅ Native arm64 bottle available
-- ✅ Well-documented, mature toolchain
-- ⚠️ Slightly different syntax than asm6f (but extensive docs available)
-
-**Option B** (manual build):
-- Compile asm6f from source: https://github.com/freem/asm6f
-- Simple C code: `gcc -o asm6f asm6f.c`
-- ✅ Simple "tutorial" syntax (as documented in learnings)
-- ❌ Requires manual compilation
-
-### Emulator
-**Mesen2** (recommended):
-- Native ARM64 build: https://github.com/SourMesen/Mesen2/releases
-- Download `Mesen_2.1.1_macOS_ARM64_AppleSilicon.zip`
-- Requires: `brew install sdl2`
-- ✅ Best debugger, cycle-accurate
-- ✅ Native Apple Silicon support
-
-**FCEUX** (alternative):
-- `brew install fceux`
-- ✅ Available via Homebrew
-- ⚠️ 61 dependencies, heavier install
-- Use for cross-validation
-
-### Graphics Tools
-**NEXXT**: Check https://frankengraphics.itch.io/nexxt for macOS build
-
-### Audio Tools
-**FamiTracker**: Windows-only, may need Wine or alternative
-- Alternative: **FamiStudio** (cross-platform, modern)
 
 ---
 
