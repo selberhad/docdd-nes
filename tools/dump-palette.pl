@@ -11,12 +11,11 @@ my $frame = $ARGV[1] || 3;
 load_rom $rom_path;
 
 print "Palette RAM at frame $frame:\n";
-print "=" x 60 . "\n";
+print "=" x 70 . "\n";
 
 at_frame $frame => sub {};  # Trigger state update
 
 # Now read palette via NES::Test internals
-# We need to access the emulator_state directly - use eval to get package variable
 my $state;
 {
     no strict 'refs';
@@ -25,9 +24,12 @@ my $state;
 
 die "Failed to get emulator state\n" unless $state && $state->{palette};
 
-# Backdrop
-printf "  \$3F00 (backdrop):        0x%02X\n", $state->{palette}[0x00];
-printf "  \$3F10 (backdrop mirror): 0x%02X\n", $state->{palette}[0x10];
+# Show all 8 backdrop mirror addresses (should all be identical on hardware)
+print "Backdrop mirrors (hardware: all 8 should match):\n";
+for my $addr (0x3F00, 0x3F04, 0x3F08, 0x3F0C, 0x3F10, 0x3F14, 0x3F18, 0x3F1C) {
+    my $idx = $addr - 0x3F00;
+    printf "  \$%04X: 0x%02X (%3d)\n", $addr, $state->{palette}[$idx], $state->{palette}[$idx];
+}
 print "\n";
 
 # BG palettes

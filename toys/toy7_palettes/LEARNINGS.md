@@ -96,11 +96,35 @@
 - `assert_palette()` works correctly (tested with 0x2D write → reads back 45 decimal)
 - DEBUG=1 confirmed: palette array transmitted correctly through JSON protocol
 
-**⚠️ Q2-Q5: Palette mirroring behavior unclear**
-- Initial assumption about unused entry mirroring ($3F04 → $3F00) not working as expected
-- Got 0x2D from $3F00 (last write to $3F10) instead of 0x16 (from $3F04)
-- **Theory vs Practice gap**: Wiki documentation may differ from jsnes implementation
-- **Next step**: Use `tools/dump-palette.pl` to inspect full palette state and understand actual mirroring
+**✅ Q2-Q5: Palette mirroring - jsnes bug discovered**
+
+**Hardware behavior (from NESdev wiki):**
+- All palette entry 0 addresses share same storage:
+  - $3F00 = $3F04 = $3F08 = $3F0C = $3F10 = $3F14 = $3F18 = $3F1C
+- Writing to ANY of these 8 addresses updates the shared backdrop color
+- Only 25 unique storage locations in 32-byte address space
+
+**jsnes behavior (from ppu.js:842-858):**
+- Implements **4 separate mirroring pairs**:
+  - $3F00 ↔ $3F10 (pair 1)
+  - $3F04 ↔ $3F14 (pair 2)
+  - $3F08 ↔ $3F18 (pair 3)
+  - $3F0C ↔ $3F1C (pair 4)
+- Writing to $3F04 does NOT update $3F00 (bug!)
+- Writing to $3F08 does NOT update $3F00 (bug!)
+- Writing to $3F0C does NOT update $3F00 (bug!)
+
+**Impact on testing:**
+- Our ROM writes $3F10 = $2D, then $3F04 = $16
+- Expected (hardware): $3F00 = $16 (last write to any mirrored address)
+- Actual (jsnes): $3F00 = $2D ($3F04 doesn't mirror to $3F00)
+- Tests failed because jsnes doesn't match hardware behavior
+
+**Resolution: Fixed jsnes to match hardware (Option A)**
+- Modified jsnes ppu.js:842-860 to implement correct backdrop mirroring
+- All 8 addresses now write to all 8 mirrored locations (single shared storage)
+- Fixed in branch `fix/palette-entry0-mirroring` of ~/Code/github.com/selberhad/jsnes
+- All 13 toy7 tests now passing ✅
 
 **Debugging tools created:**
 - `tools/dump-palette.pl` - palette RAM inspector (needs refinement)
@@ -108,17 +132,10 @@
 
 ### Open Questions
 
-**Palette mirroring implementation:**
-- Does jsnes implement backdrop mirroring ($3F00 = $3F10)?
-- How does jsnes handle unused entries ($3F04, $3F08, $3F0C, $3F14, $3F18, $3F1C)?
-- Does $3F20+ region mirroring work in jsnes?
-- Need to read jsnes ppu.js `writeMem()` function to understand actual behavior
-
-**Next session priorities:**
-1. Investigate jsnes palette mirroring implementation (read ppu.js writeMem for $3F00-$3FFF range)
-2. Update ROM and tests to match actual jsnes behavior (not wiki theory)
-3. Document jsnes-specific quirks vs hardware
-4. Complete remaining test scenarios
+**Testing strategy:**
+- Should we fix jsnes to be hardware-accurate for palette mirroring?
+- Or document this as a known jsnes limitation and test around it?
+- Will fixing this break existing games that depend on jsnes behavior?
 
 ## Patterns for Production
 
