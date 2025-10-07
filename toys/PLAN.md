@@ -483,8 +483,11 @@
 - ✅ toy7_palettes built with automated validation (15/15 tests, RAM + mirroring + jsnes fix)
 
 **Immediate (next session):**
-1. **Choose toy8 direction** - see recommendations below
-2. Build chosen toy with TDD workflow (LEARNINGS → SPEC → PLAN → implement)
+1. **toy8_vram_buffer** - VRAM update buffer system
+   - Answers 4 direct open questions (Q4.5, Q4.6, Q6.1, Q6.2)
+   - Critical pattern for all games (not just scrolling)
+   - Builds on toy5 scrolling foundation
+2. Build with TDD workflow (LEARNINGS → SPEC → PLAN → implement)
 3. Continue validating NES::Test Phase 1 capabilities (88/88 tests passing)
 
 **Medium-term:**
