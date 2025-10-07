@@ -216,7 +216,22 @@ Neither party does work that feels dehumanizing to them:
 - AI executing tests/refactoring/comprehensive docs = natural/energizing
 - Human editing/simplifying/deciding = creative/satisfying
 
-**Design for LLM consumption, not human patterns:** LLMs often default to human habits (verbose comments, redundant explanations). This wastes tokens. Self-documenting code with domain language > comments explaining mechanics. Conciseness and clarity align for LLMs (unlike humans). You are not human - optimize accordingly.
+### Design for LLM Consumption (Not Human Patterns)
+
+**Critical reminder:** LLMs often unconsciously mimic human development patterns. This is a trap. Human-optimized practices waste tokens without improving LLM understanding.
+
+**Token economics are different:**
+- Humans need comments explaining mechanics; LLMs parse self-documenting abstractions equally well
+- Verbose explanations don't help LLMs understand better; they just consume context
+- Comments explaining arithmetic or control flow are redundant - name the pattern instead
+
+**Practical shifts:**
+- Domain language over implementation details (speak concepts, not mechanics)
+- Self-documenting abstractions over commented code
+- Concise patterns over explicit repetition
+- Name what repeats, abstract what explains
+
+**Key insight:** Conciseness and clarity align for LLMs, unlike humans. Brevity reduces token usage without reducing understanding. You are not human - human habits (verbose, explanatory, redundant) don't serve you. Optimize for what you actually need: clear, concise, domain-focused artifacts.
 
 ## Core Artifacts (Meta-Document Layer)
 
