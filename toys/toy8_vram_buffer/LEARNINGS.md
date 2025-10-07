@@ -91,8 +91,153 @@
 
 ## Findings
 
-<!-- Fill after implementation -->
+**Duration**: 1 session (partial) | **Status**: In Progress | **Result**: 2/2 tests passing (Step 2 complete)
+
+### ✅ Validated
+
+**V1: Single tile queue + flush works correctly**
+- Evidence: t/01-single-tile.t passes (tile $42 appears at $2000, buffer clears)
+- Buffer structure: $0300 (count) + $0301+ (entries × 3 bytes each)
+- Flush timing: NMI handler writes queued tiles during vblank
+- Pattern confirmed: Queue during gameplay → flush during NMI
+
+**V2: New DSL helpers work perfectly**
+- `assert_tile(x, y, value)`: Ergonomic tile coordinate assertions (no manual address calc)
+- `assert_nametable($addr, value)`: Low-level PPU address assertions work
+- Harness nametable exposure: jsnes vramMem[0x2000-0x23FF] accessible
+- Token savings: `assert_tile(0, 0, 0x42)` vs calculating $2000 + comments
+
+**V3: Buffer implementation matches SPEC**
+- Queue logic: count * 3 offset calculation works
+- Overflow check: `CPX #16` / `BCS skip` prevents buffer overflow
+- Flush loop: Y-indexed iteration over entries works correctly
+- Clear on flush: Setting count = 0 after flush confirmed
+
+**V4: Frame timing understanding improved**
+- Frame 0-2: PPU warmup (2 vblanks, NMI disabled)
+- Frame 3+: NMI enabled, flush_buffer called each vblank
+- Queue happens during main loop (before first NMI)
+- Flush happens in NMI handler (during vblank)
+
+### 🌀 Uncertain
+
+**U1: How many tiles can actually flush in vblank?**
+- Theory: ~160 bytes via unrolled loop (wiki estimate)
+- Current: Unoptimized loop (no unrolling yet)
+- Need Phase 2: Cycle counting to measure actual vblank budget
+- Estimate: Current loop ~20 cycles/tile → 16 tiles ≈ 320 cycles (safe)
+
+**U2: Column streaming (30 tiles) performance**
+- Will 30 tiles fit in vblank budget? (Step 4 will test)
+- Estimate: 30 × 20 cycles = 600 cycles (should fit in ~1760 available)
+- Unknown: Actual cycle cost without Phase 2 measurement tools
+
+### 📝 Implementation Notes
+
+**Code organization:**
+- Inline queue logic in main (not subroutine) - keeps test simple
+- flush_buffer as subroutine - called from NMI handler
+- Constants: BUFFER_COUNT, BUFFER_DATA, MAX_ENTRIES (clear addressing)
+
+**Test strategy:**
+- Focus on end state (frame 4) vs intermediate states
+- NES RAM not zero-initialized (0xFF initial values) - learned in toy2
+- Frame timing: Wait for NMI-enabled frames before checking results
+
+**Next steps:**
+- Step 3: Multiple scattered tiles (5 tiles at different coords)
+- Step 4: Column streaming (30 tiles, validate assert_column helper)
+- Step 5: Buffer overflow (20 tiles → 16 queued, 4 dropped)
+- Step 6: NMI integration timing (verify persistence across frames)
 
 ## Patterns for Production
 
-<!-- Fill after implementation -->
+**Pattern 1: VRAM Update Buffer (Simple Queue)**
+
+**Use case**: Defer nametable writes to vblank (avoid rendering glitches)
+
+**Structure** (RAM $0300-$032F):
+```
+$0300:       count (0-16)
+$0301-$0303: entry 0 (addr_hi, addr_lo, tile)
+$0304-$0306: entry 1 (addr_hi, addr_lo, tile)
+...
+```
+
+**Queue operation** (inline during gameplay):
+```asm
+; Check capacity
+LDX BUFFER_COUNT
+CPX #MAX_ENTRIES
+BCS skip_queue          ; Full, silently drop
+
+; Calculate offset: count * 3
+TXA
+ASL                     ; count * 2
+STA temp
+TXA
+CLC
+ADC temp                ; count * 3
+TAX
+
+; Store entry
+LDA #addr_hi
+STA BUFFER_DATA,X
+LDA #addr_lo
+STA BUFFER_DATA+1,X
+LDA #tile_value
+STA BUFFER_DATA+2,X
+
+; Increment counter
+INC BUFFER_COUNT
+```
+
+**Flush operation** (NMI handler, during vblank):
+```asm
+flush_buffer:
+    LDX BUFFER_COUNT
+    BEQ done
+
+    LDY #0              ; Buffer offset
+loop:
+    BIT $2002           ; Reset latch
+    LDA BUFFER_DATA,Y   ; addr_hi
+    STA $2006
+    INY
+    LDA BUFFER_DATA,Y   ; addr_lo
+    STA $2006
+    INY
+    LDA BUFFER_DATA,Y   ; tile
+    STA $2007
+    INY
+
+    DEX
+    BNE loop
+
+    LDA #0
+    STA BUFFER_COUNT    ; Clear buffer
+done:
+    RTS
+```
+
+**Integration**:
+- Game code: Queue tiles during rendering (outside vblank)
+- NMI handler: Call flush_buffer first thing in vblank
+- Overflow: Silent drop (production: add overflow flag/warning)
+
+**Cycle estimate**: ~20 cycles/tile (unoptimized loop)
+- 16 tiles: ~320 cycles
+- 30 tiles: ~600 cycles (column streaming)
+- Vblank budget: ~1760 cycles available (2273 - 513 OAM DMA)
+
+**Memory cost**: 49 bytes (1 count + 16 entries × 3)
+
+**Trade-offs**:
+- Pro: Simple, predictable, easy to debug
+- Pro: Flexible (any tile anywhere)
+- Con: 3 bytes per tile (no compression)
+- Con: Random access pattern (no optimization for sequential writes)
+
+**When to use**: Most games (scrolling, HUD updates, level changes)
+
+**When not to use**: Full-screen redraws (use double buffering instead)
