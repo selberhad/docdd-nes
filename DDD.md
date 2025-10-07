@@ -216,6 +216,8 @@ Neither party does work that feels dehumanizing to them:
 - AI executing tests/refactoring/comprehensive docs = natural/energizing
 - Human editing/simplifying/deciding = creative/satisfying
 
+**Design for LLM consumption, not human patterns:** LLMs often default to human habits (verbose comments, redundant explanations). This wastes tokens. Self-documenting code with domain language > comments explaining mechanics. Conciseness and clarity align for LLMs (unlike humans). You are not human - optimize accordingly.
+
 ## Core Artifacts (Meta-Document Layer)
 
 ### README.md (per library/module)
