@@ -12,7 +12,7 @@ load_rom "$Bin/../buffer.nes";
 # After ROM boots, tile is queued and flushed by NMI
 
 at_frame 4 => sub {
-    assert_tile(0, 0, 0x42);      # Tile flushed to nametable
+    assert_tile(0, 0, 0x30);      # Tile flushed to nametable (Step 3: now queues 0x30)
     assert_ram(0x0300, 0);        # Buffer cleared after flush
 };
 

@@ -52,33 +52,107 @@ vblankwait2:
     JMP main
 
 main:
-    ; Queue single tile: $2000 (0,0) = $42
+    ; Queue tile 1: (1,1) = $2021 = $10
     LDX BUFFER_COUNT
     CPX #MAX_ENTRIES
-    BCS skip_queue          ; Full, skip
-
-    ; Calculate buffer offset: count * 3
+    BCS skip_queue1
     TXA
-    ASL                     ; count * 2
+    ASL
     STA temp
     TXA
     CLC
-    ADC temp                ; count * 3
+    ADC temp
     TAX
-
-    ; Store entry (addr_hi, addr_lo, tile)
-    LDA #$20                ; addr_hi = $20
+    LDA #$20
     STA BUFFER_DATA,X
-    LDA #$00                ; addr_lo = $00 (tile 0,0)
+    LDA #$21
     STA BUFFER_DATA+1,X
-    LDA #$42                ; tile value
+    LDA #$10
     STA BUFFER_DATA+2,X
-
-    ; Increment count
     INC BUFFER_COUNT
 
-skip_queue:
-    JMP skip_queue          ; Infinite loop
+skip_queue1:
+    ; Queue tile 2: (15,10) = $214F = $20
+    LDX BUFFER_COUNT
+    CPX #MAX_ENTRIES
+    BCS skip_queue2
+    TXA
+    ASL
+    STA temp
+    TXA
+    CLC
+    ADC temp
+    TAX
+    LDA #$21
+    STA BUFFER_DATA,X
+    LDA #$4F
+    STA BUFFER_DATA+1,X
+    LDA #$20
+    STA BUFFER_DATA+2,X
+    INC BUFFER_COUNT
+
+skip_queue2:
+    ; Queue tile 3: (0,0) = $2000 = $30
+    LDX BUFFER_COUNT
+    CPX #MAX_ENTRIES
+    BCS skip_queue3
+    TXA
+    ASL
+    STA temp
+    TXA
+    CLC
+    ADC temp
+    TAX
+    LDA #$20
+    STA BUFFER_DATA,X
+    LDA #$00
+    STA BUFFER_DATA+1,X
+    LDA #$30
+    STA BUFFER_DATA+2,X
+    INC BUFFER_COUNT
+
+skip_queue3:
+    ; Queue tile 4: (31,29) = $23BF = $40
+    LDX BUFFER_COUNT
+    CPX #MAX_ENTRIES
+    BCS skip_queue4
+    TXA
+    ASL
+    STA temp
+    TXA
+    CLC
+    ADC temp
+    TAX
+    LDA #$23
+    STA BUFFER_DATA,X
+    LDA #$BF
+    STA BUFFER_DATA+1,X
+    LDA #$40
+    STA BUFFER_DATA+2,X
+    INC BUFFER_COUNT
+
+skip_queue4:
+    ; Queue tile 5: (10,5) = $20AA = $50
+    LDX BUFFER_COUNT
+    CPX #MAX_ENTRIES
+    BCS skip_queue5
+    TXA
+    ASL
+    STA temp
+    TXA
+    CLC
+    ADC temp
+    TAX
+    LDA #$20
+    STA BUFFER_DATA,X
+    LDA #$AA
+    STA BUFFER_DATA+1,X
+    LDA #$50
+    STA BUFFER_DATA+2,X
+    INC BUFFER_COUNT
+
+skip_queue5:
+    JMP skip_queue5          ; Infinite loop
 
 ; flush_buffer: Write all queued tiles to nametable during vblank
 flush_buffer:
