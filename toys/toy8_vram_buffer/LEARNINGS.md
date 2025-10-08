@@ -91,64 +91,74 @@
 
 ## Findings
 
-**Duration**: 1 session (partial) | **Status**: In Progress | **Result**: 2/2 tests passing (Step 2 complete)
+**Duration**: 2 sessions | **Status**: 5/6 steps complete | **Result**: 46/46 tests passing (Steps 1-5 complete)
 
 ### ✅ Validated
 
-**V1: Single tile queue + flush works correctly**
-- Evidence: t/01-single-tile.t passes (tile $42 appears at $2000, buffer clears)
-- Buffer structure: $0300 (count) + $0301+ (entries × 3 bytes each)
+**V1: Buffer queue + flush pattern works correctly**
+- Evidence: All test scenarios pass (single tile, multiple tiles, column streaming, overflow)
+- Buffer structure: $0300 (count) + $0301+ (entries × 3 bytes each) works reliably
 - Flush timing: NMI handler writes queued tiles during vblank
-- Pattern confirmed: Queue during gameplay → flush during NMI
+- Pattern confirmed: Queue during gameplay → flush during NMI → buffer clears
 
-**V2: New DSL helpers work perfectly**
+**V2: Test infrastructure extended successfully**
 - `assert_tile(x, y, value)`: Ergonomic tile coordinate assertions (no manual address calc)
-- `assert_nametable($addr, value)`: Low-level PPU address assertions work
+- `assert_column(x, [tiles])`: Full column validation (30 assertions → 1 line)
+- `assert_nametable($addr, value)`: Low-level PPU address assertions
 - Harness nametable exposure: jsnes vramMem[0x2000-0x23FF] accessible
-- Token savings: `assert_tile(0, 0, 0x42)` vs calculating $2000 + comments
+- Token savings: ~30 lines per column test
 
-**V3: Buffer implementation matches SPEC**
-- Queue logic: count * 3 offset calculation works
-- Overflow check: `CPX #16` / `BCS skip` prevents buffer overflow
-- Flush loop: Y-indexed iteration over entries works correctly
-- Clear on flush: Setting count = 0 after flush confirmed
+**V3: Multiple ROM support in one toy directory**
+- `new-rom.pl` extended to handle second+ ROMs gracefully
+- Makefile updates: ROMS variable, shared nes.cfg, separate build targets
+- `buffer.nes`: Steps 2-4 (single ROM, multiple test scenarios)
+- `overflow.nes`: Step 5 (overflow validation with MAX_ENTRIES=16)
 
-**V4: Frame timing understanding improved**
+**V4: Buffer overflow handling works as designed**
+- MAX_ENTRIES = 16: First 16 tiles queue, remaining dropped silently
+- Evidence: t/04-overflow.t passes (16 tiles appear, 4 dropped correctly)
+- Overflow check (`CPX #MAX_ENTRIES` / `BCS skip`) prevents corruption
+- Production note: Should track overflow flag for debugging
+
+**V5: Column streaming validated (30 tiles in vblank)**
+- Evidence: t/03-column.t passes (all 30 tiles flush correctly)
+- Column address calculation: addr_hi = $20 + (row/8), addr_lo = (row*32) + col
+- Vblank capacity: 30 tiles flush successfully (estimate ~600 cycles, fits in ~1760 available)
+- First real usage of `assert_column` helper (works perfectly)
+
+**V6: Single ROM supports multiple test scenarios**
+- Approach: One ROM queues all scenarios (1 single + 4 scattered + 30 column = 35 tiles)
+- Each test file validates its specific subset
+- Reduces build time, shares infrastructure (nes.cfg, flush logic)
+- MAX_ENTRIES = 40 in buffer.nes to accommodate all scenarios
+
+**V7: Frame timing understanding solidified**
 - Frame 0-2: PPU warmup (2 vblanks, NMI disabled)
-- Frame 3+: NMI enabled, flush_buffer called each vblank
-- Queue happens during main loop (before first NMI)
-- Flush happens in NMI handler (during vblank)
-
-### 🌀 Uncertain
-
-**U1: How many tiles can actually flush in vblank?**
-- Theory: ~160 bytes via unrolled loop (wiki estimate)
-- Current: Unoptimized loop (no unrolling yet)
-- Need Phase 2: Cycle counting to measure actual vblank budget
-- Estimate: Current loop ~20 cycles/tile → 16 tiles ≈ 320 cycles (safe)
-
-**U2: Column streaming (30 tiles) performance**
-- Will 30 tiles fit in vblank budget? (Step 4 will test)
-- Estimate: 30 × 20 cycles = 600 cycles (should fit in ~1760 available)
-- Unknown: Actual cycle cost without Phase 2 measurement tools
+- Frame 3: First NMI fires, flush_buffer called
+- Frame 4+: Stable state, tiles visible in nametable
+- Test pattern: Check state at frame 4 (after flush completes)
 
 ### 📝 Implementation Notes
 
 **Code organization:**
-- Inline queue logic in main (not subroutine) - keeps test simple
-- flush_buffer as subroutine - called from NMI handler
-- Constants: BUFFER_COUNT, BUFFER_DATA, MAX_ENTRIES (clear addressing)
+- Inline queue logic (repeated patterns) - keeps tests simple
+- flush_buffer as shared subroutine - called from NMI handler
+- Constants: BUFFER_COUNT ($0300), BUFFER_DATA ($0301), MAX_ENTRIES (configurable)
 
-**Test strategy:**
-- Focus on end state (frame 4) vs intermediate states
-- NES RAM not zero-initialized (0xFF initial values) - learned in toy2
-- Frame timing: Wait for NMI-enabled frames before checking results
+**Test organization:**
+- t/01-single-tile.t, t/02-multiple-tiles.t, t/03-column.t → buffer.nes
+- t/04-overflow.t → overflow.nes (dedicated ROM for overflow test)
+- Each test validates specific subset of ROM behavior
 
-**Next steps:**
-- Step 3: Multiple scattered tiles (5 tiles at different coords)
-- Step 4: Column streaming (30 tiles, validate assert_column helper)
-- Step 5: Buffer overflow (20 tiles → 16 queued, 4 dropped)
-- Step 6: NMI integration timing (verify persistence across frames)
+**Multi-ROM workflow:**
+- First ROM: `new-rom.pl buffer` (creates Makefile, nes.cfg, *.s, play-spec.pl)
+- Second ROM: `new-rom.pl overflow` (updates Makefile, creates overflow.s only)
+- Build: `make` builds all ROMs (buffer.nes + overflow.nes)
+- Test: `prove -v t/` runs all tests
+
+**Remaining work:**
+- Step 6: NMI timing test (verify buffer persists until flush, tiles not visible before)
+- Finalization: Update STATUS.md, complete LEARNINGS.md
 
 ## Patterns for Production
 
