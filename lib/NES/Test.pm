@@ -29,6 +29,9 @@ our @EXPORT = qw(
     assert_ppu_mask
     assert_ppu_status
     assert_palette
+    assert_nametable
+    assert_tile
+    assert_column
     assert_nmi_counter
     assert_audio_playing
     assert_silence
@@ -372,6 +375,68 @@ sub assert_palette {
     }
 }
 
+sub assert_nametable {
+    my ($addr, $expected) = @_;
+
+    croak "No emulator state" unless $emulator_state;
+
+    # Convert PPU address to nametable array index
+    # $2000-$23FF (nametable 0 + attribute 0) maps to indices 0-1023
+    # For now, only expose first nametable
+    croak "Address out of range (only \$2000-\$23FF supported)" if $addr < 0x2000 || $addr >= 0x2400;
+
+    my $index = $addr - 0x2000;
+    my $actual = $emulator_state->{nametable}->[$index];
+
+    if (ref $expected eq 'CODE') {
+        # Allow code ref for flexible assertions
+        local $_ = $actual;
+        ok($expected->(), sprintf("Nametable[0x%04X] matches condition", $addr));
+    } else {
+        is($actual, $expected, sprintf("Nametable[0x%04X] = 0x%02X", $addr, $expected));
+    }
+}
+
+sub assert_tile {
+    my ($x, $y, $expected) = @_;
+
+    croak "X coordinate out of range (0-31)" if $x < 0 || $x > 31;
+    croak "Y coordinate out of range (0-29)" if $y < 0 || $y > 29;
+
+    # Calculate nametable address: $2000 + (row * 32) + column
+    my $addr = 0x2000 + ($y * 32) + $x;
+
+    # Reuse assert_nametable with friendly description override
+    my $index = $addr - 0x2000;
+    my $actual = $emulator_state->{nametable}->[$index];
+
+    if (ref $expected eq 'CODE') {
+        local $_ = $actual;
+        ok($expected->(), sprintf("Tile(%d,%d) matches condition", $x, $y));
+    } else {
+        is($actual, $expected, sprintf("Tile(%d,%d) = 0x%02X", $x, $y, $expected));
+    }
+}
+
+sub assert_column {
+    my ($x, $tiles_ref) = @_;
+
+    croak "X coordinate out of range (0-31)" if $x < 0 || $x > 31;
+    croak "Tiles must be array ref with 30 elements" unless ref $tiles_ref eq 'ARRAY' && @$tiles_ref == 30;
+
+    croak "No emulator state" unless $emulator_state;
+
+    # Check all 30 tiles in column
+    for my $y (0 .. 29) {
+        my $expected = $tiles_ref->[$y];
+        my $addr = 0x2000 + ($y * 32) + $x;
+        my $index = $addr - 0x2000;
+        my $actual = $emulator_state->{nametable}->[$index];
+
+        is($actual, $expected, sprintf("Column %d, Row %d = 0x%02X", $x, $y, $expected));
+    }
+}
+
 sub assert_nmi_counter {
     my ($addr, %opts) = @_;
 
@@ -558,9 +623,25 @@ sub _cleanup_harness {
     close $harness_in if $harness_in;
     close $harness_out if $harness_out;
 
-    # Kill process if still running
-    kill 'TERM', $harness_pid;
-    waitpid($harness_pid, 0);
+    # Wait for graceful exit (with timeout)
+    my $timeout = 2;  # 2 second timeout
+    my $start = time;
+    my $exited = 0;
+
+    while (time - $start < $timeout) {
+        my $result = waitpid($harness_pid, 1);  # WNOHANG = 1
+        if ($result > 0) {
+            $exited = 1;
+            last;
+        }
+        select(undef, undef, undef, 0.1);  # Sleep 100ms
+    }
+
+    # Kill process if still running after timeout
+    unless ($exited) {
+        kill 'TERM', $harness_pid;
+        waitpid($harness_pid, 0);
+    }
 
     $harness_pid = undef;
 }
