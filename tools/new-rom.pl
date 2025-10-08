@@ -14,6 +14,10 @@ $rom_name =~ s/\.nes$//;
 
 print "Scaffolding ROM '$rom_name' in $dir/\n\n";
 
+# Check if this is a second ROM in same directory
+my $makefile_exists = -f "$dir/Makefile";
+my $playspec_exists = -f "$dir/play-spec.pl";
+
 # Helper: Write template with @ROM@ substitution
 sub write_tpl {
     my ($path, $content) = @_;
@@ -24,7 +28,58 @@ sub write_tpl {
 }
 
 # Makefile
-write_tpl("$dir/Makefile", <<'EOF');
+if ($makefile_exists) {
+    print "⚠️  Makefile exists - appending new ROM target\n";
+
+    # Read existing Makefile
+    open my $fh, '<', "$dir/Makefile" or die "Can't read Makefile: $!\n";
+    my $makefile = do { local $/; <$fh> };
+    close $fh;
+
+    # Extract ROMS variable if it exists, or create it
+    my $roms_line;
+    if ($makefile =~ /^ROMS\s*=\s*(.+)$/m) {
+        my $existing_roms = $1;
+        $roms_line = "ROMS = $existing_roms $rom_name.nes";
+        $makefile =~ s/^ROMS\s*=\s*.+$/$roms_line/m;
+    } else {
+        # No ROMS variable yet - extract first ROM name from existing Makefile
+        my ($first_rom) = $makefile =~ /^ROM\s*=\s*(\S+)/m;
+        $roms_line = "ROMS = $first_rom $rom_name.nes";
+
+        # Insert ROMS variable after CFG_FILE
+        $makefile =~ s/(^CFG_FILE\s*=.+$)/$1\n$roms_line/m;
+    }
+
+    # Update 'all' target to build all ROMs
+    $makefile =~ s/^all:.+$/all: \$(ROMS)/m;
+
+    # Update 'clean' target to remove all build artifacts
+    if ($makefile =~ /^clean:\s*$/m) {
+        $makefile =~ s/^clean:\s*\n\s*rm -f.+$/ clean:\n\trm -f *.o *.nes *.dbg *.lst/m;
+    }
+
+    # Append new ROM-specific targets
+    my $new_targets = <<EOF;
+
+# $rom_name ROM targets
+${rom_name}.o: ${rom_name}.s
+\t\$(CA65) \$(CA65_FLAGS) \$< -o \$\@
+
+${rom_name}.nes: ${rom_name}.o \$(CFG_FILE)
+\t\$(LD65) \$< -C \$(CFG_FILE) -o \$\@ --dbgfile ${rom_name}.dbg
+EOF
+
+    $makefile .= $new_targets;
+
+    # Write updated Makefile
+    open $fh, '>', "$dir/Makefile" or die "Can't write Makefile: $!\n";
+    print $fh $makefile;
+    close $fh;
+
+} else {
+    # First ROM - create fresh Makefile
+    write_tpl("$dir/Makefile", <<'EOF');
 # Makefile for @ROM@ - NES ROM build
 # Assembles @ROM@.s with ca65, links with ld65 using custom nes.cfg
 
@@ -63,9 +118,11 @@ test: $(ROM)
 
 .PHONY: all clean run test
 EOF
+}
 
-# nes.cfg (no substitution needed)
-write_tpl("$dir/nes.cfg", <<'EOF');
+# nes.cfg (only create if doesn't exist - shared between ROMs)
+unless (-f "$dir/nes.cfg") {
+    write_tpl("$dir/nes.cfg", <<'EOF');
 # NROM linker config (16KB PRG + 8KB CHR)
 
 MEMORY {
@@ -82,6 +139,7 @@ SEGMENTS {
     CHARS:   load=CHR,    type=ro;
 }
 EOF
+}
 
 # Assembly skeleton
 write_tpl("$dir/$rom_name.s", <<'EOF');
@@ -127,8 +185,9 @@ irq_handler:
     .res 8192, $00
 EOF
 
-# Test spec
-write_tpl("$dir/play-spec.pl", <<'EOF');
+# Test spec (only create if doesn't exist)
+unless ($playspec_exists) {
+    write_tpl("$dir/play-spec.pl", <<'EOF');
 #!/usr/bin/env perl
 use strict;
 use warnings;
@@ -147,12 +206,28 @@ at_frame 0 => sub {
 done_testing();
 EOF
 
-chmod 0755, "$dir/play-spec.pl";
+    chmod 0755, "$dir/play-spec.pl";
+}
 
 # Summary
-print "✅ Created ROM scaffolding:\n";
-print "   Makefile, nes.cfg, $rom_name.s, play-spec.pl\n\n";
-print "📋 Next steps:\n";
+print "\n✅ ROM scaffolding complete:\n";
+if ($makefile_exists) {
+    print "   - Updated Makefile with $rom_name.nes target\n";
+} else {
+    print "   - Created Makefile\n";
+}
+print "   - Created $rom_name.s (assembly skeleton)\n";
+print "   - nes.cfg " . ($makefile_exists ? "(shared)\n" : "(created)\n");
+unless ($playspec_exists) {
+    print "   - Created play-spec.pl\n";
+}
+
+print "\n📋 Next steps:\n";
 print "   cd $dir\n";
-print "   make              # Build ROM\n";
-print "   perl play-spec.pl # Run tests\n\n";
+print "   make              # Build all ROMs\n";
+if ($playspec_exists) {
+    print "   prove -v t/       # Run tests (t/ directory exists)\n";
+} else {
+    print "   perl play-spec.pl # Run tests\n";
+}
+print "\n";
