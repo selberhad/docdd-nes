@@ -347,12 +347,19 @@ sub assert_ppu_mask {
 }
 
 sub assert_ppu_status {
-    my ($expected) = @_;
+    my ($expected, $mask) = @_;
 
     croak "No emulator state" unless $emulator_state;
 
     my $actual = $emulator_state->{ppu}{status};
-    is($actual, $expected, sprintf("PPU STATUS = 0x%02X", $expected));
+
+    if (defined $mask) {
+        # New behavior: check bits using mask
+        is($actual & $mask, $expected, sprintf("PPU STATUS & 0x%02X = 0x%02X", $mask, $expected));
+    } else {
+        # Old behavior: exact match
+        is($actual, $expected, sprintf("PPU STATUS = 0x%02X", $expected));
+    }
 }
 
 sub assert_palette {
