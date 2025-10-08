@@ -14,7 +14,7 @@ This toy aims to validate the behavior of the NES's Sprite 0 hit feature, a fund
     - Can we reliably detect the flag being set within a specific frame?
     - Will we need a new DSL assertion, like `assert_sprite0_hit_at_frame(N)` or similar, to abstract the polling logic?
 
-3.  **How does the hit behave under different conditions?**
+3.  **How does the hit behave under different conditions?** (Future work)
     - Does it work with different sprite and background palettes?
     - Can we verify the X=255 pixel bug (where the hit doesn't occur)?
     - How does the left-edge clipping (PPUMASK bits 1 & 2) affect detection?
@@ -29,12 +29,19 @@ This toy aims to validate the behavior of the NES's Sprite 0 hit feature, a fund
     - The primary test will be to run the emulator to the frame where the hit should occur and inspect the PPUSTATUS register.
     - We will likely need to add a new helper to `NES::Test` to expose the PPU's internal status flags for assertion.
 
-## Plan
+## Findings
 
-1.  **SPEC.md:** Define the exact behavior: a ROM that sets up a guaranteed sprite 0 hit scenario.
-2.  **PLAN.md:** Detail the implementation steps for the ROM and the test-first approach for the `play-spec.pl`.
-3.  **Implementation:**
-    - Write a `play-spec.pl` that attempts to assert the sprite 0 hit flag (this will fail initially).
-    - Implement the simple assembly file (`sprite0.s`) to configure the PPU, palettes, background, and sprite 0 position.
-    - Extend `NES::Test` if necessary to expose the PPU status flags.
-    - Iterate until the test passes.
+This toy successfully answered the primary questions it set out to investigate:
+
+- **Q1: Can `jsnes` accurately emulate a sprite 0 hit?**
+  - **Answer:** Yes. The test successfully validated that the PPUSTATUS sprite 0 hit flag is set when an opaque sprite overlaps an opaque background tile. This gives us confidence that we can write tests for more complex raster effects.
+
+- **Q2: What is the best way to test for a sprite 0 hit with the `NES::Test` DSL?**
+  - **Answer:** The existing `assert_ppu_status` assertion, when combined with a bitmask, is sufficient to test for the sprite 0 hit flag. No new DSL assertion was needed. This is a good outcome, as it means our existing DSL is more capable than we initially thought.
+
+- **Q3: How does the hit behave under different conditions?**
+  - **Answer:** This was not explored in this toy, and has been marked as a potential area for future investigation.
+
+## Retrospective
+
+This toy was a valuable exercise in debugging the test harness and understanding the PPU status register. However, it was a lot of work for a single assertion. In the future, we should avoid creating a new toy for a single assertion if it can be added to an existing toy's test suite. For example, this test could have been added to `toy1_sprite_dma`.
