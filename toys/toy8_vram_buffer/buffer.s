@@ -20,7 +20,7 @@ temp:       .res 1
 
 BUFFER_COUNT = $0300
 BUFFER_DATA  = $0301
-MAX_ENTRIES  = 16
+MAX_ENTRIES  = 40          ; Support all test scenarios: 1 + 4 + 30 = 35 tiles
 
 reset:
     SEI
@@ -52,10 +52,36 @@ vblankwait2:
     JMP main
 
 main:
-    ; Queue tile 1: (1,1) = $2021 = $10
+    ; Queue all test scenarios in one ROM
+    ; Test 01: Single tile at (0,0) = 0x42
+    ; Test 02: Multiple scattered tiles
+    ; Test 03: Column 5 (rows 0-29)
+
+    ; === Test 01: Single tile ===
     LDX BUFFER_COUNT
     CPX #MAX_ENTRIES
-    BCS skip_queue1
+    BCS skip1
+    TXA
+    ASL
+    STA temp
+    TXA
+    CLC
+    ADC temp
+    TAX
+    LDA #$20
+    STA BUFFER_DATA,X
+    LDA #$00                ; (0,0) = $2000
+    STA BUFFER_DATA+1,X
+    LDA #$42
+    STA BUFFER_DATA+2,X
+    INC BUFFER_COUNT
+
+skip1:
+    ; === Test 02: Multiple scattered tiles ===
+    ; (1,1) = $2021 = $10
+    LDX BUFFER_COUNT
+    CPX #MAX_ENTRIES
+    BCS skip2
     TXA
     ASL
     STA temp
@@ -71,11 +97,11 @@ main:
     STA BUFFER_DATA+2,X
     INC BUFFER_COUNT
 
-skip_queue1:
-    ; Queue tile 2: (15,10) = $214F = $20
+skip2:
+    ; (15,10) = $214F = $20
     LDX BUFFER_COUNT
     CPX #MAX_ENTRIES
-    BCS skip_queue2
+    BCS skip3
     TXA
     ASL
     STA temp
@@ -91,31 +117,11 @@ skip_queue1:
     STA BUFFER_DATA+2,X
     INC BUFFER_COUNT
 
-skip_queue2:
-    ; Queue tile 3: (0,0) = $2000 = $30
+skip3:
+    ; (31,29) = $23BF = $40
     LDX BUFFER_COUNT
     CPX #MAX_ENTRIES
-    BCS skip_queue3
-    TXA
-    ASL
-    STA temp
-    TXA
-    CLC
-    ADC temp
-    TAX
-    LDA #$20
-    STA BUFFER_DATA,X
-    LDA #$00
-    STA BUFFER_DATA+1,X
-    LDA #$30
-    STA BUFFER_DATA+2,X
-    INC BUFFER_COUNT
-
-skip_queue3:
-    ; Queue tile 4: (31,29) = $23BF = $40
-    LDX BUFFER_COUNT
-    CPX #MAX_ENTRIES
-    BCS skip_queue4
+    BCS skip4
     TXA
     ASL
     STA temp
@@ -131,11 +137,11 @@ skip_queue3:
     STA BUFFER_DATA+2,X
     INC BUFFER_COUNT
 
-skip_queue4:
-    ; Queue tile 5: (10,5) = $20AA = $50
+skip4:
+    ; (10,5) = $20AA = $50
     LDX BUFFER_COUNT
     CPX #MAX_ENTRIES
-    BCS skip_queue5
+    BCS skip5
     TXA
     ASL
     STA temp
@@ -151,8 +157,56 @@ skip_queue4:
     STA BUFFER_DATA+2,X
     INC BUFFER_COUNT
 
-skip_queue5:
-    JMP skip_queue5          ; Infinite loop
+skip5:
+    ; === Test 03: Column streaming ===
+    LDY #0                  ; Y = row counter (0-29)
+
+queue_loop:
+    LDX BUFFER_COUNT
+    CPX #MAX_ENTRIES
+    BCS queue_done
+
+    TXA
+    ASL
+    STA temp
+    TXA
+    CLC
+    ADC temp
+    TAX
+
+    ; Calculate addr_hi: $20 + (row / 8)
+    TYA
+    LSR
+    LSR
+    LSR
+    CLC
+    ADC #$20
+    STA BUFFER_DATA,X
+
+    ; Calculate addr_lo: (row * 32) + 5
+    TYA
+    ASL
+    ASL
+    ASL
+    ASL
+    ASL
+    CLC
+    ADC #5
+    STA BUFFER_DATA+1,X
+
+    ; Tile value: row + 1
+    TYA
+    CLC
+    ADC #$01
+    STA BUFFER_DATA+2,X
+
+    INC BUFFER_COUNT
+    INY
+    CPY #30
+    BNE queue_loop
+
+queue_done:
+    JMP queue_done
 
 ; flush_buffer: Write all queued tiles to nametable during vblank
 flush_buffer:

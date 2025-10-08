@@ -8,11 +8,12 @@ use NES::Test;
 
 load_rom "$Bin/../buffer.nes";
 
-# Test: Single tile queue + flush
-# After ROM boots, tile is queued and flushed by NMI
+# Test: Column streaming (30 tiles in column 5)
+# Queue full column (rows 0-29), verify all appear after NMI
 
 at_frame 4 => sub {
-    assert_tile(0, 0, 0x42);      # Tile flushed to nametable
+    my @expected = (0x01..0x1E);  # 30 tiles: $01..$1E
+    assert_column(5, \@expected);
     assert_ram(0x0300, 0);        # Buffer cleared after flush
 };
 
