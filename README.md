@@ -181,4 +181,4 @@ cd toys/toy1_sprite_dma
 - **Learning docs**: `learnings/` directory
 - **Open questions**: `learnings/.ddd/5_open_questions.md`
 - **NESdev wiki**: https://www.nesdev.org/wiki/ (primary reference)
-- **DDD book**: https://selberhad.github.io/ddd-book/
+- **DDD book**: https://dialecticianai.github.io/ddd-book/
