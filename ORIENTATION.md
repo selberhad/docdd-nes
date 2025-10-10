@@ -1,6 +1,6 @@
-# ORIENTATION — docdd-nes
+# ORIENTATION — ddd-nes
 
-**Project**: NES game development using **Doc-Driven Development (DDD)** methodology. Greenfield learning project to test DDD in a constraint-driven context.
+**Project**: NES game development using **Dialectic-Driven Development (DDD)** methodology. Greenfield learning project to test DDD in a constraint-driven context.
 
 **Purpose**: Document what we learn as we learn it. NES development has a steep learning curve - capture knowledge or lose it.
 
@@ -12,7 +12,7 @@
 
 - **`ORIENTATION.md`** ← You are here (navigation guide)
 - **`NEXT_SESSION.md`** - Current status, what to do next (ephemeral, session handoff)
-- **`DDD.md`** - Doc-Driven Development methodology (project-agnostic)
+- **`DDD.md`** - Dialectic-Driven Development methodology (project-agnostic)
 - **`TOY_DEV.md`** - Toy development workflow (project-agnostic)
 - **`TOY_DEV_NES.md`** - NES-specific toy development workflow
 - **`TESTING.md`** - Testing strategy for LLM-driven development (Perl DSL design)
@@ -31,7 +31,7 @@
 - `audio.md` - APU and sound engines
 - `mappers.md` - Bank switching and memory expansion
 
-**Meta-learnings** (`learnings/.docdd/`):
+**Meta-learnings** (`learnings/.ddd/`):
 - Progress tracking after each study priority
 - `5_open_questions.md` - Consolidated questions with cross-references
 
@@ -123,7 +123,7 @@ See `docs/blog/README.md` for full index.
 ### Discovery (Learning Phase)
 
 1. Read `NEXT_SESSION.md` for current status and next steps
-2. Check `learnings/.docdd/5_open_questions.md` for what needs validation
+2. Check `learnings/.ddd/5_open_questions.md` for what needs validation
 3. Use `tools/new-toy.pl <name>` to scaffold toy
 4. Follow LEARNINGS → SPEC → PLAN → TDD cycle (see `TOY_DEV.md`)
 5. Extract production patterns to LEARNINGS.md
@@ -132,7 +132,7 @@ See `docs/blog/README.md` for full index.
 ### Navigation Tips
 
 - **Looking for architecture info?** → `learnings/*.md`
-- **Looking for open questions?** → `learnings/.docdd/5_open_questions.md`
+- **Looking for open questions?** → `learnings/.ddd/5_open_questions.md`
 - **Looking for test examples?** → Any `toys/toyN_name/t/*.t`
 - **Looking for current status?** → `NEXT_SESSION.md`, `toys/STATUS.md`
 - **Looking for methodology?** → `DDD.md`, `TOY_DEV.md`, `TESTING.md`

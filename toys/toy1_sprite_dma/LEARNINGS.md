@@ -6,7 +6,7 @@
 
 ### Questions to Answer
 
-**From learnings/.docdd/5_open_questions.md:**
+**From learnings/.ddd/5_open_questions.md:**
 
 **Q1.4 (partial - Phase 1 limitations)**: How to measure cycle counts in automated tests?
 - Phase 1 (this toy): Can we verify OAM DMA *happened* via state inspection?

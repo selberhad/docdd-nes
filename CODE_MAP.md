@@ -1,6 +1,6 @@
 # CODE_MAP.md
 
-Root-level project structure for docdd-nes NES game development.
+Root-level project structure for ddd-nes NES game development.
 
 ## Documentation (Agent Instructions)
 
@@ -19,7 +19,7 @@ Ephemeral session handoff notes (gitignored). Current status and next steps. Wri
 ## Documentation (Methodology)
 
 ### **DDD.md**
-Doc-Driven Development methodology (project-agnostic). Economic inversion, role-based division, operational modes (Discovery/Execution/Porting), core artifacts, workflow.
+Dialectic-Driven Development methodology (project-agnostic). Economic inversion, role-based division, operational modes (Discovery/Execution/Porting), core artifacts, workflow.
 
 ### **TOY_DEV.md**
 Toy development workflow (project-agnostic). Learning-first approach for experimental validation.

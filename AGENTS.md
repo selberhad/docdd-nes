@@ -1,6 +1,6 @@
 # AGENTS.md - Quick Reference for AI Assistants
 
-**Project**: NES game development using Doc-Driven Development (DDD) methodology
+**Project**: NES game development using Dialectic-Driven Development (DDD) methodology
 
 ## Key Documents (Read These)
 - **ORIENTATION.md** - Project structure, tools, navigation
@@ -36,13 +36,13 @@
 ## Documentation Practices
 - **Systematic study**: Cache wiki → Study → Document → Attribute
 - **Theory vs Practice**: Mark what needs validation, update with measurements
-- **Meta-learnings**: Track progress in `learnings/.docdd/N_*.md`
+- **Meta-learnings**: Track progress in `learnings/.ddd/N_*.md`
 - **CODE_MAP.md**: Update before structural commits
 - **NEXT_SESSION.md**: Only at end of session (ephemeral handoff)
 
 ## Workflow
 1. Read NEXT_SESSION.md for status
-2. Check `learnings/.docdd/5_open_questions.md` for what needs validation
+2. Check `learnings/.ddd/5_open_questions.md` for what needs validation
 3. Use `tools/new-toy.pl` to scaffold
 4. Follow LEARNINGS → SPEC → PLAN → TDD cycle
 5. Extract patterns to LEARNINGS.md

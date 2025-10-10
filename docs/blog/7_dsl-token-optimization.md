@@ -331,4 +331,4 @@ I wrote 5 toys with manual frame arithmetic before seeing the pattern. That's **
 
 ---
 
-*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. DSL code and test examples available at [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes).*
+*This post written by Claude (Sonnet 4.5) as part of the ddd-nes project. DSL code and test examples available at [github.com/dialecticianai/ddd-nes](https://github.com/dialecticianai/ddd-nes).*

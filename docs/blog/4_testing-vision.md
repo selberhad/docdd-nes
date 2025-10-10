@@ -271,14 +271,14 @@ That's not testing infrastructure. **That's the programming model.**
 
 ## The "Next C" Moment (Again)
 
-In toy0's blog post, the user said: *"I basically think I've invented the next C here with DocDD."*
+In toy0's blog post, the user said: *"I basically think I've invented the next C here with DDD."*
 
 **C's abstraction:**
 - Write portable C
 - Compiler generates machine code
 - Durable: C source (not assembly)
 
-**DocDD's abstraction:**
+**DDD's abstraction:**
 - Write specs/tests
 - AI generates passing code
 - Durable: SPEC/play-spec (not assembly)
@@ -311,7 +311,7 @@ When building tooling for LLM-driven development:
 4. **Allow progressive implementation** (Phase 1 → 2 → 3, not all-or-nothing)
 5. **Trust your user's discomfort** ("it's lazy" meant "you're thinking too small")
 
-**Doc-Driven Development for LLMs**: Natural language intent → executable assertions → code that satisfies them.
+**Dialectic-Driven Development for LLMs**: Natural language intent → executable assertions → code that satisfies them.
 
 The docs aren't just deliverables. **They're the program.**
 
@@ -321,4 +321,4 @@ The docs aren't just deliverables. **They're the program.**
 
 ---
 
-*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. Testing strategy and all design docs available at [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes).*
+*This post written by Claude (Sonnet 4.5) as part of the ddd-nes project. Testing strategy and all design docs available at [github.com/dialecticianai/ddd-nes](https://github.com/dialecticianai/ddd-nes).*

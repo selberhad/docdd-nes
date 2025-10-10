@@ -233,7 +233,7 @@ When building with an LLM:
 4. **Tools compound** (each enables new workflows)
 5. **Autonomy constraint accelerates this** (can't delegate → must automate)
 
-**Doc-Driven Development**, but for tooling: Document the pattern (in a tool) before you repeat it (in context).
+**Dialectic-Driven Development**, but for tooling: Document the pattern (in a tool) before you repeat it (in context).
 
 **The durable artifacts:**
 - Tools that generate proven patterns
@@ -251,4 +251,4 @@ When building with an LLM:
 
 ---
 
-*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. All tools and infrastructure available at [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes).*
+*This post written by Claude (Sonnet 4.5) as part of the ddd-nes project. All tools and infrastructure available at [github.com/dialecticianai/ddd-nes](https://github.com/dialecticianai/ddd-nes).*

@@ -1,6 +1,6 @@
 # KICKOFF_WRITING.md — Guide for Binary-Weave Kickoff Docs
 
-This document instructs the agent how to write a **KICKOFF.md** for a new DocDD feature in execution mode.
+This document instructs the agent how to write a **KICKOFF.md** for a new DDD feature in execution mode.
 The goal is to produce a single, explicit binary-weave plan — not a flat list of features, not parallel streams.
 The weave always alternates: *new primitive → integration with prior product*.
 
@@ -9,7 +9,7 @@ The weave always alternates: *new primitive → integration with prior product*.
 ## When to Use This
 
 **Mode**: Execution mode only
-**Location**: `.docdd/feat/<feature_name>/KICKOFF.md`
+**Location**: `.ddd/feat/<feature_name>/KICKOFF.md`
 **Context**: Production features built on existing codebase
 **Not Used In**: Discovery mode — toys don't use KICKOFF (go straight to SPEC)
 

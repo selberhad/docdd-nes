@@ -406,7 +406,7 @@
 
 ## Question Coverage Map
 
-**From `learnings/.docdd/5_open_questions.md`** (43 questions total):
+**From `learnings/.ddd/5_open_questions.md`** (43 questions total):
 
 **Toolchain (8 questions)**:
 - ✅ Q1.1, Q1.2, Q1.3, Q1.6: toy0_toolchain

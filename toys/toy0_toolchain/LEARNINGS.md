@@ -6,7 +6,7 @@ Duration: 2 hours | Status: Complete | Estimate: 1 day
 
 ### Questions to Answer
 
-**From learnings/.docdd/5_open_questions.md (Q1.x subset for minimal ROM):**
+**From learnings/.ddd/5_open_questions.md (Q1.x subset for minimal ROM):**
 
 **Q1.1** (simplified): What's the minimal ca65+ld65 workflow to build a bootable .nes file?
 - What linker config to use? (NROM layout)

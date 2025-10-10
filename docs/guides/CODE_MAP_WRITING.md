@@ -11,7 +11,7 @@ This guide explains how to create and maintain CODE_MAP.md files throughout the 
 **Common Locations**:
 - `./CODE_MAP.md` — Root-level files and folders
 - `scripts/CODE_MAP.md` — Utility scripts
-- `src/docdd_mcp/CODE_MAP.md` — Production modules
+- `src/ddd_mcp/CODE_MAP.md` — Production modules
 - `tests/CODE_MAP.md` — Test suite organization
 - `tests/unit/CODE_MAP.md` — Unit test files
 - `tests/integration/CODE_MAP.md` — Integration test files
@@ -48,7 +48,7 @@ Each CODE_MAP.md describes **only files and folders in its own directory**, not 
 Subdirectories are mentioned with a reference to their own CODE_MAP.md:
 ```markdown
 ### **src/**
-Production source code. Contains docdd_mcp/ package. See src/docdd_mcp/CODE_MAP.md.
+Production source code. Contains ddd_mcp/ package. See src/ddd_mcp/CODE_MAP.md.
 ```
 
 **When to create subdirectory CODE_MAP files:**
@@ -142,7 +142,7 @@ Python project configuration. Defines package metadata, dependencies (fastmcp, p
 ### Subdirectories
 ```markdown
 ### **workflows/**
-YAML workflow definitions for DocDD orchestration:
+YAML workflow definitions for DDD orchestration:
 - `discovery.yaml`: Discovery mode workflow (experimental iteration)
 - `execution.yaml`: Execution mode workflow (production features)
 - `minimal.yaml`: Minimal workflow for testing
@@ -249,8 +249,8 @@ template.py with template parsing...
 ✅ **Subdirectory reference**: Point to subdirectory's CODE_MAP.md
 ```markdown
 ### **src/**
-Production source code. Contains docdd_mcp/ package with MCP server implementation.
-See src/docdd_mcp/CODE_MAP.md.
+Production source code. Contains ddd_mcp/ package with MCP server implementation.
+See src/ddd_mcp/CODE_MAP.md.
 ```
 
 ❌ **Too terse**: Don't skip essential context

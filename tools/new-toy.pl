@@ -62,7 +62,7 @@ print "\n";
 print "📋 Next steps for LLM:\n";
 print "   1. Review TOY_DEV.md and TOY_DEV_NES.md (toy methodology)\n";
 print "   2. Review relevant learnings/ docs for this subsystem\n";
-print "   3. Check learnings/.docdd/5_open_questions.md for questions to answer\n";
+print "   3. Check learnings/.ddd/5_open_questions.md for questions to answer\n";
 print "   4. Reference docs/guides/ for SPEC, PLAN, LEARNINGS writing guidance\n";
 print "   5. Start with LEARNINGS.md (define questions BEFORE planning)\n";
 print "\n";

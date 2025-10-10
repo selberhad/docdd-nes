@@ -13,8 +13,8 @@ Located at root of `learnings/` directory. Each document:
 - **Documents gotchas and pitfalls** to avoid
 - **Ends with Attribution section** linking to source NESdev wiki pages
 
-### Meta-Learnings (`.docdd/` subdirectory)
-Located in `learnings/.docdd/`. These document **our learning process**:
+### Meta-Learnings (`.ddd/` subdirectory)
+Located in `learnings/.ddd/`. These document **our learning process**:
 - **INITIAL.md** - Original questions we needed to answer
 - **PHASE_2.md** - Progress assessment after Priority 1-2 (core techniques)
 - **PHASE_3.md** - Progress assessment after Priority 2.5-3 (toolchain + optimization)
@@ -83,7 +83,7 @@ tools/add-attribution.pl learnings/new_doc.md
 ### During Study Phase (Now)
 1. **Systematic wiki reading** per STUDY_PLAN.md priorities
 2. **Extract to learning docs** (practical patterns, code, constraints)
-3. **Record meta-learnings** in `.docdd/PHASE_N.md` after each priority group
+3. **Record meta-learnings** in `.ddd/PHASE_N.md` after each priority group
 4. **Add attribution** via `tools/add-attribution.pl`
 
 ### During Discovery Mode (Test ROMs)
@@ -168,13 +168,13 @@ Each learning doc synthesizes information from multiple cached wiki pages. See A
 ### When to Create Phase Docs
 - After completing each priority group in STUDY_PLAN.md
 - Document: what studied, insights gained, questions raised, decisions made
-- Location: `learnings/.docdd/PHASE_N.md`
+- Location: `learnings/.ddd/PHASE_N.md`
 
 ### Organization Principle
 - **Architecture docs** → What the hardware does (CPU, PPU, APU, memory)
 - **Technique docs** → How to use the hardware (patterns, code, budgets)
 - **Tool docs** → Development workflow (assemblers, emulators, graphics)
-- **Meta docs** → Our learning process (`.docdd/` subdirectory)
+- **Meta docs** → Our learning process (`.ddd/` subdirectory)
 
 ---
 

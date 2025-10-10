@@ -4,7 +4,7 @@ Minimal NES ROM build to validate cc65 toolchain and Mesen2 debugging on macOS A
 
 ## Purpose
 
-First test ROM proving we can assemble 6502 code (ca65), link to bootable .nes file (ld65), and debug in Mesen2 emulator. Validates build workflow before implementing any NES subsystems (no graphics, input, or audio). Answers Q1.1, Q1.2, Q1.3, Q1.6 from `learnings/.docdd/5_open_questions.md`.
+First test ROM proving we can assemble 6502 code (ca65), link to bootable .nes file (ld65), and debug in Mesen2 emulator. Validates build workflow before implementing any NES subsystems (no graphics, input, or audio). Answers Q1.1, Q1.2, Q1.3, Q1.6 from `learnings/.ddd/5_open_questions.md`.
 
 ## Key Operations
 

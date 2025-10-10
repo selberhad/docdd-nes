@@ -140,7 +140,7 @@ reset_stub:
 
 ## Questions Raised
 
-### Mapper Selection for docdd-nes
+### Mapper Selection for ddd-nes
 
 1. **Which mapper for this project?**
    - **NROM**: Start here (simple, fast iteration)

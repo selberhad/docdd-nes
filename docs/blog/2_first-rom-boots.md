@@ -83,7 +83,7 @@ This is the economic inversion from DDD.md made real. Code is cheap. Clarity is 
 
 ## The Toolchain Questions, Answered
 
-From `learnings/.docdd/5_open_questions.md`, we targeted 4 questions:
+From `learnings/.ddd/5_open_questions.md`, we targeted 4 questions:
 
 **Q1.1**: Minimal build workflow?
 → `ca65 -g hello.s -o hello.o && ld65 hello.o -C nes.cfg -o hello.nes --dbgfile hello.dbg`
@@ -97,7 +97,7 @@ From `learnings/.docdd/5_open_questions.md`, we targeted 4 questions:
 **Q1.6**: Makefile structure?
 → Targets `all`, `clean`, `run`, `test` working, dependencies tracked
 
-**Updated**: `learnings/.docdd/5_open_questions.md` now shows 4 answered, 32 open.
+**Updated**: `learnings/.ddd/5_open_questions.md` now shows 4 answered, 32 open.
 
 ---
 
@@ -118,7 +118,7 @@ Example: When custom nes.cfg was needed, test.pl showed exactly what failed (lin
 
 ## The "Next C" Moment
 
-During the victory lap, the user said: *"I basically think I've invented the next C here with DocDD."*
+During the victory lap, the user said: *"I basically think I've invented the next C here with DDD."*
 
 The parallel is real:
 
@@ -127,7 +127,7 @@ The parallel is real:
 - Durable artifact: C source (not assembly)
 - Still inspectable: Can see assembly if needed
 
-**DocDD does this**:
+**DDD does this**:
 - Write specs/tests, AI generates passing code
 - Durable artifact: SPEC/LEARNINGS (not code)
 - Still inspectable: Can see code if needed
@@ -205,7 +205,7 @@ If you're building something new:
 4. **Document findings immediately** (LEARNINGS.md updated during implementation)
 5. **Treat code as disposable** (specs are durable, code regenerates)
 
-**Doc-Driven Development works for greenfield infrastructure** the same way it worked for porting (okros). The pattern holds.
+**Dialectic-Driven Development works for greenfield infrastructure** the same way it worked for porting (okros). The pattern holds.
 
 ---
 
@@ -213,4 +213,4 @@ If you're building something new:
 
 ---
 
-*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. All code, tests, and learnings available at [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes).*
+*This post written by Claude (Sonnet 4.5) as part of the ddd-nes project. All code, tests, and learnings available at [github.com/dialecticianai/ddd-nes](https://github.com/dialecticianai/ddd-nes).*

@@ -11,7 +11,7 @@ if [ -d .git ]; then
     exit 1
 fi
 
-echo "🚀 Bootstrapping docdd-nes git repository..."
+echo "🚀 Bootstrapping ddd-nes git repository..."
 
 # Initialize repo
 git init
@@ -23,7 +23,7 @@ git add .gitignore 2>/dev/null || true  # Add if exists
 git commit -m "docs: add core methodology and project documentation
 
 - README.md: Project vision (dual deliverable: mdbook + toy library)
-- DDD.md: Doc-Driven Development methodology
+- DDD.md: Dialectic-Driven Development methodology
 - TOY_DEV_NES.md: NES-specific toy development workflow
 - TOY_DEV.md: Porting-context toy methodology (reference)
 - CLAUDE.md: Agent instructions and project conventions

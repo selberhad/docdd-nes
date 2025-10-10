@@ -41,7 +41,7 @@ The same structure works in human-AI collaboration because:
 - The anthropomorphic experience is AI "having fun" - like throwing a ball for a dog
 - Humans focus on creative work (editing, simplifying, deciding) not grunt work
 
-DocDD makes XP/TDD sustainable by reassigning the disciplined parts to AI.
+DDD makes XP/TDD sustainable by reassigning the disciplined parts to AI.
 
 ## Why This Persists Across Model Generations
 
@@ -417,7 +417,7 @@ These are examples, not requirements. Adapt to your project's conventions.
 /src/module_name/CODE_MAP.md, source files
 /lib/component_name/CODE_MAP.md, README.md, source files
 /tests/CODE_MAP.md, test files
-/.docdd/feat/<feature>/SPEC.md, PLAN.md (optional LEARNINGS.md)
+/.ddd/feat/<feature>/SPEC.md, PLAN.md (optional LEARNINGS.md)
 ```
 
 ## Guardrails and Policies
@@ -530,15 +530,15 @@ Apply before coding and before PR:
 - **Reference Implementation:** Existing codebase that defines correct behavior for porting/translation efforts
 - **Behavioral Equivalence:** Goal of producing same outputs for same inputs as reference, regardless of internal structure
 
-## Adopting DocDD in Your Project
+## Adopting DDD in Your Project
 
-If you're building a project using Doc-Driven Development, you're welcome to add the DocDD badge to your repository's README:
+If you're building a project using Dialectic-Driven Development, you're welcome to add the DDD badge to your repository's README:
 
-[![Built with DocDD](https://img.shields.io/badge/built_with-DocDD-blue)](https://selberhad.github.io/docdd-book/)
+[![Built with DDD](https://img.shields.io/badge/built_with-DDD-blue)](https://github.com/dialecticianai/ddd-book/)
 
 **Markdown:**
 ```markdown
-[![Built with DocDD](https://img.shields.io/badge/built_with-DocDD-blue)](https://selberhad.github.io/docdd-book/)
+[![Built with DDD](https://img.shields.io/badge/built_with-DDD-blue)](https://github.com/dialecticianai/ddd-book/)
 ```
 
 **Requirements (honor system):**
@@ -547,7 +547,7 @@ If you're building a project using Doc-Driven Development, you're welcome to add
 - Practice mandatory refactoring after features
 - Embrace the economic inversion: artifacts are cheap, clarity is valuable
 
-The badge links to the DocDD book for anyone curious about the methodology. Consider it a signal that your project values documentation-driven clarity and human-AI collaborative development practices.
+The badge links to the DDD book for anyone curious about the methodology. Consider it a signal that your project values documentation-driven clarity and human-AI collaborative development practices.
 
 ## Innovations from Practice
 

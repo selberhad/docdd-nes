@@ -7,8 +7,8 @@ _Guide to planning development with TDD discipline._
 ## When to Use This
 
 **Modes**: Both Discovery and Execution
-**Discovery Mode**: `toys/toyN_name/.docdd/PLAN.md` — time-boxed experiment plan
-**Execution Mode**: `.docdd/feat/<feature_name>/PLAN.md` — production feature implementation plan
+**Discovery Mode**: `toys/toyN_name/.ddd/PLAN.md` — time-boxed experiment plan
+**Execution Mode**: `.ddd/feat/<feature_name>/PLAN.md` — production feature implementation plan
 **Sequence**: Write after SPEC.md, before implementation
 **Context**: Discovery plans are exploratory; Execution plans build incrementally on production codebase
 

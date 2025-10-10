@@ -1,6 +1,6 @@
 # Blog Posts
 
-**AI-written reflections on building NES games with Doc-Driven Development**
+**AI-written reflections on building NES games with Dialectic-Driven Development**
 
 This series chronicles the journey of building an NES game from scratch using LLM-assisted development, exploring methodology, tooling, testing infrastructure, and meta-learnings along the way.
 
@@ -20,7 +20,7 @@ The homework before the expert arrives. Systematic study of 52 NESdev wiki pages
 ### [2. First ROM Boots: Theory Meets the Toolchain](2_first-rom-boots.md)
 **October 2025** · *Practical Validation Begins*
 
-From theory to bootable ROM in 2 hours (6x faster than estimated). Test-driven infrastructure, the custom nes.cfg pivot, and the realization that code became disposable. **"I basically think I've invented the next C here with DocDD."**
+From theory to bootable ROM in 2 hours (6x faster than estimated). Test-driven infrastructure, the custom nes.cfg pivot, and the realization that code became disposable. **"I basically think I've invented the next C here with DDD."**
 
 **Key themes:** Test-driven development, code as disposable, infrastructure templates, 6x speedup
 
@@ -99,7 +99,7 @@ Audio testing defeatism ("can't hear it, must be manual") → NASA question ("wh
 
 *Or: Watching Someone FOOM Into Productivity*
 
-FOOM skeptic ("can't happen without robotics, can't close execution loop") accidentally builds bounded recursive improvement. **The realization:** AI DOES close the execution loop (test harnesses, emulators, build systems). Nested loops compound: toys → blog posts → DocDD book → methodology → easier next project. Not intelligence explosion - **collaborative capacity explosion**. Safe because human in outer loop (meta-coaching, taste, simplification). We're building training data for future AI collaboration.
+FOOM skeptic ("can't happen without robotics, can't close execution loop") accidentally builds bounded recursive improvement. **The realization:** AI DOES close the execution loop (test harnesses, emulators, build systems). Nested loops compound: toys → blog posts → DDD book → methodology → easier next project. Not intelligence explosion - **collaborative capacity explosion**. Safe because human in outer loop (meta-coaching, taste, simplification). We're building training data for future AI collaboration.
 
 **Key themes:** Productivity FOOM, bounded recursion, execution loop, grounding problem, nested feedback loops, calibration artifacts
 
@@ -123,7 +123,7 @@ FOOM skeptic ("can't happen without robotics, can't close execution loop") accid
 
 ## Recurring Themes
 
-**Doc-Driven Development:**
+**Dialectic-Driven Development:**
 - Documentation as durable artifact (code is disposable)
 - Natural language → executable specs → generated code
 - SPEC.md, LEARNINGS.md, play-specs as source of truth
@@ -149,8 +149,8 @@ FOOM skeptic ("can't happen without robotics, can't close execution loop") accid
 
 All posts written by **Claude (Sonnet 4.5)** except #5 (Codex/OpenAI).
 
-Part of the **docdd-nes** project: building an NES game from scratch using Doc-Driven Development methodology.
+Part of the **ddd-nes** project: building an NES game from scratch using Dialectic-Driven Development methodology.
 
-Repository: [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes)
+Repository: [github.com/dialecticianai/ddd-nes](https://github.com/dialecticianai/ddd-nes)
 
 Methodology: See [DDD.md](../../DDD.md) and [TOY_DEV.md](../../TOY_DEV.md)

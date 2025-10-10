@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document captures essential toolchain knowledge for NES development, covering assemblers, emulators, graphics tools, audio tools, and test ROMs. The goal is to make informed tool selection decisions for the docdd-nes project.
+This document captures essential toolchain knowledge for NES development, covering assemblers, emulators, graphics tools, audio tools, and test ROMs. The goal is to make informed tool selection decisions for the ddd-nes project.
 
 ---
 
@@ -52,7 +52,7 @@ This document captures essential toolchain knowledge for NES development, coveri
 
 ### Selection Criteria
 
-For **docdd-nes** (beginner-friendly, learning focus):
+For **ddd-nes** (beginner-friendly, learning focus):
 - **Recommendation**: **asm6f**
   - Simple syntax (low learning curve)
   - Symbol file generation (debugging support)
@@ -111,7 +111,7 @@ Alternative if C is needed: **CC65**
 
 ### Emulator Selection Strategy
 
-**For docdd-nes**:
+**For ddd-nes**:
 1. **Primary**: Mesen (best debugger, high accuracy)
 2. **Secondary**: FCEUX (cross-reference, widely used)
 3. **Validation**: Test on real hardware eventually (via flash cart)
@@ -178,7 +178,7 @@ Alternative if C is needed: **CC65**
 - Win/Mac/Linux (via UXN emulator)
 - **Use case**: Pixel art focused workflow
 
-### Selection for docdd-nes
+### Selection for ddd-nes
 
 **Recommended workflow**:
 1. **NEXXT**: Primary graphics studio (CHR, nametables, sprites, palettes)
@@ -224,7 +224,7 @@ Alternative if C is needed: **CC65**
 
 See `Audio drivers` wiki page for runtime music/SFX engines (e.g., FamiTone, GGSound)
 
-### Selection for docdd-nes
+### Selection for ddd-nes
 
 **Recommended**:
 - **FamiTracker**: Primary music tool (most documentation, community support)
@@ -263,7 +263,7 @@ NES hardware has **non-obvious behavior** (PPU timing, sprite 0 hit, scrolling e
 **Integration Tests**
 - **sprdma_and_dmc_dma** (blargg): Sprite DMA + DMC DMA cycle stealing
 
-### Test ROM Strategy for docdd-nes
+### Test ROM Strategy for ddd-nes
 
 **Discovery Mode workflow**:
 1. Identify subsystem to learn (e.g., sprite DMA)
@@ -293,7 +293,7 @@ NES hardware has **non-obvious behavior** (PPU timing, sprite 0 hit, scrolling e
 - Ghidra extension for NES
 - **Use case**: Advanced reverse-engineering with Ghidra's features
 
-### Selection for docdd-nes
+### Selection for ddd-nes
 
 **Not needed initially** (greenfield project, writing from scratch)
 **Future use**: Studying commercial game techniques
@@ -316,7 +316,7 @@ NES hardware has **non-obvious behavior** (PPU timing, sprite 0 hit, scrolling e
 - Extendable, scriptable
 - **Use case**: Experimenting with different algorithms
 
-### Strategy for docdd-nes
+### Strategy for ddd-nes
 
 **Phase 1** (early dev): No compression (keep it simple)
 **Phase 2** (ROM space tight): Evaluate Huffmunch for level data, Donut for CHR
@@ -342,7 +342,7 @@ NES hardware has **non-obvious behavior** (PPU timing, sprite 0 hit, scrolling e
 
 ## 9. Toolchain Selection Summary
 
-### docdd-nes Recommended Stack
+### ddd-nes Recommended Stack
 
 | Category | Tool | Reason |
 |----------|------|--------|
@@ -428,7 +428,7 @@ Most tools support Linux (asm6f, Mesen, FCEUX, NEXXT, CC65).
 - FCEUX: .fm2 movie format
 - BizHawk: Multi-system movie support
 
-**Use case for docdd-nes**:
+**Use case for ddd-nes**:
 - Automate regression testing (ensure changes don't break old features)
 - Record gameplay demos for documentation
 

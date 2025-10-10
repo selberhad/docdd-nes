@@ -1,14 +1,14 @@
 # Meta-Document: How to Write an Effective SPEC.md
 
-_Guide to writing specifications in the Doc-Driven Development paradigm._
+_Guide to writing specifications in the Dialectic-Driven Development paradigm._
 
 ---
 
 ## When to Use This
 
 **Modes**: Both Discovery and Execution
-**Discovery Mode**: `toys/toyN_name/.docdd/SPEC.md` — defines behavioral contract for isolated toy experiment
-**Execution Mode**: `.docdd/feat/<feature_name>/SPEC.md` — defines behavioral contract for production feature
+**Discovery Mode**: `toys/toyN_name/.ddd/SPEC.md` — defines behavioral contract for isolated toy experiment
+**Execution Mode**: `.ddd/feat/<feature_name>/SPEC.md` — defines behavioral contract for production feature
 **Sequence**: Write after KICKOFF (execution mode) or directly after toy directory creation (discovery mode)
 
 ---

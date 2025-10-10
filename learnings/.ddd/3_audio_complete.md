@@ -69,7 +69,7 @@
 | GGSound | 2KB | Med | Variable | **Expressive music** (128 instruments) |
 | NSD.Lib | Med | Med | Variable | **MML workflow** (text-based composition) |
 
-**Recommendation for docdd-nes**: Start with **FamiTone2**
+**Recommendation for ddd-nes**: Start with **FamiTone2**
 - Well-documented
 - FamiTracker integration (industry standard)
 - Predictable cycle cost

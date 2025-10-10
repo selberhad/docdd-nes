@@ -210,13 +210,13 @@
 ## 5. Mapper Selection & Implementation
 
 ### ✅ Mapper Choice (ANSWERED)
-**Q5.1**: Which mapper for docdd-nes?
+**Q5.1**: Which mapper for ddd-nes?
 - ✅ **ANSWERED**: Start NROM, migrate to UNROM when >32KB
   - Source: `learnings/mappers.md` - Mapper progression strategy
   - Move to MMC1 only if need CHR-ROM switching or PRG-RAM
 - **Next step**: Prototype in NROM, measure ROM usage to know when to migrate
 
-**Q5.2**: CHR-ROM or CHR-RAM for docdd-nes?
+**Q5.2**: CHR-ROM or CHR-RAM for ddd-nes?
 - **Pending**: Wait for SPEC.md (game genre decision)
 - Action/platformer → CHR-ROM
 - RPG/puzzle → CHR-RAM

@@ -6,7 +6,7 @@
 
 ### Questions to Answer
 
-**From learnings/.docdd/5_open_questions.md:**
+**From learnings/.ddd/5_open_questions.md:**
 
 **Q1.4 (partial - controller read timing)**: How to measure controller read cycles?
 - Phase 1 (this toy): Can we verify controller state changes via RAM inspection?

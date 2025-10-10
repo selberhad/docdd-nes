@@ -6,10 +6,10 @@ This guide explains how to create ORIENTATION.md working documents for toys and 
 
 ## When to Use This
 
-**Discovery Mode**: `toys/toyN_name/.docdd/ORIENTATION.md`
+**Discovery Mode**: `toys/toyN_name/.ddd/ORIENTATION.md`
 Written during the "re-orientation step" before starting a new toy. Validates assumptions, reviews plan, confirms readiness.
 
-**Execution Mode**: `.docdd/feat/<feature_name>/ORIENTATION.md`
+**Execution Mode**: `.ddd/feat/<feature_name>/ORIENTATION.md`
 Written when starting or resuming work on a feature. Captures current context, open questions, next steps.
 
 **Lifecycle**: **Working document only** — deleted when work is complete, never committed to version control.
@@ -237,7 +237,7 @@ What's the immediate next step?
 ### Execution Mode
 1. **Create**: When starting new feature or resuming interrupted work
 2. **Update**: Daily or when hitting blockers/uncertainties
-3. **Delete**: When feature moves to `.docdd/done/` (see Feature Completion Workflow)
+3. **Delete**: When feature moves to `.ddd/done/` (see Feature Completion Workflow)
 
 ---
 

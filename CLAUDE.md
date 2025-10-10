@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is **docdd-nes** - an NES game development project using **Doc-Driven Development (DDD)** methodology. We're building an NES game from scratch in 6502 assembly to test DDD in a greenfield, constraint-driven context.
+This is **ddd-nes** - an NES game development project using **Dialectic-Driven Development (DDD)** methodology. We're building an NES game from scratch in 6502 assembly to test DDD in a greenfield, constraint-driven context.
 
 **Philosophy**: Document what we learn as we learn it. NES development has a steep learning curve - capture knowledge or lose it.
 
@@ -12,7 +12,7 @@ This is **docdd-nes** - an NES game development project using **Doc-Driven Devel
 
 ## Core Methodology
 
-This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a learning-driven workflow combining Discovery (understand NES architecture) + Execution (build the game). See `DDD.md` for full methodology.
+This project follows **Dialectic-Driven Development (DDD)** in **Greenfield Mode** - a learning-driven workflow combining Discovery (understand NES architecture) + Execution (build the game). See `DDD.md` for full methodology.
 
 **Long-term deliverable**: Compile an mdbook from blog posts, `learnings/` docs, and meta-docs - a cleaned up, streamlined condensation of the NESdev wiki. Oriented for LLM agents but human-friendly (clear, concise language works for both). The mdbook source material is being written now (not separate future work).
 
@@ -100,7 +100,7 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 2. **Study**: Read cached pages, extract key technical details
 3. **Document**: Create/update `learnings/topic.md` with patterns and code
 4. **Attribute**: Add wiki URL footer with `tools/add-attribution.pl`
-5. **Assess**: After each priority group, create `learnings/.docdd/N_description.md` documenting:
+5. **Assess**: After each priority group, create `learnings/.ddd/N_description.md` documenting:
    - What we studied
    - Key insights gained
    - Questions raised (theory vs practice)
@@ -109,8 +109,8 @@ This project follows **Doc-Driven Development (DDD)** in **Greenfield Mode** - a
 
 **Organization**:
 - **Technical learnings**: `learnings/*.md` (architecture, techniques, constraints)
-- **Meta-learnings**: `learnings/.docdd/N_*.md` (progress tracking, numbered sequentially)
-- **Open questions**: `learnings/.docdd/5_open_questions.md` (consolidated, cross-referenced)
+- **Meta-learnings**: `learnings/.ddd/N_*.md` (progress tracking, numbered sequentially)
+- **Open questions**: `learnings/.ddd/5_open_questions.md` (consolidated, cross-referenced)
 
 **Theory vs Practice**:
 - Document theory in learning docs first (from wiki study)

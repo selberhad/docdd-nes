@@ -6,10 +6,10 @@ _Guide for capturing architectural insights from experiments and features._
 
 ## When to Use This
 
-**Discovery Mode**: **Required** — `toys/toyN_name/.docdd/LEARNINGS.md`
+**Discovery Mode**: **Required** — `toys/toyN_name/.ddd/LEARNINGS.md`
 Every toy must have LEARNINGS.md documenting what worked, what failed, what remains uncertain.
 
-**Execution Mode**: **Optional** — `.docdd/feat/<feature_name>/LEARNINGS.md`
+**Execution Mode**: **Optional** — `.ddd/feat/<feature_name>/LEARNINGS.md`
 Only write if architectural insights emerged (pivots, surprises, failures, lessons learned).
 
 **When to Skip (Execution)**: Routine feature work with no unexpected learnings — most features won't need this.

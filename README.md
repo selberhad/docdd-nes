@@ -1,6 +1,6 @@
-# docdd-nes
+# ddd-nes
 
-**NES game development learning project using Doc-Driven Development (DDD)**
+**NES game development learning project using Dialectic-Driven Development (DDD)**
 
 Building an NES game from scratch in 6502 assembly to test DDD methodology in a greenfield, constraint-driven context while creating a comprehensive, agent-facing reference book.
 
@@ -28,7 +28,7 @@ Building an NES game from scratch in 6502 assembly to test DDD methodology in a 
 
 ## Methodology
 
-This project follows **Doc-Driven Development (DDD)** in **Discovery Mode**:
+This project follows **Dialectic-Driven Development (DDD)** in **Discovery Mode**:
 
 - **Learning-first approach**: Questions → Experiments → Findings → Production
 - **Toy models**: Minimal test ROMs isolating single subsystems (one axis of complexity)
@@ -43,7 +43,7 @@ See `DDD.md` for core methodology, `TOY_DEV_NES.md` for NES-specific toy develop
 ## Repository Structure
 
 ```
-docdd-nes/
+ddd-nes/
 ├── CODE_MAP.md                  # Project structure reference
 ├── AGENTS.md                    # Quick reference for AI assistants
 ├── CLAUDE.md                    # Full development guidelines
@@ -56,7 +56,7 @@ docdd-nes/
 │   ├── wiki_architecture.md     # Core NES architecture
 │   ├── sprite_techniques.md     # PPU sprite programming
 │   ├── audio.md                 # APU, sound engines
-│   └── .docdd/                  # Meta-learning docs
+│   └── .ddd/                  # Meta-learning docs
 │       └── 5_open_questions.md  # Questions → toy roadmap
 │
 ├── toys/                        # Test ROM library
@@ -164,7 +164,7 @@ cd toys/toy1_sprite_dma
 
 ## Meta
 
-[![Built with DocDD](https://img.shields.io/badge/built_with-DocDD-blue)](https://github.com/selberhad/docdd-book)
+[![Built with DDD](https://img.shields.io/badge/built_with-DDD-blue)](https://github.com/dialecticianai/ddd-book)
 
 **Platform**: macOS Apple Silicon (ARM64) - M1 MacBook Pro
 
@@ -179,6 +179,6 @@ cd toys/toy1_sprite_dma
 - **Methodology**: `DDD.md`, `TOY_DEV_NES.md`
 - **Orientation**: `ORIENTATION.md`, `STUDY_PLAN.md`
 - **Learning docs**: `learnings/` directory
-- **Open questions**: `learnings/.docdd/5_open_questions.md`
+- **Open questions**: `learnings/.ddd/5_open_questions.md`
 - **NESdev wiki**: https://www.nesdev.org/wiki/ (primary reference)
-- **DocDD book**: https://selberhad.github.io/docdd-book/
+- **DDD book**: https://selberhad.github.io/ddd-book/

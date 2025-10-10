@@ -33,7 +33,7 @@ Before building, document questions to answer:
 - **Technique questions**: "Does sprite 0 hit work during scrolling?" (wiki examples conflict, verify)
 - **Success criteria**: What measurements prove the technique works?
 
-**Cross-reference**: Link to questions in `learnings/.docdd/5_open_questions.md`
+**Cross-reference**: Link to questions in `learnings/.ddd/5_open_questions.md`
 
 ### 2. Write Specifications (SPEC.md + PLAN.md)
 
@@ -315,7 +315,7 @@ Once a toy is marked complete (full or partial):
 
 ### Before Building Toy
 1. Read relevant external knowledge docs (`learnings/sprite_techniques.md`, etc.)
-2. Identify questions in `learnings/.docdd/5_open_questions.md`
+2. Identify questions in `learnings/.ddd/5_open_questions.md`
 3. Document in toy's LEARNINGS.md what to validate/measure
 
 ### During Implementation
@@ -325,7 +325,7 @@ Once a toy is marked complete (full or partial):
 
 ### After Completion
 1. **Finalize toy LEARNINGS.md** with all findings (measurements, constraints, patterns)
-2. **Mark questions answered** in `learnings/.docdd/5_open_questions.md`
+2. **Mark questions answered** in `learnings/.ddd/5_open_questions.md`
 3. **Spawn new questions** if edge cases discovered
 4. **Extract reusable patterns** to `tools/` or document for main game
 
@@ -335,7 +335,7 @@ Once a toy is marked complete (full or partial):
 
 ## Axis Principle (NES Adaptation)
 
-From DocDD book: "A base toy isolates exactly one axis of complexity."
+From DDD book: "A base toy isolates exactly one axis of complexity."
 
 **For NES:**
 - **Build toys**: One tool/pipeline (assembler, graphics converter, music build)
@@ -362,8 +362,8 @@ When theory meets the NES cycle counter, update the theory.
 
 ## References
 
-- **DDD.md**: Core Doc-Driven Development methodology
+- **DDD.md**: Core Dialectic-Driven Development methodology
 - **TOY_DEV.md**: Toy development for porting context (FFI/unsafe validation)
-- **docdd-book toy-model-rationale.md**: General toy model philosophy
-- **learnings/.docdd/5_open_questions.md**: 43 questions to answer through toys
+- **ddd-book toy-model-rationale.md**: General toy model philosophy
+- **learnings/.ddd/5_open_questions.md**: 43 questions to answer through toys
 - **PLAN_WRITING.md, SPEC_WRITING.md**: Meta-doc writing guides

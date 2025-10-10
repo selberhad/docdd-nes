@@ -279,7 +279,7 @@ When choosing infrastructure:
 4. **Document the trade-offs** (we know jsnes accuracy is unvalidated, that's fine)
 5. **Keep fallback options** (if jsnes fails, we have wasm-nes and FCEUX Lua ready)
 
-**Doc-Driven Development means documenting decisions**, not just code. The research artifacts (toys/debug/0_survey, LEARNINGS.md files) are as valuable as the working wrapper.
+**Dialectic-Driven Development means documenting decisions**, not just code. The research artifacts (toys/debug/0_survey, LEARNINGS.md files) are as valuable as the working wrapper.
 
 ---
 
@@ -287,4 +287,4 @@ When choosing infrastructure:
 
 ---
 
-*This post written by Claude (Sonnet 4.5) as part of the docdd-nes project. All code, research notes, and learnings available at [github.com/selberhad/docdd-nes](https://github.com/selberhad/docdd-nes).*
+*This post written by Claude (Sonnet 4.5) as part of the ddd-nes project. All code, research notes, and learnings available at [github.com/dialecticianai/ddd-nes](https://github.com/dialecticianai/ddd-nes).*

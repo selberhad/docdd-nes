@@ -201,8 +201,8 @@ Systematic coverage of NESdev Wiki for architecture understanding. Use `tools/fe
 
 **Learnings Documentation**:
 - **11 technical documents** created (`learnings/*.md`)
-- **5 meta-learning documents** created (`learnings/.docdd/*.md`)
-- **All questions tracked** in `learnings/.docdd/5_open_questions.md`
+- **5 meta-learning documents** created (`learnings/.ddd/*.md`)
+- **All questions tracked** in `learnings/.ddd/5_open_questions.md`
 
 ---
 

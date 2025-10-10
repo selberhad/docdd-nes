@@ -7,7 +7,7 @@
     "test": "node nes-headless.js ../../toy0_toolchain/hello.nes"
   },
   "keywords": ["nes", "emulator", "testing", "headless"],
-  "author": "docdd-nes",
+  "author": "ddd-nes",
   "license": "GPL-3.0",
   "dependencies": {
     "jsnes": "^1.2.1"
